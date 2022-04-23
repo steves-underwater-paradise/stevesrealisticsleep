@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -104,14 +105,20 @@ public abstract class ServerWorldMixin extends World {
 
         // Check if it's dawn
         if (secondsUntilAwake <= 1) {
-            // Clear weather
-            worldProperties.setThundering(false);
-            worldProperties.setRaining(false);
-            worldProperties.setClearWeatherTime((int) (DAY_LENGTH * SleepMath.getRandomNumber(1.25, 3)));
+            // Check if it's raining or thundering
+            if (worldProperties.isRaining() || worldProperties.isThundering()) {
+                // Clear weather and reset weather clock
+                worldProperties.setThundering(false);
+                worldProperties.setRaining(false);
+                worldProperties.setClearWeatherTime((int) (DAY_LENGTH * SleepMath.getRandomNumber(1.25, 3)));
+            }
 
-            // Send HUD message to all players
-            for (ServerPlayerEntity player : players) {
-                player.sendMessage(Text.of(config.dawnMessage), true);
+            // Check if dawn message isn't set to nothing
+            if (!Objects.equals(config.dawnMessage, "")) {
+                // Send HUD message to all players
+                for (ServerPlayerEntity player : players) {
+                    player.sendMessage(Text.of(config.dawnMessage), true);
+                }
             }
         }
     }
