@@ -28,4 +28,8 @@ public class SleepMath {
     public static int calculateSecondsUntilAwake(int currentTimeOfDay, int timeStepPerTick, int tps) {
         return (int) Math.ceil(calculateTicksUntilAwake(currentTimeOfDay) / (double) timeStepPerTick / tps);
     }
+
+    public static double getRandomNumber(double min, double max) {
+        return (Math.random() * (max - min)) + min;
+    }
 }

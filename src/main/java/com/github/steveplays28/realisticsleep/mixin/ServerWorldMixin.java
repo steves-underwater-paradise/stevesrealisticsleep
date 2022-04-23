@@ -28,14 +28,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import static com.github.steveplays28.realisticsleep.SleepMath.DAY_LENGTH;
-
-//@Mixin(ServerWorld.class)
-//public class ServerWorldMixin {
-//    @Inject(at = @At("HEAD"), method = "tick")
-//    private void tickInjected(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
-//        System.out.println("This line is printed by an example mod mixin!");
-//    }
-//}
+import static com.github.steveplays28.realisticsleep.client.RealisticSleepClient.config;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
@@ -69,7 +62,7 @@ public abstract class ServerWorldMixin extends World {
         // Fetch DoDaylightCycle gamerule and do calculations
         boolean dayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
         int sleepingPercentage = sleepManager.getSleeping() / server.getCurrentPlayerCount() * 100;
-        int timeStepPerTick = SleepMath.calculateTimeStepPerTick(25, 0.5, sleepingPercentage);
+        int timeStepPerTick = SleepMath.calculateTimeStepPerTick(config.sleepSpeedModifier, 0.5, sleepingPercentage);
 
         // Advance time
         worldProperties.setTime(worldProperties.getTime() + timeStepPerTick);
@@ -83,33 +76,43 @@ public abstract class ServerWorldMixin extends World {
         // Send HUD message to all players
         // TODO: Don't assume the TPS is 20
         int secondsUntilAwake = SleepMath.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay(), timeStepPerTick, 20);
+        int maxSecondsUntilAwake = SleepMath.calculateSecondsUntilAwake(DAY_LENGTH, timeStepPerTick, 20);
 
-        for (ServerPlayerEntity player : players) {
-            if (worldProperties.isThundering()) {
-                if (sleepManager.getSleeping() > 1) {
-                    player.sendMessage(Text.of(sleepManager.getSleeping() + " players are sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
+        if (secondsUntilAwake < maxSecondsUntilAwake) {
+            for (ServerPlayerEntity player : players) {
+                if (worldProperties.isThundering()) {
+                    if (sleepManager.getSleeping() > 1) {
+                        player.sendMessage(Text.of(sleepManager.getSleeping() + " players are sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
+                    } else {
+                        player.sendMessage(Text.of(sleepManager.getSleeping() + " player is sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
+                    }
+                } else if (dayLightCycle) {
+                    if (sleepManager.getSleeping() > 1) {
+                        player.sendMessage(Text.of(sleepManager.getSleeping() + " players are sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
+                    } else {
+                        player.sendMessage(Text.of(sleepManager.getSleeping() + " player is sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
+                    }
                 } else {
-                    player.sendMessage(Text.of(sleepManager.getSleeping() + " player is sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
-                }
-            } else if (dayLightCycle) {
-                if (sleepManager.getSleeping() > 1) {
-                    player.sendMessage(Text.of(sleepManager.getSleeping() + " players are sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
-                } else {
-                    player.sendMessage(Text.of(sleepManager.getSleeping() + " player is sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
-                }
-            } else {
-                if (sleepManager.getSleeping() > 1) {
-                    player.sendMessage(Text.of(sleepManager.getSleeping() + " players are sleeping (time until dawn: " + secondsUntilAwake + "s)"), true);
-                } else {
-                    player.sendMessage(Text.of(sleepManager.getSleeping() + " player is sleeping (time until dawn: " + secondsUntilAwake + "s)"), true);
+                    if (sleepManager.getSleeping() > 1) {
+                        player.sendMessage(Text.of(sleepManager.getSleeping() + " players are sleeping (time until dawn: " + secondsUntilAwake + "s)"), true);
+                    } else {
+                        player.sendMessage(Text.of(sleepManager.getSleeping() + " player is sleeping (time until dawn: " + secondsUntilAwake + "s)"), true);
+                    }
                 }
             }
         }
 
         // Check if it's dawn
-        if (secondsUntilAwake <= 0) {
-            // Wake sleeping players
-            invokeWakeSleepingPlayers();
+        if (secondsUntilAwake <= 1) {
+            // Clear weather
+            worldProperties.setThundering(false);
+            worldProperties.setRaining(false);
+            worldProperties.setClearWeatherTime((int) (DAY_LENGTH * SleepMath.getRandomNumber(1.25, 3)));
+
+            // Send HUD message to all players
+            for (ServerPlayerEntity player : players) {
+                player.sendMessage(Text.of(config.dawnMessage), true);
+            }
         }
     }
 }

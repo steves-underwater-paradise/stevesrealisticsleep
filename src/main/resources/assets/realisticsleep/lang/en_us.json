@@ -1,0 +1,7 @@
+{
+  "text.autoconfig.realisticsleep.title": "Realistic Sleep mod settings",
+  "text.autoconfig.realisticsleep.option.dawnMessage": "Dawn message",
+  "text.autoconfig.realisticsleep.option.dawnMessage.@Tooltip": "The HUD message that will be displayed to all players after sleeping through the night.",
+  "text.autoconfig.realisticsleep.option.sleepSpeedModifier": "Sleep speed multiplier",
+  "text.autoconfig.realisticsleep.option.sleepSpeedModifier.@Tooltip": "The amount of times the night will be faster per player sleeping."
+}
