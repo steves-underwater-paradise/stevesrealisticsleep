@@ -5,12 +5,12 @@ public class SleepMath {
     public static final int CLEAR_AWAKE_TIME = 23460;
     public static final int RAIN_AWAKE_TIME = 23992;
 
-    private static double createCurve(double curveAggression, double playerPercentage) {
-        return curveAggression * playerPercentage / (curveAggression * playerPercentage * 2 - (curveAggression - playerPercentage) + 1);
-    }
+//    private static double createCurve(double curveAggression, double playerPercentage) {
+//        return curveAggression * playerPercentage / (curveAggression * playerPercentage * 2 - (curveAggression - playerPercentage) + 1);
+//    }
 
-    public static int calculateTimeStepPerTick(int multiplier, double curveAggression, double playerPercentage) {
-        return (int) (multiplier * createCurve(curveAggression, playerPercentage));
+    public static int calculateNightTimeStepPerTick(double sleepingRatio, int multiplier) {
+        return (int) (sleepingRatio * multiplier);
     }
 
     public static int calculateTicksTo(int timeOfDay, int targetTimeOfDay) {
@@ -26,7 +26,7 @@ public class SleepMath {
     }
 
     public static int calculateSecondsUntilAwake(int currentTimeOfDay, int timeStepPerTick, int tps) {
-        return (int) Math.ceil(calculateTicksUntilAwake(currentTimeOfDay) / (double) timeStepPerTick / tps);
+        return (int) Math.round(calculateTicksUntilAwake(currentTimeOfDay) / (double) timeStepPerTick / tps);
     }
 
     public static double getRandomNumber(double min, double max) {
