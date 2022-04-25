@@ -18,8 +18,8 @@ Realistic Sleep
 Minecraft Fabric mod that makes sleeping speed up time instead of skipping to day.
 </p>
 
-## Screenshots
-![UI screenshot](https://media.discordapp.net/attachments/930060044383445002/967398816166850580/unknown.png)
+## Visual demonstration
+![UI screenshot](https://github.com/Steveplays28/realisticsleep/blob/main/Minecraft%20RealisticSleep%20mod.gif)
 
 ## FAQ
 Q: Forge pls?  
