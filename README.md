@@ -29,14 +29,20 @@ Q: Will you backport this mod?
 A: No.
 
 Q: Does this mod work in multiplayer?  
-A: Yes! The night goes by a little faster for each player that's sleeping at the same time.
+A: Yes! The speed of the night scales linearly for each player that's sleeping at the same time.
+
+Q: Does only the server need this mod or does the client need it too?  
+A: Only the server needs this mod (but it works on the client too if you're going to host LAN or play singleplayer)
 
 Q: Can you still avoid rain/thunder by sleeping?  
 A: Yes. After sleeping until dawn the weather will return to normal. I might make this configurable in the future, let me know if you want this.
+
+Q: Does this mod speed up the block entities in loaded chunks like furnaces?  
+A: Not yet. I'm working on this. Please visit the GitHub issue tracker by clicking on the Issues tab above if you want to track the progress.
 
 ## Incompatibilities
 Any mods that add sleep voting, or otherwise modify the sleeping mechanic itself will not work with this mod (sleep voting already exists by design).  
 Any mods which simply add buffs/debuffs after waking up should work.
 
 ## Recommended mods
-- ModMenu for an in game configuration screen
+- ModMenu for an in game configuration screen (only for singleplayer/LAN)
