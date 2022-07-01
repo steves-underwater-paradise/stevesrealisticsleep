@@ -55,8 +55,5 @@ public class RealisticSleep implements ModInitializer {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        // Validate config file
-
     }
 }

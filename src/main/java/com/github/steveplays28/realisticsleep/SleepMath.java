@@ -2,12 +2,7 @@ package com.github.steveplays28.realisticsleep;
 
 public class SleepMath {
     public static final int DAY_LENGTH = 24000;
-    public static final int CLEAR_AWAKE_TIME = 23460;
-    public static final int RAIN_AWAKE_TIME = 23992;
-
-//    private static double createCurve(double curveAggression, double playerPercentage) {
-//        return curveAggression * playerPercentage / (curveAggression * playerPercentage * 2 - (curveAggression - playerPercentage) + 1);
-//    }
+    public static final int AWAKE_TIME = 23460;
 
     public static int calculateNightTimeStepPerTick(double sleepingRatio, double multiplier) {
         return (int) Math.round(sleepingRatio * multiplier);
@@ -21,12 +16,11 @@ public class SleepMath {
     }
 
     public static int calculateTicksUntilAwake(int currentTimeOfDay) {
-        // TODO: Take weather into account
-        return calculateTicksTo(currentTimeOfDay, CLEAR_AWAKE_TIME);
+        return calculateTicksTo(currentTimeOfDay, AWAKE_TIME);
     }
 
-    public static int calculateSecondsUntilAwake(int currentTimeOfDay, int timeStepPerTick, int tps) {
-        return (int) Math.round(calculateTicksUntilAwake(currentTimeOfDay) / (double) timeStepPerTick / tps);
+    public static int calculateSecondsUntilAwake(int currentTimeOfDay, double timeStepPerTick, double tps) {
+        return (int) Math.round(calculateTicksUntilAwake(currentTimeOfDay) / timeStepPerTick / tps);
     }
 
     public static double getRandomNumber(double min, double max) {
