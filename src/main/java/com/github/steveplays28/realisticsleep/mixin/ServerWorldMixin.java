@@ -13,6 +13,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.ChunkManager;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.ServerWorldProperties;
 import org.spongepowered.asm.mixin.Final;
@@ -62,14 +63,25 @@ public abstract class ServerWorldMixin extends World {
         // Fetch values and do calculations
         int playerCount = server.getCurrentPlayerCount();
         boolean dayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
-
         double sleepingRatio = (double) sleepingPlayerCount / playerCount;
-        int nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, (int) Math.round((double) config.get("sleepSpeedModifier")));
+        int nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, (double) config.get("sleepSpeedMultiplier"));
+        int blockEntityTickSpeedMultiplier = (int) config.get("blockEntityTickSpeedMultiplier");
+        int chunkTickSpeedMultiplier = (int) config.get("chunkTickSpeedMultiplier");
 
         // Advance time
         worldProperties.setTime(worldProperties.getTime() + nightTimeStepPerTick);
         if (dayLightCycle) {
             worldProperties.setTimeOfDay((worldProperties.getTimeOfDay() + nightTimeStepPerTick) % DAY_LENGTH);
+        }
+
+        // Tick block entities and chunks
+        for (int i = blockEntityTickSpeedMultiplier; i > 1; i--) {
+            tickBlockEntities();
+        }
+
+        for (int i = chunkTickSpeedMultiplier; i > 1; i--) {
+            ChunkManager chunkManager = getChunkManager();
+            chunkManager.tick(shouldKeepTicking, true);
         }
 
         // Send new time to all players in the overworld

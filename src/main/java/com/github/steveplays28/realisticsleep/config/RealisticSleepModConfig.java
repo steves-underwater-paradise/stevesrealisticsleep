@@ -12,5 +12,11 @@ public class RealisticSleepModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public String dawnMessage = "The sun rises.";
     @ConfigEntry.Gui.Tooltip
-    public int sleepSpeedModifier = 25;
+    public double sleepSpeedMultiplier = 25;
+    @ConfigEntry.BoundedDiscrete(min = 1, max = 1000)
+    @ConfigEntry.Gui.Tooltip
+    public int blockEntityTickSpeedMultiplier = 2;
+    @ConfigEntry.BoundedDiscrete(min = 1, max = 1000)
+    @ConfigEntry.Gui.Tooltip
+    public int chunkTickSpeedMultiplier = 2;
 }

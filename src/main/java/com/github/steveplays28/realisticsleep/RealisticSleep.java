@@ -32,7 +32,9 @@ public class RealisticSleep implements ModInitializer {
 
                     // Add default config to config file
                     config.put("dawnMessage", "The sun rises.");
-                    config.put("sleepSpeedModifier", 25);
+                    config.put("sleepSpeedMultiplier", 25);
+                    config.put("blockEntityTickSpeedMultiplier", 2);
+                    config.put("chunkTickSpeedMultiplier", 2);
                     String json = gson.toJson(config);
 
                     FileWriter myWriter = new FileWriter(configFile);
@@ -53,5 +55,8 @@ public class RealisticSleep implements ModInitializer {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+        // Validate config file
+
     }
 }

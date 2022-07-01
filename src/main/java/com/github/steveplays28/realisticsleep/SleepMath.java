@@ -9,8 +9,8 @@ public class SleepMath {
 //        return curveAggression * playerPercentage / (curveAggression * playerPercentage * 2 - (curveAggression - playerPercentage) + 1);
 //    }
 
-    public static int calculateNightTimeStepPerTick(double sleepingRatio, int multiplier) {
-        return (int) (sleepingRatio * multiplier);
+    public static int calculateNightTimeStepPerTick(double sleepingRatio, double multiplier) {
+        return (int) Math.round(sleepingRatio * multiplier);
     }
 
     public static int calculateTicksTo(int timeOfDay, int targetTimeOfDay) {
