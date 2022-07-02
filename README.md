@@ -38,7 +38,7 @@ Q: Can you still avoid rain/thunder by sleeping?
 A: Yes. After sleeping until dawn the weather will return to normal. I might make this configurable in the future, let me know if you want this.
 
 Q: Does this mod speed up the block entities in loaded chunks like furnaces?  
-A: Not yet. I'm working on this. Please visit the GitHub issue tracker by clicking on the Issues tab above if you want to track the progress.
+A: Yes! Furnaces don't work yet though
 
 ## Incompatibilities
 Any mods that add sleep voting, or otherwise modify the sleeping mechanic itself will not work with this mod (sleep voting already exists by design).  
