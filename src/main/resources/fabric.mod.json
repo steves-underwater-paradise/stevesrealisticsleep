@@ -18,7 +18,7 @@
       }
     }
   },
-  "license": "GPLv3",
+  "license": "LGPLv2.1",
   "icon": "assets/realisticsleep/icon.png",
   "environment": "*",
   "entrypoints": {
@@ -36,7 +36,7 @@
     "realisticsleep.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.13.3",
-    "minecraft": "1.18.2"
+    "fabricloader": ">=0.14.8",
+    "minecraft": "1.19"
   }
 }
