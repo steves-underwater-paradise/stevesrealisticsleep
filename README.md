@@ -18,15 +18,25 @@ Realistic Sleep
 Minecraft Fabric mod that makes sleeping speed up time instead of skipping to day.
 </p>
 
-## Visual demonstration
+## Visual demonstration  
 ![UI screenshot](https://github.com/Steveplays28/realisticsleep/blob/main/Minecraft%20RealisticSleep%20mod.gif)
 
-## Download
+## Download  
 - [GitHub releases](https://github.com/Steveplays28/realisticsleep/releases)
 - [Modrinth](https://modrinth.com/mod/realisticsleep)
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/realisticsleepfabric)
 
-## FAQ
+## Dependencies
+Client (if you're using [Mod Menu](https://modrinth.com/mod/modmenu)): [Cloth Config API](https://modrinth.com/mod/cloth-config)
+
+## Incompatibilities  
+Any mods that add sleep voting, or otherwise modify the sleeping mechanic itself will not work with this mod (sleep voting already exists by design).  
+Any mods which simply add buffs/debuffs after waking up should work.
+
+## Recommended mods  
+- ModMenu for an in game configuration screen (only for singleplayer/LAN)
+
+## FAQ  
 Q: Forge pls?  
 A: No. I don't have the time to learn another modding framework, however you can port over the mod yourself (GPLv3) if you want, source code is here.
 
@@ -44,10 +54,3 @@ A: Yes. After sleeping until dawn the weather will return to normal. I might mak
 
 Q: Does this mod speed up the block entities in loaded chunks like furnaces?  
 A: Yes! Furnaces don't work yet though
-
-## Incompatibilities
-Any mods that add sleep voting, or otherwise modify the sleeping mechanic itself will not work with this mod (sleep voting already exists by design).  
-Any mods which simply add buffs/debuffs after waking up should work.
-
-## Recommended mods
-- ModMenu for an in game configuration screen (only for singleplayer/LAN)
