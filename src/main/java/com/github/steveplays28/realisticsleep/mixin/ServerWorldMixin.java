@@ -63,7 +63,7 @@ public abstract class ServerWorldMixin extends World {
         // Fetch values and do calculations
         int playerCount = server.getCurrentPlayerCount();
         boolean dayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
-        double sleepingRatio = sleepingPlayerCount / playerCount;
+        double sleepingRatio = (double) sleepingPlayerCount / 10;
         int nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, (double) config.get("sleepSpeedMultiplier"));
         int blockEntityTickSpeedMultiplier = (int) Math.round((double) config.get("blockEntityTickSpeedMultiplier"));
         int chunkTickSpeedMultiplier = (int) Math.round((double) config.get("chunkTickSpeedMultiplier"));

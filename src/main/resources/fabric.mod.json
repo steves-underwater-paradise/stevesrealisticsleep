@@ -27,9 +27,6 @@
     ],
     "modmenu": [
       "com.github.steveplays28.realisticsleep.config.ModMenuIntegration"
-    ],
-    "client": [
-      "com.github.steveplays28.realisticsleep.client.RealisticSleepClient"
     ]
   },
   "mixins": [
@@ -37,6 +34,9 @@
   ],
   "depends": {
     "fabricloader": ">=0.14.8",
-    "minecraft": "1.19"
+    "minecraft": [
+      "1.18.x",
+      "1.19.x"
+    ]
   }
 }

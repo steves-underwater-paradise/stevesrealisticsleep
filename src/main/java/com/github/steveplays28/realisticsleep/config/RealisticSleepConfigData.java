@@ -8,7 +8,7 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 @Config(name = "realisticsleep")
-public class RealisticSleepModConfig implements ConfigData {
+public class RealisticSleepConfigData implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public String dawnMessage = "The sun rises.";
     @ConfigEntry.Gui.Tooltip
