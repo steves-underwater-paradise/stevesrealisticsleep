@@ -25,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -64,9 +63,9 @@ public abstract class ServerWorldMixin extends World {
         int playerCount = server.getCurrentPlayerCount();
         boolean dayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
         double sleepingRatio = (double) sleepingPlayerCount / playerCount;
-        int nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, (double) config.get("sleepSpeedMultiplier"));
-        int blockEntityTickSpeedMultiplier = (int) Math.round((double) config.get("blockEntityTickSpeedMultiplier"));
-        int chunkTickSpeedMultiplier = (int) Math.round((double) config.get("chunkTickSpeedMultiplier"));
+        int nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier);
+        int blockEntityTickSpeedMultiplier = (int) Math.round((double) config.blockEntityTickSpeedMultiplier);
+        int chunkTickSpeedMultiplier = (int) Math.round((double) config.chunkTickSpeedMultiplier);
 
         // Advance time
         worldProperties.setTime(worldProperties.getTime() + nightTimeStepPerTick);
@@ -127,10 +126,10 @@ public abstract class ServerWorldMixin extends World {
             }
 
             // Check if dawn message isn't set to nothing
-            if (!Objects.equals(config.get("dawnMessage"), "")) {
+            if (!config.dawnMessage.equals("")) {
                 // Send HUD message to all players
                 for (ServerPlayerEntity player : players) {
-                    player.sendMessage(Text.of((String) config.get("dawnMessage")), true);
+                    player.sendMessage(Text.of(config.dawnMessage), true);
                 }
             }
         }
