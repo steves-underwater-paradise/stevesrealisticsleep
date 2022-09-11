@@ -52,7 +52,7 @@ public abstract class ServerWorldMixin extends World {
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getInt(Lnet/minecraft/world/GameRules$Key;)I"))
-    private void tickInject(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+    public void tickInject(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
         // Check if anyone is sleeping
         int sleepingPlayerCount = sleepManager.getSleeping();
 
@@ -63,7 +63,7 @@ public abstract class ServerWorldMixin extends World {
         // Fetch values and do calculations
         int playerCount = server.getCurrentPlayerCount();
         boolean dayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
-        double sleepingRatio = (double) sleepingPlayerCount / 10;
+        double sleepingRatio = (double) sleepingPlayerCount / playerCount;
         int nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, (double) config.get("sleepSpeedMultiplier"));
         int blockEntityTickSpeedMultiplier = (int) Math.round((double) config.get("blockEntityTickSpeedMultiplier"));
         int chunkTickSpeedMultiplier = (int) Math.round((double) config.get("chunkTickSpeedMultiplier"));
