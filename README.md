@@ -9,7 +9,7 @@ Realistic Sleep
 [![GitHub](https://img.shields.io/github/issues/Steveplays28/realisticsleep)](https://github.com/Steveplays28/realisticsleep/issues)
 [![GitHub](https://img.shields.io/github/issues-pr/Steveplays28/realisticsleep)](https://github.com/Steveplays28/realisticsleep/pulls)
 
-![GitHub](https://img.shields.io/badge/environment-both-4caf50?style=flat-square)
+![GitHub](https://img.shields.io/badge/environment-server-4caf50?style=flat-square)
 ![GitHub](https://img.shields.io/badge/mod%20loader-fabric-d64541?style=flat-square)
 [![Discord](https://img.shields.io/discord/746681304111906867?label=chat%20on%20Discord%20%7C%20Steve%27s%20underwater%20paradise)](https://discord.gg/KbWxgGg)
 </h1>
