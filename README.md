@@ -38,7 +38,7 @@ Any mods which simply add buffs/debuffs after waking up should work.
 
 ## FAQ  
 Q: Forge pls?  
-A: No. I don't have the time to learn another modding framework, however you can port over the mod yourself (GPLv3) if you want, source code is here.
+A: No. I don't have the time to learn another modding framework, however you can port over the mod yourself (LGPLv2.1) if you want, the source code is open.
 
 Q: Will you backport this mod?  
 A: No.
@@ -53,4 +53,4 @@ Q: Can you still avoid rain/thunder by sleeping?
 A: Yes. After sleeping until dawn the weather will return to normal. I might make this configurable in the future, let me know if you want this.
 
 Q: Does this mod speed up the block entities in loaded chunks like furnaces?  
-A: Yes! Furnaces don't work yet though
+A: Yes!
