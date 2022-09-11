@@ -27,7 +27,7 @@ Minecraft Fabric mod that makes sleeping speed up time instead of skipping to da
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/realisticsleepfabric)
 
 ## Dependencies
-Client (if you're using [Mod Menu](https://modrinth.com/mod/modmenu)): [Cloth Config API](https://modrinth.com/mod/cloth-config)
+- [Cloth Config API](https://modrinth.com/mod/cloth-config)
 
 ## Incompatibilities  
 Any mods that add sleep voting, or otherwise modify the sleeping mechanic itself will not work with this mod (sleep voting already exists by design).  
