@@ -10,6 +10,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkManager;
@@ -64,6 +65,7 @@ public abstract class ServerWorldMixin extends World {
         int nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier);
         int blockEntityTickSpeedMultiplier = (int) Math.round((double) config.blockEntityTickSpeedMultiplier);
         int chunkTickSpeedMultiplier = (int) Math.round((double) config.chunkTickSpeedMultiplier);
+        boolean dayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
 
         // Advance time
         worldProperties.setTime(worldProperties.getTime() + nightTimeStepPerTick);
