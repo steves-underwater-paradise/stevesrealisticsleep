@@ -1,10 +1,11 @@
 {
-  "text.autoconfig.realisticsleep.title": "Realistic Sleep mod settings",
+  "text.autoconfig.realisticsleep.title": "Realistic Sleep mod config",
   "text.autoconfig.realisticsleep.option.dawnMessage": "Dawn message",
-  "text.autoconfig.realisticsleep.option.dawnMessage.@Tooltip": "The HUD message that will be displayed to all players after sleeping through the night.",
+  "text.autoconfig.realisticsleep.option.dawnMessage.@Tooltip": "The message that will be displayed to all players on the action bar after sleeping through the night.",
   "text.autoconfig.realisticsleep.option.sleepSpeedMultiplier": "Sleep speed multiplier",
+  "text.autoconfig.realisticsleep.option.sleepSpeedMultiplier.@Tooltip": "How many times faster the night should go.",
   "text.autoconfig.realisticsleep.option.blockEntityTickSpeedMultiplier": "Block entity tick speed multiplier",
-  "text.autoconfig.realisticsleep.option.blockEntityTickSpeedMultiplier.@Tooltip": "The amount loaded block entities' tick speed will be multiplied by per player sleeping.",
+  "text.autoconfig.realisticsleep.option.blockEntityTickSpeedMultiplier.@Tooltip": "How many times faster block entities like furnaces should tick.",
   "text.autoconfig.realisticsleep.option.chunkTickSpeedMultiplier": "Chunk tick speed multiplier",
-  "text.autoconfig.realisticsleep.option.chunkTickSpeedMultiplier.@Tooltip": "The amount loaded chunks' tick speed will be multiplied by per player sleeping."
+  "text.autoconfig.realisticsleep.option.chunkTickSpeedMultiplier.@Tooltip": "How many times faster chunks should tick."
 }
