@@ -69,6 +69,9 @@ public abstract class ServerWorldMixin extends World {
 
         // Advance time
         worldProperties.setTime(worldProperties.getTime() + nightTimeStepPerTick);
+        if (dayLightCycle) {
+            worldProperties.setTimeOfDay((worldProperties.getTimeOfDay() + nightTimeStepPerTick) % DAY_LENGTH);
+        }
 
         // Tick block entities and chunks
         for (int i = blockEntityTickSpeedMultiplier; i > 1; i--) {
