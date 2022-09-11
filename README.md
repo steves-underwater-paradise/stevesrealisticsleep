@@ -9,7 +9,7 @@ Realistic Sleep
 [![GitHub](https://img.shields.io/github/issues/Steveplays28/realisticsleep)](https://github.com/Steveplays28/realisticsleep/issues)
 [![GitHub](https://img.shields.io/github/issues-pr/Steveplays28/realisticsleep)](https://github.com/Steveplays28/realisticsleep/pulls)
 
-![GitHub](https://img.shields.io/badge/environment-both-4caf50?style=flat-square)
+![GitHub](https://img.shields.io/badge/environment-server-4caf50?style=flat-square)
 ![GitHub](https://img.shields.io/badge/mod%20loader-fabric-d64541?style=flat-square)
 [![Discord](https://img.shields.io/discord/746681304111906867?label=chat%20on%20Discord%20%7C%20Steve%27s%20underwater%20paradise)](https://discord.gg/KbWxgGg)
 </h1>
@@ -27,7 +27,7 @@ Minecraft Fabric mod that makes sleeping speed up time instead of skipping to da
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/realisticsleepfabric)
 
 ## Dependencies
-Client (if you're using [Mod Menu](https://modrinth.com/mod/modmenu)): [Cloth Config API](https://modrinth.com/mod/cloth-config)
+- [Cloth Config API](https://modrinth.com/mod/cloth-config)
 
 ## Incompatibilities  
 Any mods that add sleep voting, or otherwise modify the sleeping mechanic itself will not work with this mod (sleep voting already exists by design).  
@@ -38,7 +38,7 @@ Any mods which simply add buffs/debuffs after waking up should work.
 
 ## FAQ  
 Q: Forge pls?  
-A: No. I don't have the time to learn another modding framework, however you can port over the mod yourself (GPLv3) if you want, source code is here.
+A: No. I don't have the time to learn another modding framework, however you can port over the mod yourself (LGPLv2.1) if you want, the source code is open.
 
 Q: Will you backport this mod?  
 A: No.
@@ -53,4 +53,4 @@ Q: Can you still avoid rain/thunder by sleeping?
 A: Yes. After sleeping until dawn the weather will return to normal. I might make this configurable in the future, let me know if you want this.
 
 Q: Does this mod speed up the block entities in loaded chunks like furnaces?  
-A: Yes! Furnaces don't work yet though
+A: Yes!
