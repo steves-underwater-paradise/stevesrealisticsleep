@@ -107,23 +107,9 @@ public abstract class ServerWorldMixin extends World {
 		if (secondsUntilAwake < maxSecondsUntilAwake) {
 			for (ServerPlayerEntity player : players) {
 				if (worldProperties.isThundering()) {
-					if (sleepingPlayerCount > 1) {
-						player.sendMessage(Text.of(sleepingPlayerCount + " players are sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
-					} else {
-						player.sendMessage(Text.of(sleepingPlayerCount + " player is sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
-					}
-				} else if (dayLightCycle) {
-					if (sleepingPlayerCount > 1) {
-						player.sendMessage(Text.of(sleepingPlayerCount + " players are sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
-					} else {
-						player.sendMessage(Text.of(sleepingPlayerCount + " player is sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
-					}
+					player.sendMessage(Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
 				} else {
-					if (sleepingPlayerCount > 1) {
-						player.sendMessage(Text.of(sleepingPlayerCount + " players are sleeping (time until dawn: " + secondsUntilAwake + "s)"), true);
-					} else {
-						player.sendMessage(Text.of(sleepingPlayerCount + " player is sleeping (time until dawn: " + secondsUntilAwake + "s)"), true);
-					}
+					player.sendMessage(Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
 				}
 			}
 		}
