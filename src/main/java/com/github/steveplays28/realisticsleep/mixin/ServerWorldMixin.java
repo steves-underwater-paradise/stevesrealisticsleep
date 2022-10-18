@@ -116,8 +116,7 @@ public abstract class ServerWorldMixin extends World {
 
 		// Check if it's dawn
 		if (secondsUntilAwake <= 1) {
-			// Advance days counter
-
+			// TODO: Advance days counter
 
 			// Check if it's raining or thundering
 			if (worldProperties.isRaining() || worldProperties.isThundering()) {
