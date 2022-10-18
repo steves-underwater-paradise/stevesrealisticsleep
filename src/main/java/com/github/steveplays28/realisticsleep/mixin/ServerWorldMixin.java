@@ -62,10 +62,23 @@ public abstract class ServerWorldMixin extends World {
 		// Fetch values and do calculations
 		int playerCount = server.getCurrentPlayerCount();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
+		double sleepingPercentage = sleepingRatio * 100;
 		int nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier);
 		int blockEntityTickSpeedMultiplier = (int) Math.round((double) config.blockEntityTickSpeedMultiplier);
 		int chunkTickSpeedMultiplier = (int) Math.round((double) config.chunkTickSpeedMultiplier);
 		boolean dayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
+		int playersRequiredToSleepPercentage = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
+		double playersRequiredToSleepRatio = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE) / 100;
+		int playersRequiredToSleep = (int) Math.ceil(playersRequiredToSleepRatio * playerCount);
+
+		// Check if the required percentage of players are sleeping
+		if (sleepingPercentage < playersRequiredToSleepPercentage) {
+			for (ServerPlayerEntity player : players) {
+				player.sendMessage(Text.of(sleepingPlayerCount + "/" + playerCount + " players are currently sleeping. " + playersRequiredToSleep + "/" + playerCount + " players are required to sleep through the night."), true);
+			}
+
+			return;
+		}
 
 		// Advance time
 		worldProperties.setTime(worldProperties.getTime() + nightTimeStepPerTick);
@@ -117,6 +130,9 @@ public abstract class ServerWorldMixin extends World {
 
 		// Check if it's dawn
 		if (secondsUntilAwake <= 1) {
+			// Advance days counter
+
+
 			// Check if it's raining or thundering
 			if (worldProperties.isRaining() || worldProperties.isThundering()) {
 				// Clear weather and reset weather clock
