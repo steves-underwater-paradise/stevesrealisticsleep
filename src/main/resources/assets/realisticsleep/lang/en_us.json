@@ -7,5 +7,9 @@
   "text.autoconfig.realisticsleep.option.blockEntityTickSpeedMultiplier": "Block entity tick speed multiplier",
   "text.autoconfig.realisticsleep.option.blockEntityTickSpeedMultiplier.@Tooltip": "How many times faster block entities like furnaces should tick.",
   "text.autoconfig.realisticsleep.option.chunkTickSpeedMultiplier": "Chunk tick speed multiplier",
-  "text.autoconfig.realisticsleep.option.chunkTickSpeedMultiplier.@Tooltip": "How many times faster chunks should tick."
+  "text.autoconfig.realisticsleep.option.chunkTickSpeedMultiplier.@Tooltip": "How many times faster chunks should tick.",
+  "text.autoconfig.realisticsleep.option.raidTickSpeedMultiplier": "Raid tick speed multiplier",
+  "text.autoconfig.realisticsleep.option.raidTickSpeedMultiplier.@Tooltip": "How many times faster raid timers should tick .",
+  "text.autoconfig.realisticsleep.option.entityTickSpeedMultiplier": "Entity tick speed multiplier",
+  "text.autoconfig.realisticsleep.option.entityTickSpeedMultiplier.@Tooltip": "How many times faster entities should tick."
 }
