@@ -4,16 +4,17 @@ import com.github.steveplays28.realisticsleep.SleepMath;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.world.SleepManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.village.raid.RaidManager;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkManager;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.ServerWorldProperties;
 import org.spongepowered.asm.mixin.Final;
@@ -45,6 +46,12 @@ public abstract class ServerWorldMixin extends World {
 	@Shadow
 	@Final
 	private SleepManager sleepManager;
+	@Shadow
+	@Final
+	private ServerChunkManager chunkManager;
+	@Shadow
+	@Final
+	protected RaidManager raidManager;
 
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
 		super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
@@ -59,18 +66,32 @@ public abstract class ServerWorldMixin extends World {
 			return;
 		}
 
-		// Fetch values and do calculations
+		// Fetch config values and do calculations
 		int playerCount = server.getCurrentPlayerCount();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
+		double sleepingPercentage = sleepingRatio * 100;
 		int nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier);
 		int blockEntityTickSpeedMultiplier = (int) Math.round((double) config.blockEntityTickSpeedMultiplier);
 		int chunkTickSpeedMultiplier = (int) Math.round((double) config.chunkTickSpeedMultiplier);
-		boolean dayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
+		int raidTickSpeedMultiplier = (int) Math.round((double) config.raidTickSpeedMultiplier);
+		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
+		int playersRequiredToSleepPercentage = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
+		double playersRequiredToSleepRatio = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE) / 100;
+		int playersRequiredToSleep = (int) Math.ceil(playersRequiredToSleepRatio * playerCount);
+
+		// Check if the required percentage of players are sleeping
+		if (sleepingPercentage < playersRequiredToSleepPercentage) {
+			for (ServerPlayerEntity player : players) {
+				player.sendMessage(Text.of(sleepingPlayerCount + "/" + playerCount + " players are currently sleeping. " + playersRequiredToSleep + "/" + playerCount + " players are required to sleep through the night."), true);
+			}
+
+			return;
+		}
 
 		// Advance time
 		worldProperties.setTime(worldProperties.getTime() + nightTimeStepPerTick);
-		if (dayLightCycle) {
-			worldProperties.setTimeOfDay((worldProperties.getTimeOfDay() + nightTimeStepPerTick) % DAY_LENGTH);
+		if (doDayLightCycle) {
+			worldProperties.setTimeOfDay(worldProperties.getTimeOfDay() + nightTimeStepPerTick);
 		}
 
 		// Tick block entities and chunks
@@ -79,50 +100,38 @@ public abstract class ServerWorldMixin extends World {
 		}
 
 		for (int i = chunkTickSpeedMultiplier; i > 1; i--) {
-			ChunkManager chunkManager = this.getChunkManager();
 			chunkManager.tick(shouldKeepTicking, true);
 		}
 
+		for (int i = raidTickSpeedMultiplier; i > 1; i--) {
+			raidManager.tick();
+		}
+
 		// Send new time to all players in the overworld
-		server.getPlayerManager().sendToDimension(new WorldTimeUpdateS2CPacket(worldProperties.getTime(), worldProperties.getTimeOfDay(), dayLightCycle), getRegistryKey());
+		server.getPlayerManager().sendToDimension(new WorldTimeUpdateS2CPacket(worldProperties.getTime(), worldProperties.getTimeOfDay(), doDayLightCycle), getRegistryKey());
 
 		// Send HUD message to all players
 		// TODO: Don't assume the TPS is 20
-		int secondsUntilAwake = SleepMath.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay(), nightTimeStepPerTick, 20);
-		int maxSecondsUntilAwake = SleepMath.calculateSecondsUntilAwake(DAY_LENGTH, nightTimeStepPerTick, 20);
+		int secondsUntilAwake = Math.abs(SleepMath.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay() % 24000, nightTimeStepPerTick, 20));
 
-		if (secondsUntilAwake < maxSecondsUntilAwake) {
+		if (secondsUntilAwake >= 2) {
 			for (ServerPlayerEntity player : players) {
 				if (worldProperties.isThundering()) {
-					if (sleepingPlayerCount > 1) {
-						player.sendMessage(Text.of(sleepingPlayerCount + " players are sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
-					} else {
-						player.sendMessage(Text.of(sleepingPlayerCount + " player is sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
-					}
-				} else if (dayLightCycle) {
-					if (sleepingPlayerCount > 1) {
-						player.sendMessage(Text.of(sleepingPlayerCount + " players are sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
-					} else {
-						player.sendMessage(Text.of(sleepingPlayerCount + " player is sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
-					}
+					player.sendMessage(Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
 				} else {
-					if (sleepingPlayerCount > 1) {
-						player.sendMessage(Text.of(sleepingPlayerCount + " players are sleeping (time until dawn: " + secondsUntilAwake + "s)"), true);
-					} else {
-						player.sendMessage(Text.of(sleepingPlayerCount + " player is sleeping (time until dawn: " + secondsUntilAwake + "s)"), true);
-					}
+					player.sendMessage(Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
 				}
 			}
 		}
 
 		// Check if it's dawn
-		if (secondsUntilAwake <= 1) {
+		if (secondsUntilAwake < 2) {
 			// Check if it's raining or thundering
 			if (worldProperties.isRaining() || worldProperties.isThundering()) {
 				// Clear weather and reset weather clock
 				worldProperties.setThundering(false);
 				worldProperties.setRaining(false);
-				worldProperties.setClearWeatherTime((int) (DAY_LENGTH * SleepMath.getRandomNumber(1.25, 3)));
+				worldProperties.setClearWeatherTime((int) (DAY_LENGTH * SleepMath.getRandomNumberInRange(0.5, 7.5)));
 			}
 
 			// Check if dawn message isn't set to nothing

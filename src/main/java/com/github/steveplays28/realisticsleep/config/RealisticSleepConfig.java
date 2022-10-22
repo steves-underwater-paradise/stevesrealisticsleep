@@ -8,7 +8,6 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public String dawnMessage = "The sun rises.";
-	@ConfigEntry.BoundedDiscrete(min = 1, max = 200)
 	@ConfigEntry.Gui.Tooltip
 	public int sleepSpeedMultiplier = 25;
 	@ConfigEntry.BoundedDiscrete(min = 1, max = 200)
@@ -17,4 +16,7 @@ public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.BoundedDiscrete(min = 1, max = 200)
 	@ConfigEntry.Gui.Tooltip
 	public int chunkTickSpeedMultiplier = 25;
+	@ConfigEntry.BoundedDiscrete(min = 1, max = 200)
+	@ConfigEntry.Gui.Tooltip
+	public int raidTickSpeedMultiplier = 25;
 }
