@@ -21,6 +21,12 @@ Minecraft Fabric mod that makes sleeping speed up time instead of skipping to da
 ## Visual demonstration  
 ![UI screenshot](https://github.com/Steveplays28/realisticsleep/blob/main/Minecraft%20RealisticSleep%20mod.gif)
 
+## Showcase
+
+Featured in "Minecraft Mod Combinations That Work Perfectly Together #5" By AsianHalfSquat  
+https://youtu.be/AMAf-oR6x5I?t=141
+[![Click to play on YouTube](https://i3.ytimg.com/vi/AMAf-oR6x5I/maxresdefault.jpg)](https://youtu.be/AMAf-oR6x5I?t=141)
+
 ## Download  
 - [GitHub releases](https://github.com/Steveplays28/realisticsleep/releases)
 - [Modrinth](https://modrinth.com/mod/realisticsleep)
