@@ -8,16 +8,20 @@ Makes sleeping speed up time instead of skipping to day.
 
 ## Dependencies
 
+### Required
+
 - [Cloth Config API](https://modrinth.com/mod/cloth-config)
+
+### Optional
+
+- [ModMenu](https://modrinth.com/mod/modmenu) for an in game configuration screen (only for singleplayer/LAN)
 
 ## Incompatibilities  
 
-Any mods that add sleep voting, or otherwise modify the sleeping mechanic itself will not work with this mod (sleep voting already exists by design).  
+Any mods that add sleep voting, or otherwise modify the sleeping mechanic itself will not work with this mod.  
+You can set a minimum amount of players that have to sleep using the vanilla Minecraft gamerule `PLAYERS_SLEEP_PERCENTAGE`.
+
 Any mods which simply add buffs/debuffs after waking up should work.
-
-## Recommended mods  
-
-- ModMenu for an in game configuration screen (only for singleplayer/LAN)
 
 ## Download
 
