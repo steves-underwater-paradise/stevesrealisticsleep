@@ -6,6 +6,11 @@ Makes sleeping speed up time instead of skipping to day.
 
 ![Realistic Sleep gif](docs/media/realistic_sleep.gif)
 
+## Showcase
+
+This mod is featured in ["Minecraft Mod Combinations That Work Perfectly Together #5" By AsianHalfSquat](https://youtu.be/AMAf-oR6x5I?t=141)
+[![YouTube thumbnail](https://i3.ytimg.com/vi/AMAf-oR6x5I/maxresdefault.jpg)](https://youtu.be/AMAf-oR6x5I?t=141)
+
 ## Dependencies
 
 ### Required
