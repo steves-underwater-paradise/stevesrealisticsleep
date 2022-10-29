@@ -60,7 +60,7 @@ A: Only the server needs this mod (but it works on the client too if you're goin
 - Q: Can you still avoid rain/thunder by sleeping?  
 A: Yes. After sleeping until dawn the weather will become clear. I might make this configurable in the future, let me know if you want this.
 
-- Q: Does this mod speed up the block entities in loaded chunks like furnaces?  
+- Q: Does this mod speed up things like furnaces, redstone, and the raid timer?  
 A: Yes!
 
 ## License
