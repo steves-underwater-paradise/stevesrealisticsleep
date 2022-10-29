@@ -65,4 +65,4 @@ A: Yes!
 
 ## License
 
-This project is licensed under LGPLv2, see [LICENSE](https://github.com/Steveplays28/realisticsleep/blob/main/LICENSE).
+This project is licensed under LGPLv2.1, see [LICENSE](https://github.com/Steveplays28/realisticsleep/blob/main/LICENSE).
