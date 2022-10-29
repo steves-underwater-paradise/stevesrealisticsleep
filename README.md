@@ -1,62 +1,68 @@
-<h1 align="center">
-<img src="https://user-images.githubusercontent.com/62797992/164917075-5a7f8dbe-86f7-4fcb-b76f-016207d72c4c.png" width="256px" align="center">
+![Realistic Sleep icon](docs/media/icon_128x128.png)
 
-Realistic Sleep
+# Realistic Sleep
 
-[![GitHub](https://img.shields.io/github/license/Steveplays28/realisticsleep)](https://github.com/Steveplays28/realisticsleep/blob/main/LICENSE)
-![GitHub](https://img.shields.io/github/repo-size/Steveplays28/realisticsleep)
-[![GitHub](https://img.shields.io/github/forks/Steveplays28/realisticsleep)](https://github.com/Steveplays28/realisticsleep/network/members)
-[![GitHub](https://img.shields.io/github/issues/Steveplays28/realisticsleep)](https://github.com/Steveplays28/realisticsleep/issues)
-[![GitHub](https://img.shields.io/github/issues-pr/Steveplays28/realisticsleep)](https://github.com/Steveplays28/realisticsleep/pulls)
+Makes sleeping speed up time instead of skipping to day.
 
-![GitHub](https://img.shields.io/badge/environment-server-4caf50?style=flat-square)
-![GitHub](https://img.shields.io/badge/mod%20loader-fabric-d64541?style=flat-square)
-[![Discord](https://img.shields.io/discord/746681304111906867?label=chat%20on%20Discord%20%7C%20Steve%27s%20underwater%20paradise)](https://discord.gg/KbWxgGg)
-</h1>
-
-<p align="center">
-Minecraft Fabric mod that makes sleeping speed up time instead of skipping to day.
-</p>
-
-## Visual demonstration  
-![UI screenshot](https://github.com/Steveplays28/realisticsleep/blob/main/Minecraft%20RealisticSleep%20mod.gif)
+![Realistic Sleep gif](docs/media/realistic_sleep.gif)
 
 ## Showcase
 
-Featured in "Minecraft Mod Combinations That Work Perfectly Together #5" By AsianHalfSquat  
-https://youtu.be/AMAf-oR6x5I?t=141
-[![Click to play on YouTube](https://i3.ytimg.com/vi/AMAf-oR6x5I/maxresdefault.jpg)](https://youtu.be/AMAf-oR6x5I?t=141)
-
-## Download  
-- [GitHub releases](https://github.com/Steveplays28/realisticsleep/releases)
-- [Modrinth](https://modrinth.com/mod/realisticsleep)
-- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/realisticsleepfabric)
+This mod is featured in ["Minecraft Mod Combinations That Work Perfectly Together #5" By AsianHalfSquat](https://youtu.be/AMAf-oR6x5I?t=141)
+[![YouTube thumbnail](https://i3.ytimg.com/vi/AMAf-oR6x5I/maxresdefault.jpg)](https://youtu.be/AMAf-oR6x5I?t=141)
 
 ## Dependencies
+
+### Required
+
 - [Cloth Config API](https://modrinth.com/mod/cloth-config)
 
+### Optional
+
+- [ModMenu](https://modrinth.com/mod/modmenu) for an in game configuration screen (only for singleplayer/LAN)
+
 ## Incompatibilities  
-Any mods that add sleep voting, or otherwise modify the sleeping mechanic itself will not work with this mod (sleep voting already exists by design).  
+
+Any mods that add sleep voting, or otherwise modify the sleeping mechanic itself will not work with this mod.  
+You can set a minimum amount of players that have to sleep using the vanilla Minecraft gamerule `PLAYERS_SLEEP_PERCENTAGE`.
+
 Any mods which simply add buffs/debuffs after waking up should work.
 
-## Recommended mods  
-- ModMenu for an in game configuration screen (only for singleplayer/LAN)
+## Download
 
-## FAQ  
-Q: Forge pls?  
-A: No. I don't have the time to learn another modding framework, however you can port over the mod yourself (LGPLv2.1) if you want, the source code is open.
+[![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/cozy/available/github_vector.svg)](https://github.com/Steveplays28/pathunderfencegates)
+[![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/mod/pathunderfencegates)
+[![curseforge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/cozy/available/curseforge_vector.svg)](https://www.curseforge.com/minecraft/mc-mods/pathunderfencegates)
 
-Q: Will you backport this mod?  
+![fabric](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/compact/supported/fabric_vector.svg)
+![quilt](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/compact/supported/quilt_vector.svg)
+
+Supports Minecraft versions 1.18-1.19.2.  
+Made for the Fabric and Quilt modloaders.  
+Server side only.
+
+## FAQ
+
+![forge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/cozy/unsupported/forge_vector.svg)
+
+- Q: Will you be backporting this to lower Minecraft versions?  
 A: No.
 
-Q: Does this mod work in multiplayer?  
+- Q: Forge pls?  
+A: Also no.
+
+- Q: Does this mod work in multiplayer?  
 A: Yes! The speed of the night scales linearly for each player that's sleeping at the same time.
 
-Q: Does only the server need this mod or does the client need it too?  
+- Q: Does only the server need this mod or does the client need it too?  
 A: Only the server needs this mod (but it works on the client too if you're going to host LAN or play singleplayer)
 
-Q: Can you still avoid rain/thunder by sleeping?  
-A: Yes. After sleeping until dawn the weather will return to normal. I might make this configurable in the future, let me know if you want this.
+- Q: Can you still avoid rain/thunder by sleeping?  
+A: Yes. After sleeping until dawn the weather will become clear. I might make this configurable in the future, let me know if you want this.
 
-Q: Does this mod speed up the block entities in loaded chunks like furnaces?  
+- Q: Does this mod speed up things like furnaces, redstone, and the raid timer?  
 A: Yes!
+
+## License
+
+This project is licensed under LGPLv2, see [LICENSE](https://github.com/Steveplays28/pathunderfencegates/blob/main/LICENSE).
