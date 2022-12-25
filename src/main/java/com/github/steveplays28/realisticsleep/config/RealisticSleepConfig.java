@@ -9,14 +9,20 @@ public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public String dawnMessage = "The sun rises.";
 	@ConfigEntry.Gui.Tooltip
-	public int sleepSpeedMultiplier = 25;
-	@ConfigEntry.BoundedDiscrete(min = 1, max = 200)
+	public SleepSpeedCurve sleepSpeedCurve = SleepSpeedCurve.LINEAR;
 	@ConfigEntry.Gui.Tooltip
-	public int blockEntityTickSpeedMultiplier = 25;
-	@ConfigEntry.BoundedDiscrete(min = 1, max = 200)
+	public double sleepSpeedMultiplier = 25;
 	@ConfigEntry.Gui.Tooltip
-	public int chunkTickSpeedMultiplier = 25;
-	@ConfigEntry.BoundedDiscrete(min = 1, max = 200)
+	public double blockEntityTickSpeedMultiplier = 25;
 	@ConfigEntry.Gui.Tooltip
-	public int raidTickSpeedMultiplier = 25;
+	public double chunkTickSpeedMultiplier = 25;
+	@ConfigEntry.Gui.Tooltip
+	public double raidTickSpeedMultiplier = 25;
+
+	public enum SleepSpeedCurve {
+		@ConfigEntry.Gui.Tooltip
+		LINEAR,
+		@ConfigEntry.Gui.Tooltip
+		EXPONENTIAL
+	}
 }

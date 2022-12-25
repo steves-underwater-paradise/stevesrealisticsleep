@@ -39,7 +39,8 @@
       "1.18.x",
       "1.19.x"
     ],
-    "cloth-config": ">=5.3.63"
+    "cloth-config": ">=5.3.63",
+    "fabric": ">=0.48.0"
   },
   "suggests": {
     "modmenu": ">=3.0.0"

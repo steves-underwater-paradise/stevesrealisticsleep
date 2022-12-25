@@ -53,6 +53,9 @@ public abstract class ServerWorldMixin extends World {
 	@Final
 	protected RaidManager raidManager;
 
+	public double nightTimeStepPerTick = 1;
+	public int nightTimeStepPerTickRounded = 1;
+
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
 		super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
 	}
@@ -70,10 +73,14 @@ public abstract class ServerWorldMixin extends World {
 		int playerCount = server.getCurrentPlayerCount();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		double sleepingPercentage = sleepingRatio * 100;
-		int nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier);
-		int blockEntityTickSpeedMultiplier = (int) Math.round((double) config.blockEntityTickSpeedMultiplier);
-		int chunkTickSpeedMultiplier = (int) Math.round((double) config.chunkTickSpeedMultiplier);
-		int raidTickSpeedMultiplier = (int) Math.round((double) config.raidTickSpeedMultiplier);
+
+		nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier, nightTimeStepPerTick);
+		nightTimeStepPerTickRounded = (int) Math.round(nightTimeStepPerTick);
+
+		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
+		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
+		int raidTickSpeedMultiplier = (int) Math.round(config.raidTickSpeedMultiplier);
+
 		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
 		int playersRequiredToSleepPercentage = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
 		double playersRequiredToSleepRatio = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE) / 100;
@@ -89,9 +96,9 @@ public abstract class ServerWorldMixin extends World {
 		}
 
 		// Advance time
-		worldProperties.setTime(worldProperties.getTime() + nightTimeStepPerTick);
+		worldProperties.setTime(worldProperties.getTime() + nightTimeStepPerTickRounded);
 		if (doDayLightCycle) {
-			worldProperties.setTimeOfDay(worldProperties.getTimeOfDay() + nightTimeStepPerTick);
+			worldProperties.setTimeOfDay(worldProperties.getTimeOfDay() + nightTimeStepPerTickRounded);
 		}
 
 		// Tick block entities and chunks
@@ -141,6 +148,13 @@ public abstract class ServerWorldMixin extends World {
 					player.sendMessage(Text.of(config.dawnMessage), true);
 				}
 			}
+
+			// Wake up sleeping players
+			sleepManager.clearSleeping();
+
+			// Reset nightTimeStepPerTick and nightTimeStepPerTickRounded, so exponential curve gets reset for the next night
+			nightTimeStepPerTick = 1;
+			nightTimeStepPerTickRounded = 1;
 		}
 	}
 
