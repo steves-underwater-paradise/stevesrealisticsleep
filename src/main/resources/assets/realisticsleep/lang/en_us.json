@@ -6,6 +6,8 @@
   "text.autoconfig.realisticsleep.option.sendSleepingMessage.@Tooltip": "Toggles the \"x/y players are sleeping through this night (time until dawn: z)\" message on the actionbar.",
   "text.autoconfig.realisticsleep.option.sendNotEnoughPlayersSleepingMessage": "Send not enough players sleeping message?",
   "text.autoconfig.realisticsleep.option.sendNotEnoughPlayersSleepingMessage.@Tooltip": "Toggles the \"x/y players are currently sleeping. z/w players are required to sleep through the night.\" message on the actionbar.",
+  "text.autoconfig.realisticsleep.option.sleepSpeedCurve": "Sleep speed curve",
+  "text.autoconfig.realisticsleep.option.sleepSpeedCurve.@Tooltip": "The curve which is used to determine the multiplier of the speed of the night as time progresses.",
   "text.autoconfig.realisticsleep.option.sleepSpeedMultiplier": "Sleep speed multiplier",
   "text.autoconfig.realisticsleep.option.sleepSpeedMultiplier.@Tooltip": "How many times faster the night should go.",
   "text.autoconfig.realisticsleep.option.blockEntityTickSpeedMultiplier": "Block entity tick speed multiplier",
