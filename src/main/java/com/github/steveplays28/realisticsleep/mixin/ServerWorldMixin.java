@@ -34,6 +34,11 @@ import static com.github.steveplays28.realisticsleep.SleepMath.DAY_LENGTH;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
+	public double nightTimeStepPerTick = 1;
+	public int nightTimeStepPerTickRounded = 1;
+	@Shadow
+	@Final
+	protected RaidManager raidManager;
 	@Shadow
 	@Final
 	List<ServerPlayerEntity> players;
@@ -49,16 +54,13 @@ public abstract class ServerWorldMixin extends World {
 	@Shadow
 	@Final
 	private ServerChunkManager chunkManager;
-	@Shadow
-	@Final
-	protected RaidManager raidManager;
-
-	public double nightTimeStepPerTick = 1;
-	public int nightTimeStepPerTickRounded = 1;
 
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
 		super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
 	}
+
+	@Shadow
+	protected abstract void wakeSleepingPlayers();
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getInt(Lnet/minecraft/world/GameRules$Key;)I"))
 	public void tickInject(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
@@ -88,6 +90,10 @@ public abstract class ServerWorldMixin extends World {
 
 		// Check if the required percentage of players are sleeping
 		if (sleepingPercentage < playersRequiredToSleepPercentage) {
+			if (!config.sendNotEnoughPlayersSleepingMessage) {
+				return;
+			}
+
 			for (ServerPlayerEntity player : players) {
 				player.sendMessage(Text.of(sleepingPlayerCount + "/" + playerCount + " players are currently sleeping. " + playersRequiredToSleep + "/" + playerCount + " players are required to sleep through the night."), true);
 			}
@@ -101,15 +107,17 @@ public abstract class ServerWorldMixin extends World {
 			worldProperties.setTimeOfDay(worldProperties.getTimeOfDay() + nightTimeStepPerTickRounded);
 		}
 
-		// Tick block entities and chunks
+		// Tick block entities
 		for (int i = blockEntityTickSpeedMultiplier; i > 1; i--) {
 			this.tickBlockEntities();
 		}
 
+		// Tick chunks
 		for (int i = chunkTickSpeedMultiplier; i > 1; i--) {
 			chunkManager.tick(shouldKeepTicking, true);
 		}
 
+		// Tick raid timers
 		for (int i = raidTickSpeedMultiplier; i > 1; i--) {
 			raidManager.tick();
 		}
@@ -121,12 +129,15 @@ public abstract class ServerWorldMixin extends World {
 		// TODO: Don't assume the TPS is 20
 		int secondsUntilAwake = Math.abs(SleepMath.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay() % 24000, nightTimeStepPerTick, 20));
 
+		// Check if players are still supposed to be sleeping, and send a HUD message if so
 		if (secondsUntilAwake >= 2) {
-			for (ServerPlayerEntity player : players) {
-				if (worldProperties.isThundering()) {
-					player.sendMessage(Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
-				} else {
-					player.sendMessage(Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
+			if (config.sendSleepingMessage) {
+				for (ServerPlayerEntity player : players) {
+					if (worldProperties.isThundering()) {
+						player.sendMessage(Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"), true);
+					} else {
+						player.sendMessage(Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"), true);
+					}
 				}
 			}
 		}
@@ -141,20 +152,17 @@ public abstract class ServerWorldMixin extends World {
 				worldProperties.setClearWeatherTime((int) (DAY_LENGTH * SleepMath.getRandomNumberInRange(0.5, 7.5)));
 			}
 
-			// Check if dawn message isn't set to nothing
-			if (!config.dawnMessage.equals("")) {
-				// Send HUD message to all players
-				for (ServerPlayerEntity player : players) {
-					player.sendMessage(Text.of(config.dawnMessage), true);
-				}
-			}
-
 			// Wake up sleeping players
-			sleepManager.clearSleeping();
+			wakeSleepingPlayers();
 
-			// Reset nightTimeStepPerTick and nightTimeStepPerTickRounded, so exponential curve gets reset for the next night
-			nightTimeStepPerTick = 1;
-			nightTimeStepPerTickRounded = 1;
+			// Check if dawn message isn't set to nothing
+			if (config.dawnMessage.equals("")) {
+				return;
+			}
+			// Send HUD message to all players
+			for (ServerPlayerEntity player : players) {
+				player.sendMessage(Text.of(config.dawnMessage), true);
+			}
 		}
 	}
 

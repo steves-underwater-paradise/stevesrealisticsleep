@@ -9,6 +9,11 @@ public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public String dawnMessage = "The sun rises.";
 	@ConfigEntry.Gui.Tooltip
+	public boolean sendSleepingMessage = true;
+	@ConfigEntry.Gui.Tooltip
+	public boolean sendNotEnoughPlayersSleepingMessage = true;
+
+	@ConfigEntry.Gui.Tooltip
 	public SleepSpeedCurve sleepSpeedCurve = SleepSpeedCurve.LINEAR;
 	@ConfigEntry.Gui.Tooltip
 	public double sleepSpeedMultiplier = 25;
@@ -21,8 +26,6 @@ public class RealisticSleepConfig implements ConfigData {
 
 	public enum SleepSpeedCurve {
 		@ConfigEntry.Gui.Tooltip
-		LINEAR,
-		@ConfigEntry.Gui.Tooltip
-		EXPONENTIAL
+		LINEAR
 	}
 }
