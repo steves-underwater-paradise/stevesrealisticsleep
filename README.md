@@ -16,6 +16,7 @@ This mod is featured in ["Minecraft Mod Combinations That Work Perfectly Togethe
 ### Required
 
 - [Cloth Config API](https://modrinth.com/mod/cloth-config)
+- [Fabric API](https://modrinth.com/mod/fabric-api) or [Quilt Standard Libraries](https://modrinth.com/mod/qsl)
 
 ### Optional
 
@@ -26,7 +27,9 @@ This mod is featured in ["Minecraft Mod Combinations That Work Perfectly Togethe
 Any mods that add sleep voting, or otherwise modify the sleeping mechanic itself will not work with this mod.  
 You can set a minimum amount of players that have to sleep using the vanilla Minecraft gamerule `PLAYERS_SLEEP_PERCENTAGE`.
 
-Any mods which simply add buffs/debuffs after waking up should work.
+Any mods which simply add buffs/debuffs after waking up should work. [Create an issue](https://github.com/Steveplays28/realisticsleep/issues/new) on the issue tracker if you've found an incompatibility!
+
+- BetterSleeping Revived - Buffs, debuffs, and chat messages don't trigger (working on a fix, see the [issue tracker](https://github.com/Steveplays28/realisticsleep/issues/18) for more details)
 
 ## Download
 
@@ -60,7 +63,7 @@ A: Only the server needs this mod (but it works on the client too if you're goin
 - Q: Can you still avoid rain/thunder by sleeping?  
 A: Yes. After sleeping until dawn the weather will become clear. I might make this configurable in the future, let me know if you want this.
 
-- Q: Does this mod speed up things like furnaces, redstone, and the raid timer?  
+- Q: Does this mod speed up things like furnaces, redstone, the raid timer, and other (modded) block entities?  
 A: Yes!
 
 ## License
