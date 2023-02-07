@@ -15,6 +15,13 @@ repositories {
 
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/" }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 dependencies {
@@ -24,7 +31,6 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API
-
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Cloth Config
@@ -91,5 +97,20 @@ publishing {
         // Notice: This block does NOT have the same function as the block in the top level.
         // The repositories here will be used for publishing your artifact, not for
         // retrieving dependencies.
+    }
+}
+
+loom {
+    runs {
+        clientOptimised {
+            name "Client Optimised"
+
+            dependencies {
+                modRuntimeOnly "maven.modrinth:lazydfu:4SHylIO9"
+                modRuntimeOnly "maven.modrinth:just-load:ob5o9Cf5"
+            }
+
+            client()
+        }
     }
 }
