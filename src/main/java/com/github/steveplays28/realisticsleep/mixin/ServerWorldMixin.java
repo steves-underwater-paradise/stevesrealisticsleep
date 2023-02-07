@@ -36,6 +36,7 @@ import static com.github.steveplays28.realisticsleep.SleepMath.DAY_LENGTH;
 public abstract class ServerWorldMixin extends World {
 	public double nightTimeStepPerTick = 1;
 	public int nightTimeStepPerTickRounded = 1;
+	public long tickDelay;
 	@Shadow
 	@Final
 	protected RaidManager raidManager;
@@ -54,6 +55,9 @@ public abstract class ServerWorldMixin extends World {
 	@Shadow
 	@Final
 	private ServerChunkManager chunkManager;
+	@Shadow
+	@Final
+	private boolean shouldTickTime;
 
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
 		super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
@@ -172,5 +176,32 @@ public abstract class ServerWorldMixin extends World {
 	 */
 	@Overwrite
 	private void sendSleepingStatus() {
+	}
+
+	@Inject(method = "tickTime", at = @At(value = "HEAD"), cancellable = true)
+	public void tickTimeInject(CallbackInfo ci) {
+		if (!this.shouldTickTime) {
+			ci.cancel();
+			return;
+		}
+
+		if (tickDelay > 0L) {
+			tickDelay -= 1L;
+			server.getPlayerManager().sendToDimension(new WorldTimeUpdateS2CPacket(worldProperties.getTime(), worldProperties.getTimeOfDay(), this.properties.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)), getRegistryKey());
+
+			ci.cancel();
+			return;
+		}
+
+		long l = this.properties.getTime() + 1L;
+		this.worldProperties.setTime(l);
+
+		if (this.properties.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
+			this.worldProperties.setTimeOfDay(this.properties.getTimeOfDay() + 1L);
+		}
+
+		tickDelay = config.tickDelay;
+
+		ci.cancel();
 	}
 }

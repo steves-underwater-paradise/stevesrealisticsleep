@@ -24,6 +24,9 @@ public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public double raidTickSpeedMultiplier = 25;
 
+	@ConfigEntry.Gui.Tooltip
+	public long tickDelay = -1;
+
 	public enum SleepSpeedCurve {
 		@ConfigEntry.Gui.Tooltip
 		LINEAR
