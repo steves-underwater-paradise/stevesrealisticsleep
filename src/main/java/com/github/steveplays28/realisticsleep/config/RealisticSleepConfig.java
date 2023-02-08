@@ -20,7 +20,7 @@ public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public double blockEntityTickSpeedMultiplier = 25;
 	@ConfigEntry.Gui.Tooltip
-	public double chunkTickSpeedMultiplier = 25;
+	public double chunkTickSpeedMultiplier = 1;
 	@ConfigEntry.Gui.Tooltip
 	public double raidTickSpeedMultiplier = 25;
 
