@@ -189,6 +189,7 @@ public abstract class ServerWorldMixin extends World {
 		if (tickDelay > 0L) {
 			tickDelay -= 1L;
 			server.getPlayerManager().sendToDimension(new WorldTimeUpdateS2CPacket(worldProperties.getTime(), worldProperties.getTimeOfDay(), this.properties.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)), getRegistryKey());
+			this.worldProperties.getScheduledEvents().processEvents(this.server, this.properties.getTime() + config.tickDelay - tickDelay);
 
 			ci.cancel();
 			return;
@@ -200,6 +201,7 @@ public abstract class ServerWorldMixin extends World {
 
 		long l = this.properties.getTime() + 1L;
 		this.worldProperties.setTime(l);
+		this.worldProperties.getScheduledEvents().processEvents(this.server, l);
 
 		if (this.properties.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
 			this.worldProperties.setTimeOfDay(this.properties.getTimeOfDay() + 1L);
