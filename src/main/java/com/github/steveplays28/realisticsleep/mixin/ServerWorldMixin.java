@@ -37,6 +37,7 @@ public abstract class ServerWorldMixin extends World {
 	public double nightTimeStepPerTick = 1;
 	public int nightTimeStepPerTickRounded = 1;
 	public long tickDelay;
+
 	@Shadow
 	@Final
 	protected RaidManager raidManager;
@@ -190,6 +191,10 @@ public abstract class ServerWorldMixin extends World {
 			server.getPlayerManager().sendToDimension(new WorldTimeUpdateS2CPacket(worldProperties.getTime(), worldProperties.getTimeOfDay(), this.properties.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)), getRegistryKey());
 
 			ci.cancel();
+			return;
+		}
+
+		if (sleepManager.getSleeping() > 0) {
 			return;
 		}
 
