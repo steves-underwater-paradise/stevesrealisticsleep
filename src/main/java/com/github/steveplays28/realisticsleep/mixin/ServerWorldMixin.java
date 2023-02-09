@@ -1,6 +1,8 @@
 package com.github.steveplays28.realisticsleep.mixin;
 
 import com.github.steveplays28.realisticsleep.SleepMath;
+import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -8,6 +10,7 @@ import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.world.SleepManager;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
@@ -17,6 +20,7 @@ import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.ServerWorldProperties;
+import net.minecraft.world.tick.WorldTickScheduler;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -37,6 +41,7 @@ public abstract class ServerWorldMixin extends World {
 	public double nightTimeStepPerTick = 1;
 	public int nightTimeStepPerTickRounded = 1;
 	public long tickDelay;
+	public long lastFluidTick;
 
 	@Shadow
 	@Final
@@ -59,6 +64,12 @@ public abstract class ServerWorldMixin extends World {
 	@Shadow
 	@Final
 	private boolean shouldTickTime;
+	@Shadow
+	@Final
+	private WorldTickScheduler<Fluid> fluidTickScheduler;
+	@Shadow
+	@Final
+	private WorldTickScheduler<Block> blockTickScheduler;
 
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
 		super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
@@ -66,6 +77,12 @@ public abstract class ServerWorldMixin extends World {
 
 	@Shadow
 	protected abstract void wakeSleepingPlayers();
+
+	@Shadow
+	protected abstract void tickFluid(BlockPos pos, Fluid fluid);
+
+	@Shadow
+	protected abstract void tickBlock(BlockPos pos, Block block);
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getInt(Lnet/minecraft/world/GameRules$Key;)I"))
 	public void tickInject(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
@@ -189,7 +206,15 @@ public abstract class ServerWorldMixin extends World {
 		if (tickDelay > 0L) {
 			tickDelay -= 1L;
 			server.getPlayerManager().sendToDimension(new WorldTimeUpdateS2CPacket(worldProperties.getTime(), worldProperties.getTimeOfDay(), this.properties.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)), getRegistryKey());
-			this.worldProperties.getScheduledEvents().processEvents(this.server, this.properties.getTime() + 1L);
+
+			if (lastFluidTick >= 4) {
+				this.fluidTickScheduler.tick(this.properties.getTime() + config.tickDelay - tickDelay, 65536, this::tickFluid);
+				this.lastFluidTick = 0;
+			} else {
+				this.lastFluidTick += 1;
+			}
+
+			this.blockTickScheduler.tick(this.properties.getTime() + config.tickDelay - tickDelay, 65536, this::tickBlock);
 
 			ci.cancel();
 			return;
