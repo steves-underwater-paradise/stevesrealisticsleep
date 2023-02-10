@@ -203,18 +203,24 @@ public abstract class ServerWorldMixin extends World {
 			return;
 		}
 
+		long l = this.properties.getTime() + 1L;
+		this.worldProperties.getScheduledEvents().processEvents(this.server, l);
+		if (sleepManager.getSleeping() <= 0) {
+			this.worldProperties.setTime(l);
+		}
+
 		if (tickDelay > 0L) {
 			tickDelay -= 1L;
 			server.getPlayerManager().sendToDimension(new WorldTimeUpdateS2CPacket(worldProperties.getTime(), worldProperties.getTimeOfDay(), this.properties.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)), getRegistryKey());
 
-			if (lastFluidTick >= 4) {
-				this.fluidTickScheduler.tick(this.properties.getTime() + config.tickDelay - tickDelay, 65536, this::tickFluid);
-				this.lastFluidTick = 0;
-			} else {
-				this.lastFluidTick += 1;
-			}
-
-			this.blockTickScheduler.tick(this.properties.getTime() + config.tickDelay - tickDelay, 65536, this::tickBlock);
+//			if (lastFluidTick >= 4) {
+//				this.fluidTickScheduler.tick(this.properties.getTime() + config.tickDelay - tickDelay, 65536, this::tickFluid);
+//				this.lastFluidTick = 0;
+//			} else {
+//				this.lastFluidTick += 1;
+//			}
+//
+//			this.blockTickScheduler.tick(this.properties.getTime() + config.tickDelay - tickDelay, 65536, this::tickBlock);
 
 			ci.cancel();
 			return;
@@ -223,10 +229,6 @@ public abstract class ServerWorldMixin extends World {
 		if (sleepManager.getSleeping() > 0) {
 			return;
 		}
-
-		long l = this.properties.getTime() + 1L;
-		this.worldProperties.setTime(l);
-		this.worldProperties.getScheduledEvents().processEvents(this.server, l);
 
 		if (this.properties.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
 			this.worldProperties.setTimeOfDay(this.properties.getTimeOfDay() + 1L);
