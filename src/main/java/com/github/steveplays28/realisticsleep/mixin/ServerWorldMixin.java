@@ -124,7 +124,6 @@ public abstract class ServerWorldMixin extends World {
 		}
 
 		// Advance time
-		worldProperties.setTime(worldProperties.getTime() + nightTimeStepPerTickRounded);
 		if (doDayLightCycle) {
 			worldProperties.setTimeOfDay(worldProperties.getTimeOfDay() + nightTimeStepPerTickRounded);
 		}
