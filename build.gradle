@@ -1,9 +1,12 @@
+//file:noinspection GroovyAssignabilityCheck
+//file:noinspection GroovyAccessibility
+
 plugins {
     id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'maven-publish'
 }
 
-version = project.mod_version
+version = "${project.mod_version}+mc${project.supported_minecraft_version}"
 group = project.maven_group
 
 repositories {
