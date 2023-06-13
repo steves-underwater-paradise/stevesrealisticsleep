@@ -17,6 +17,11 @@
       "links": {
         "modmenu.discord": "https://discord.gg/KbWxgGg"
       }
+    },
+    "mc-publish": {
+      "quilt": true,
+      "curseforge": 616330,
+      "modrinth": "ZPywkPEo"
     }
   },
   "license": "LGPLv2.1",
