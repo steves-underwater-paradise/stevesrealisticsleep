@@ -67,3 +67,4 @@ jobs:
           files-secondary: build/libs/*-@(dev|sources|javadoc).jar
           version-type: release
           modrinth-featured: false
+          changelog-file: CHANGELOG_LATEST.md
