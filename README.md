@@ -40,7 +40,7 @@ Any mods which simply add buffs/debuffs after waking up should work. [Create an 
 ![fabric](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/compact/supported/fabric_vector.svg)
 ![quilt](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/compact/supported/quilt_vector.svg)
 
-Supports Minecraft versions 1.18-1.19.2.  
+See the version info in the filename for the supported Minecraft versions.  
 Made for the Fabric and Quilt modloaders.  
 Server side only.
 
