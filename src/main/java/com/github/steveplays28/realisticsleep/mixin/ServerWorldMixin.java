@@ -175,10 +175,9 @@ public abstract class ServerWorldMixin extends World {
 			// Wake up sleeping players
 			wakeSleepingPlayers();
 
-			// Check if dawn message isn't set to nothing
-			if (config.dawnMessage.equals("")) {
-				return;
-			}
+			// Return if we shouldn't send the dawn message
+			if (!config.sendDawnMessage || config.dawnMessage.equals("")) return;
+
 			// Send HUD message to all players
 			for (ServerPlayerEntity player : players) {
 				player.sendMessage(Text.of(config.dawnMessage), true);
