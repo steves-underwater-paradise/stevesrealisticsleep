@@ -37,6 +37,8 @@ public abstract class ServerWorldMixin extends World {
 	public double nightTimeStepPerTick = 1;
 	public int nightTimeStepPerTickRounded = 1;
 	public long tickDelay;
+	public long lastFluidTick;
+	public String sleepMessage;
 
 	@Shadow
 	@Final
@@ -146,18 +148,11 @@ public abstract class ServerWorldMixin extends World {
 		// Check if players are still supposed to be sleeping, and send a HUD message if so
 		if (secondsUntilAwake >= 2) {
 			if (config.sendSleepingMessage) {
+				sleepMessage = String.format("%d/%d players are sleeping through this %s", sleepingPlayerCount, playerCount, worldProperties.isThundering() ? "thunderstorm" : "night");
+				if (config.showTimeUntilDawn) sleepMessage += String.format(" (Time until dawn: %d", secondsUntilAwake) + "s)";
+
 				for (ServerPlayerEntity player : players) {
-					if (worldProperties.isThundering()) {
-						player.sendMessage(
-								Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"),
-								true
-						);
-					} else {
-						player.sendMessage(
-								Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"),
-								true
-						);
-					}
+					player.sendMessage(Text.of(sleepMessage), true);
 				}
 			}
 		}
