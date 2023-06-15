@@ -14,6 +14,8 @@ public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public boolean sendSleepingMessage = true;
 	@ConfigEntry.Gui.Tooltip
+	public boolean showTimeUntilDawn = true;
+	@ConfigEntry.Gui.Tooltip
 	public boolean sendNotEnoughPlayersSleepingMessage = true;
 
 	@ConfigEntry.Gui.Tooltip
