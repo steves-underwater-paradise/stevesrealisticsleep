@@ -7,7 +7,10 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 @Config(name = "realisticsleep")
 public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
+	public boolean sendDawnMessage = true;
+	@ConfigEntry.Gui.Tooltip
 	public String dawnMessage = "The sun rises.";
+
 	@ConfigEntry.Gui.Tooltip
 	public boolean sendSleepingMessage = true;
 	@ConfigEntry.Gui.Tooltip
