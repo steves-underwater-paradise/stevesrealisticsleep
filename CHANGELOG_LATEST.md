@@ -1,7 +1,10 @@
 ### Added
 
-- German (`de_de`) translation by @Cape-City in #27
+- Compatibility with Comforts' Hammocks
+    - Daytime and nighttime is differentiated between in the HUD messages
 
-### Changed
+### Fixed
 
-- Updated to Minecraft 1.20
+- Players get kicked out of bed slightly earlier than they should
+- Amount of players needed to sleep message shows 0/X instead of the actual (non-zero) value
+- After sleeping, the next weather change will always be a thunderstorm
