@@ -19,8 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- More configurability (by [RickyTheRacc](https://github.com/RickyTheRacc) in [#31](https://github.com/Steveplays28/realisticsleep/pull/31))
+  - `sendDawnMessage`: makes it more obvious that the dawn message can be disabled
+  - `showTimeUntilDawn`: allows disabling the time until dawn in the sleep message, to allow for greater vanilla parity
+- Russian translation (by [1-nkl](https://github.com/1-nkl) in [#36](https://github.com/Steveplays28/realisticsleep/pull/36))
 - Compatibility with Comforts' Hammocks
-    - Daytime and nighttime is differentiated between in the HUD messages
+  - Daytime and nighttime is differentiated between in the HUD messages
 
 ### Fixed
 
