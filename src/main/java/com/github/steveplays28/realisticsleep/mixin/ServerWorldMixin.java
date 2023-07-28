@@ -38,6 +38,8 @@ public abstract class ServerWorldMixin extends World {
 	public double nightTimeStepPerTick = 1;
 	public int nightTimeStepPerTickRounded = 1;
 	public long tickDelay;
+	public long lastFluidTick;
+	public String sleepMessage;
 
 	@Shadow
 	@Final
@@ -67,9 +69,6 @@ public abstract class ServerWorldMixin extends World {
 		);
 	}
 
-	@Shadow
-	protected abstract void wakeSleepingPlayers();
-
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getInt(Lnet/minecraft/world/GameRules$Key;)I"))
 	public void tickInject(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		// Check if anyone is sleeping
@@ -84,14 +83,14 @@ public abstract class ServerWorldMixin extends World {
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		double sleepingPercentage = sleepingRatio * 100;
 
-		nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(
-				sleepingRatio, config.sleepSpeedMultiplier, nightTimeStepPerTick);
+		nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier, nightTimeStepPerTick);
 		nightTimeStepPerTickRounded = (int) Math.round(nightTimeStepPerTick);
 
 		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
 		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
 		int raidTickSpeedMultiplier = (int) Math.round(config.raidTickSpeedMultiplier);
 
+		boolean doWeatherCycle = server.getGameRules().getBoolean(GameRules.DO_WEATHER_CYCLE);
 		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
 		int playersRequiredToSleepPercentage = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
 		double playersRequiredToSleepRatio = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE) / 100;
@@ -135,56 +134,37 @@ public abstract class ServerWorldMixin extends World {
 
 		// Send new time to all players in the overworld
 		server.getPlayerManager().sendToDimension(
-				new WorldTimeUpdateS2CPacket(worldProperties.getTime(), worldProperties.getTimeOfDay(),
-						doDayLightCycle
-				), getRegistryKey());
+				new WorldTimeUpdateS2CPacket(worldProperties.getTime(), worldProperties.getTimeOfDay(), doDayLightCycle), getRegistryKey());
 
 		// Send HUD message to all players
 		// TODO: Don't assume the TPS is 20
 		int secondsUntilAwake = Math.abs(
-				SleepMath.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay() % 24000, nightTimeStepPerTick,
-						20
-				));
+				SleepMath.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay() % 24000, nightTimeStepPerTick, 20));
 
 		// Check if players are still supposed to be sleeping, and send a HUD message if so
-		if (secondsUntilAwake >= 2) {
+		if (secondsUntilAwake > 0) {
 			if (config.sendSleepingMessage) {
+				sleepMessage = String.format("%d/%d players are sleeping through this %s", sleepingPlayerCount, playerCount,
+						worldProperties.isThundering() ? "thunderstorm" : "night"
+				);
+				if (config.showTimeUntilDawn) sleepMessage += String.format(" (Time until dawn: %d", secondsUntilAwake) + "s)";
+
 				for (ServerPlayerEntity player : players) {
-					if (worldProperties.isThundering()) {
-						player.sendMessage(
-								Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this thunderstorm (time until dawn: " + secondsUntilAwake + "s)"),
-								true
-						);
-					} else {
-						player.sendMessage(
-								Text.of(sleepingPlayerCount + "/" + playerCount + " players are sleeping through this night (time until dawn: " + secondsUntilAwake + "s)"),
-								true
-						);
-					}
+					player.sendMessage(Text.of(sleepMessage), true);
 				}
 			}
-		}
+		} else {
+			// Set time of day to 0
+			worldProperties.setTimeOfDay(0);
 
-		// Check if it's dawn
-		if (secondsUntilAwake < 2) {
-			// Check if it's raining or thundering
-			if (worldProperties.isRaining() || worldProperties.isThundering()) {
-				// Clear weather and reset weather clock
+			if (doWeatherCycle && (worldProperties.isRaining() || worldProperties.isThundering())) {
+				// Reset weather clock and clear weather
+				var nextRainTime = (int) (DAY_LENGTH * SleepMath.getRandomNumberInRange(0.5, 7.5));
+				worldProperties.setRainTime(nextRainTime);
+				worldProperties.setThunderTime(nextRainTime + (Math.random() > 0 ? 1 : -1));
+
 				worldProperties.setThundering(false);
 				worldProperties.setRaining(false);
-				worldProperties.setClearWeatherTime((int) (DAY_LENGTH * SleepMath.getRandomNumberInRange(0.5, 7.5)));
-			}
-
-			// Wake up sleeping players
-			wakeSleepingPlayers();
-
-			// Check if dawn message isn't set to nothing
-			if (config.dawnMessage.equals("")) {
-				return;
-			}
-			// Send HUD message to all players
-			for (ServerPlayerEntity player : players) {
-				player.sendMessage(Text.of(config.dawnMessage), true);
 			}
 		}
 	}

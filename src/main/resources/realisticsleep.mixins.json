@@ -4,14 +4,9 @@
   "package": "com.github.steveplays28.realisticsleep.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "CauldronBlockMixin",
-    "ServerPlayerEntityMixin",
+    "PlayerEntityMixin",
     "ServerWorldMixin",
-    "SleepManagerMixin",
-    "accessor.ServerWorldAccessor"
-  ],
-  "client": [
-    "WorldRendererMixin"
+    "SleepOverrideMixin"
   ],
   "injectors": {
     "defaultRequire": 1
