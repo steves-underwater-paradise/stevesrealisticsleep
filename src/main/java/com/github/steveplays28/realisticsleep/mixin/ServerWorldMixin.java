@@ -102,6 +102,7 @@ public abstract class ServerWorldMixin extends World {
 
 		nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier, nightTimeStepPerTick);
 		nightTimeStepPerTickRounded = (int) Math.round(nightTimeStepPerTick);
+		var nightOrDayText = worldProperties.getTimeOfDay() > DAY_LENGTH / 2 ? "night" : "day";
 
 		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
 		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
@@ -122,7 +123,7 @@ public abstract class ServerWorldMixin extends World {
 
 			for (ServerPlayerEntity player : players) {
 				player.sendMessage(
-						Text.of(sleepingPlayerCount + "/" + playerCount + " players are currently sleeping. " + playersRequiredToSleep + "/" + playerCount + " players are required to sleep through the night."),
+						Text.of(sleepingPlayerCount + "/" + playerCount + " players are currently sleeping. " + playersRequiredToSleep + "/" + playerCount + " players are required to sleep through the " + nightOrDayText + "."),
 						true
 				);
 			}
@@ -158,7 +159,7 @@ public abstract class ServerWorldMixin extends World {
 		if (secondsUntilAwake > 0) {
 			if (config.sendSleepingMessage) {
 				sleepMessage = String.format("%d/%d players are sleeping through this %s", sleepingPlayerCount, playerCount,
-						worldProperties.isThundering() ? "thunderstorm" : "night"
+						worldProperties.isThundering() ? "thunderstorm" : nightOrDayText
 				);
 				if (config.showTimeUntilDawn) sleepMessage += String.format(" (Time until dawn: %d", secondsUntilAwake) + "s)";
 
