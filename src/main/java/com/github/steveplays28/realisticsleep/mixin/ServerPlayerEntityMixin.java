@@ -1,8 +1,10 @@
 package com.github.steveplays28.realisticsleep.mixin;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,9 +15,10 @@ import static com.github.steveplays28.realisticsleep.RealisticSleep.config;
 import static com.github.steveplays28.realisticsleep.SleepMath.WAKE_UP_TIME;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class PlayerEntityMixin {
-	@Shadow
-	public abstract ServerWorld getWorld();
+public abstract class ServerPlayerEntityMixin extends Entity {
+	public ServerPlayerEntityMixin(EntityType<?> type, World world) {
+		super(type, world);
+	}
 
 	@Shadow
 	public abstract void sendMessage(Text message, boolean overlay);
