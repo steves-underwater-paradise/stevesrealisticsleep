@@ -186,7 +186,6 @@ public abstract class ServerWorldMixin extends World {
 		}
 
 		long l = this.properties.getTime() + 1L;
-		this.worldProperties.getScheduledEvents().processEvents(this.server, l);
 		if (sleepManager.getSleeping() <= 0) {
 			this.worldProperties.setTime(l);
 		}
