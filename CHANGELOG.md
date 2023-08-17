@@ -37,3 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - A crash on startup due to the `ServerPlayerEntity` mixin
+
+## `1.8.2` - 17/08/2023
+
+### Fixed
+
+- A hang when loading a world or starting a server

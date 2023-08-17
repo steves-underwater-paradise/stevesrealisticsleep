@@ -1,3 +1,3 @@
 ### Fixed
 
-- A crash on startup due to the `ServerPlayerEntity` mixin
+- A hang when loading a world or starting a server
