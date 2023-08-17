@@ -31,3 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Players get kicked out of bed slightly earlier than they should
 - Amount of players needed to sleep message shows 0/X instead of the actual (non-zero) value
 - After sleeping, the next weather change will always be a thunderstorm
+
+## `1.8.1` - 17/08/2023
+
+### Fixed
+
+- A crash on startup due to the `ServerPlayerEntity` mixin
