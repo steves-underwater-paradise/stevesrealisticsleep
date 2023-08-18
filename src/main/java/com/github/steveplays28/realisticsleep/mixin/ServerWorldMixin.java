@@ -40,7 +40,7 @@ public abstract class ServerWorldMixin extends World {
 	@Unique
 	public String sleepMessage;
 	@Unique
-	public Boolean shouldSkipWeather;
+	public Boolean shouldSkipWeather = false;
 
 	@Shadow
 	@Final
@@ -75,19 +75,10 @@ public abstract class ServerWorldMixin extends World {
 		int secondsUntilAwake = Math.abs(
 				SleepMath.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay() % 24000, nightTimeStepPerTick, 20));
 
-		// Check if the night has ended
-		if (secondsUntilAwake <= 0) {
-			// Set time of day to 0
-			worldProperties.setTimeOfDay(0);
-
-			if (sleepingPlayerCount < 0) {
-				if (shouldSkipWeather) {
-					clearWeather();
-					shouldSkipWeather = false;
-				}
-			} else {
-				clearWeather();
-			}
+		// Check if the night has (almost) ended and the weather should be skipped
+		if (secondsUntilAwake <= 2 && shouldSkipWeather) {
+			clearWeather();
+			shouldSkipWeather = false;
 		}
 
 		// Check if anyone is sleeping
@@ -118,8 +109,6 @@ public abstract class ServerWorldMixin extends World {
 			if (!config.sendNotEnoughPlayersSleepingMessage) {
 				return;
 			}
-
-			shouldSkipWeather = true;
 
 			for (ServerPlayerEntity player : players) {
 				player.sendMessage(
@@ -157,6 +146,8 @@ public abstract class ServerWorldMixin extends World {
 
 		// Check if players are still supposed to be sleeping, and send a HUD message if so
 		if (secondsUntilAwake > 0) {
+			shouldSkipWeather = true;
+
 			if (config.sendSleepingMessage) {
 				sleepMessage = String.format("%d/%d players are sleeping through this %s", sleepingPlayerCount, playerCount,
 						worldProperties.isThundering() ? "thunderstorm" : nightOrDayText
