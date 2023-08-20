@@ -50,7 +50,7 @@ jobs:
 
       # https://github.com/marketplace/actions/publish-minecraft-mods
       - name: Publish mod
-        uses: Kir-Antipov/mc-publish@v3.2
+        uses: Kir-Antipov/mc-publish@v3.3
         with:
           # GitHub releases
           github-token: ${{ secrets.GITHUB_TOKEN }}

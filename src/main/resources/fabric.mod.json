@@ -19,7 +19,10 @@
       }
     },
     "mc-publish": {
-      "quilt": true,
+      "loaders": [
+        "fabric",
+        "quilt"
+      ],
       "curseforge": 616330,
       "modrinth": "ZPywkPEo"
     }
