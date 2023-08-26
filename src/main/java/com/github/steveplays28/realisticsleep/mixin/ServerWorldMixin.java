@@ -171,6 +171,8 @@ public abstract class ServerWorldMixin extends World {
 
 	@Inject(method = "tickTime", at = @At(value = "HEAD"), cancellable = true)
 	public void tickTimeInject(CallbackInfo ci) {
+		this.worldProperties.getScheduledEvents().processEvents(this.server, this.properties.getTime());
+
 		if (!this.shouldTickTime) {
 			ci.cancel();
 			return;
