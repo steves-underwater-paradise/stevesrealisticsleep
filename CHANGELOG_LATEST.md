@@ -1,3 +1,4 @@
 ### Fixed
 
-- A hang when loading a world or starting a server
+- Day count resetting after sleeping
+- Issues with certain datapacks (such as Vanilla Tweaks and Stellarity)
