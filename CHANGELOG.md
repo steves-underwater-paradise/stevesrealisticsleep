@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated to Minecraft 1.20
 
-## `1.8.0` - 28/07/2023
+## `v1.8.0` - 28/07/2023
 
 ### Added
 
@@ -32,14 +32,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Amount of players needed to sleep message shows 0/X instead of the actual (non-zero) value
 - After sleeping, the next weather change will always be a thunderstorm
 
-## `1.8.1` - 17/08/2023
+## `v1.8.1` - 17/08/2023
 
 ### Fixed
 
 - A crash on startup due to the `ServerPlayerEntity` mixin
 
-## `1.8.2` - 17/08/2023
+## `v1.8.2` - 17/08/2023
 
 ### Fixed
 
 - A hang when loading a world or starting a server
+
+## `v1.8.3` - 27/08/2023
+
+### Fixed
+
+- Day count resetting after sleeping
+- Issues with certain datapacks (such as Vanilla Tweaks and Stellarity)
