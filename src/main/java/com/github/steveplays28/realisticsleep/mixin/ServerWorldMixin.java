@@ -98,8 +98,9 @@ public abstract class ServerWorldMixin extends World {
 
 		nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier, nightTimeStepPerTick);
 		nightTimeStepPerTickRounded = (int) Math.round(nightTimeStepPerTick);
-		var nightOrDayText = worldProperties.getTimeOfDay() > DAY_LENGTH / 2 ? Text.translatable(
-				String.format("%s.text.night", MOD_ID)) : Text.translatable(String.format("%s.text.day", MOD_ID));
+		var isNight = worldProperties.getTimeOfDay() > DAY_LENGTH / 2;
+		var nightDayOrThunderstormText = Text.translatable(
+				String.format("%s.text.%s", MOD_ID, worldProperties.isThundering() ? "thunderstorm" : isNight ? "night" : "day"));
 
 		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
 		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
@@ -119,7 +120,7 @@ public abstract class ServerWorldMixin extends World {
 			for (ServerPlayerEntity player : players) {
 				player.sendMessage(
 						Text.translatable(String.format("%s.text.not_enough_players_sleeping_message", MOD_ID), sleepingPlayerCount,
-								playerCount, playersRequiredToSleep, playerCount, nightOrDayText
+								playerCount, playersRequiredToSleep, playerCount, nightDayOrThunderstormText
 						), true);
 			}
 
@@ -156,7 +157,7 @@ public abstract class ServerWorldMixin extends World {
 
 			if (config.sendSleepingMessage) {
 				sleepMessage = Text.translatable(String.format("%s.text.sleep_message", MOD_ID), sleepingPlayerCount, playerCount).append(
-						worldProperties.isThundering() ? Text.translatable(String.format("%s.text.thunderstorm", MOD_ID)) : nightOrDayText);
+						nightDayOrThunderstormText);
 
 				if (config.showTimeUntilDawn) {
 					sleepMessage.append(Text.translatable(String.format("%s.text.time_until_dawn", MOD_ID), secondsUntilAwake));
