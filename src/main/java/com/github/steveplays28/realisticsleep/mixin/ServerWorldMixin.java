@@ -17,7 +17,10 @@ import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.ServerWorldProperties;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -165,8 +168,9 @@ public abstract class ServerWorldMixin extends World {
 	 * @author Steveplays28
 	 * @reason Method's HUD messages conflicts with my custom HUD messages
 	 */
-	@Overwrite
-	private void sendSleepingStatus() {
+	@Inject(method = "sendSleepingStatus", at = @At(value = "HEAD"), cancellable = true)
+	private void sendSleepingStatus(CallbackInfo ci) {
+		ci.cancel();
 	}
 
 	@Inject(method = "tickTime", at = @At(value = "HEAD"), cancellable = true)
