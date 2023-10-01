@@ -169,7 +169,7 @@ public abstract class ServerWorldMixin extends World {
 	 * @reason Method's HUD messages conflicts with my custom HUD messages
 	 */
 	@Inject(method = "sendSleepingStatus", at = @At(value = "HEAD"), cancellable = true)
-	private void sendSleepingStatus(CallbackInfo ci) {
+	private void sendSleepingStatusInject(CallbackInfo ci) {
 		ci.cancel();
 	}
 
