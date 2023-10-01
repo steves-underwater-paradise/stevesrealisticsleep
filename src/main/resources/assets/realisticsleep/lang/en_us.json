@@ -19,5 +19,11 @@
   "text.autoconfig.realisticsleep.option.entityTickSpeedMultiplier": "Entity tick speed multiplier",
   "text.autoconfig.realisticsleep.option.entityTickSpeedMultiplier.@Tooltip": "How many times faster entities should tick.",
   "text.autoconfig.realisticsleep.option.tickDelay": "Tick delay",
-  "text.autoconfig.realisticsleep.option.tickDelay.@Tooltip": "Adds an amount of ticks delay to every tick, so time goes slower."
+  "text.autoconfig.realisticsleep.option.tickDelay.@Tooltip": "Adds an amount of ticks delay to every tick, so time goes slower.",
+  "realisticsleep.text.sleep_message": "%d/%d players are sleeping through this %s",
+  "realisticsleep.text.not_enough_players_sleeping_message": "%d/%d players are currently sleeping. %d/%d players are required to sleep through the %s",
+  "realisticsleep.text.night": "night",
+  "realisticsleep.text.day": "day",
+  "realisticsleep.text.thunderstorm": "thunderstorm",
+  "realisticsleep.text.time_until_dawn": " (Time until dawn: %ds)"
 }

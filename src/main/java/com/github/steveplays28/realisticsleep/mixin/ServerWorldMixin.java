@@ -7,6 +7,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.world.SleepManager;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryEntry;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import static com.github.steveplays28.realisticsleep.RealisticSleep.MOD_ID;
 import static com.github.steveplays28.realisticsleep.RealisticSleep.config;
 import static com.github.steveplays28.realisticsleep.SleepMath.DAY_LENGTH;
 
@@ -41,7 +43,7 @@ public abstract class ServerWorldMixin extends World {
 	@Unique
 	public long tickDelay;
 	@Unique
-	public String sleepMessage;
+	public MutableText sleepMessage;
 	@Unique
 	public Boolean shouldSkipWeather = false;
 
@@ -96,7 +98,8 @@ public abstract class ServerWorldMixin extends World {
 
 		nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier, nightTimeStepPerTick);
 		nightTimeStepPerTickRounded = (int) Math.round(nightTimeStepPerTick);
-		var nightOrDayText = worldProperties.getTimeOfDay() > DAY_LENGTH / 2 ? "night" : "day";
+		var nightOrDayText = worldProperties.getTimeOfDay() > DAY_LENGTH / 2 ? Text.translatable(
+				String.format("%s.text.night", MOD_ID)) : Text.translatable(String.format("%s.text.day", MOD_ID));
 
 		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
 		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
@@ -115,9 +118,9 @@ public abstract class ServerWorldMixin extends World {
 
 			for (ServerPlayerEntity player : players) {
 				player.sendMessage(
-						Text.of(sleepingPlayerCount + "/" + playerCount + " players are currently sleeping. " + playersRequiredToSleep + "/" + playerCount + " players are required to sleep through the " + nightOrDayText + "."),
-						true
-				);
+						Text.translatable(String.format("%s.text.not_enough_players_sleeping_message", MOD_ID), sleepingPlayerCount,
+								playerCount, playersRequiredToSleep, playerCount, nightOrDayText
+						), true);
 			}
 
 			return;
@@ -152,13 +155,15 @@ public abstract class ServerWorldMixin extends World {
 			shouldSkipWeather = true;
 
 			if (config.sendSleepingMessage) {
-				sleepMessage = String.format("%d/%d players are sleeping through this %s", sleepingPlayerCount, playerCount,
-						worldProperties.isThundering() ? "thunderstorm" : nightOrDayText
-				);
-				if (config.showTimeUntilDawn) sleepMessage += String.format(" (Time until dawn: %d", secondsUntilAwake) + "s)";
+				sleepMessage = Text.translatable(String.format("%s.text.sleep_message", MOD_ID), sleepingPlayerCount, playerCount).append(
+						worldProperties.isThundering() ? Text.translatable(String.format("%s.text.thunderstorm", MOD_ID)) : nightOrDayText);
+
+				if (config.showTimeUntilDawn) {
+					sleepMessage.append(Text.translatable(String.format("%s.text.time_until_dawn", MOD_ID), secondsUntilAwake));
+				}
 
 				for (ServerPlayerEntity player : players) {
-					player.sendMessage(Text.of(sleepMessage), true);
+					player.sendMessage(sleepMessage, true);
 				}
 			}
 		}
