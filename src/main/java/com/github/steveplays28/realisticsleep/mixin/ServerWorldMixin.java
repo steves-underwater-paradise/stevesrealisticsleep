@@ -170,15 +170,6 @@ public abstract class ServerWorldMixin extends World {
 		}
 	}
 
-	/**
-	 * @author Steveplays28
-	 * @reason Method's HUD messages conflicts with my custom HUD messages
-	 */
-	@Inject(method = "sendSleepingStatus", at = @At(value = "HEAD"), cancellable = true)
-	private void sendSleepingStatusInject(CallbackInfo ci) {
-		ci.cancel();
-	}
-
 	@Inject(method = "tickTime", at = @At(value = "HEAD"), cancellable = true)
 	public void tickTimeInject(CallbackInfo ci) {
 		this.worldProperties.getScheduledEvents().processEvents(this.server, this.properties.getTime());
@@ -214,6 +205,18 @@ public abstract class ServerWorldMixin extends World {
 
 		tickDelay = config.tickDelay;
 
+		ci.cancel();
+	}
+
+	/**
+	 * Cancels {@link ServerWorld#sendSleepingStatus sendSleepingStatus}.
+	 *
+	 * @author Steveplays28
+	 * @reason Method's HUD messages conflict with Realistic Sleep's custom HUD messages.
+	 */
+	@SuppressWarnings("JavadocReference")
+	@Inject(method = "sendSleepingStatus", at = @At(value = "HEAD"), cancellable = true)
+	private void sendSleepingStatusInject(CallbackInfo ci) {
 		ci.cancel();
 	}
 

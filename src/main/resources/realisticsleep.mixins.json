@@ -6,7 +6,7 @@
   "mixins": [
     "ServerPlayerEntityMixin",
     "ServerWorldMixin",
-    "SleepOverrideMixin"
+    "SleepManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
