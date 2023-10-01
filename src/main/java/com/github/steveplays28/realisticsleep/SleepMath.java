@@ -4,7 +4,7 @@ import static com.github.steveplays28.realisticsleep.RealisticSleep.config;
 
 public class SleepMath {
 	public static final int DAY_LENGTH = 24000;
-	public static final int WAKE_UP_TIME = 23000;
+	public static final int WAKE_UP_TIME = 23449;
 
 	public static double calculateNightTimeStepPerTick(double sleepingRatio, double multiplier, double lastTimeStepPerTick) {
 		return switch (config.sleepSpeedCurve) {
