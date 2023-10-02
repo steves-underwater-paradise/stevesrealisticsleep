@@ -25,5 +25,5 @@
   "realisticsleep.text.night": "night",
   "realisticsleep.text.day": "day",
   "realisticsleep.text.thunderstorm": "thunderstorm",
-  "realisticsleep.text.time_until_dawn": " (Time until dawn: %ds)"
+  "realisticsleep.text.time_until_dawn": " (time until dawn: %ds)"
 }
