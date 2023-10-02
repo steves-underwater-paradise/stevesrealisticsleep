@@ -69,6 +69,8 @@ public abstract class ServerWorldMixin extends World {
 	@Final
 	private boolean shouldTickTime;
 
+	@Shadow public abstract List<ServerPlayerEntity> getPlayers();
+
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
 		super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
 	}
@@ -92,7 +94,7 @@ public abstract class ServerWorldMixin extends World {
 		}
 
 		// Fetch config values and do calculations
-		int playerCount = server.getCurrentPlayerCount();
+		int playerCount = getPlayers().size();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		double sleepingPercentage = sleepingRatio * 100;
 
