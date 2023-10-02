@@ -78,7 +78,7 @@ public abstract class ServerWorldMixin extends World {
 		int sleepingPlayerCount = sleepManager.getSleeping();
 		// TODO: Don't assume the TPS is 20
 		int secondsUntilAwake = Math.abs(
-				SleepMath.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay() % 24000, nightTimeStepPerTick, 20));
+				SleepMath.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay() % DAY_LENGTH, nightTimeStepPerTick, 20));
 
 		// Check if the night has (almost) ended and the weather should be skipped
 		if (secondsUntilAwake <= 2 && shouldSkipWeather) {
