@@ -2,9 +2,6 @@ package com.github.steveplays28.realisticsleep.mixin;
 
 import com.github.steveplays28.realisticsleep.SleepMath;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerChunkManager;
@@ -13,6 +10,8 @@ import net.minecraft.server.world.SleepManager;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.village.raid.RaidManager;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.MutableWorldProperties;
@@ -70,10 +69,10 @@ public abstract class ServerWorldMixin extends World {
 	@Final
 	private boolean shouldTickTime;
 
-	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DynamicRegistryManager registryManager, RegistryEntry<DimensionType> dimensionEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long biomeAccess, int maxChainedNeighborUpdates) {
-		super(properties, registryRef, registryManager, dimensionEntry, profiler, isClient, debugWorld, biomeAccess,
-				maxChainedNeighborUpdates
-		);
+	@Shadow public abstract List<ServerPlayerEntity> getPlayers();
+
+	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
+		super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
 	}
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getInt(Lnet/minecraft/world/GameRules$Key;)I"))
@@ -95,7 +94,7 @@ public abstract class ServerWorldMixin extends World {
 		}
 
 		// Fetch config values and do calculations
-		int playerCount = server.getCurrentPlayerCount();
+		int playerCount = getPlayers().size();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		double sleepingPercentage = sleepingRatio * 100;
 
