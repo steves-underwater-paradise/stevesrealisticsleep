@@ -4,7 +4,8 @@ import static com.github.steveplays28.realisticsleep.RealisticSleep.config;
 
 public class SleepMath {
 	public static final int DAY_LENGTH = 24000;
-	public static final int WAKE_UP_TIME = 23449;
+	public static final int SUNRISE_WAKE_UP = 23449;
+	public static final int SUNSET_WAKE_UP = 12449;
 
 	public static double calculateNightTimeStepPerTick(double sleepingRatio, double multiplier, double lastTimeStepPerTick) {
 		return switch (config.sleepSpeedCurve) {
@@ -17,14 +18,18 @@ public class SleepMath {
 	}
 
 	public static int calculateTicksUntilAwake(int currentTimeOfDay) {
-		return calculateTicksToTimeOfDay(currentTimeOfDay, DAY_LENGTH);
+		return calculateTicksToTimeOfDay(currentTimeOfDay, isNightTime(currentTimeOfDay) ? DAY_LENGTH : SUNSET_WAKE_UP);
 	}
 
 	public static int calculateSecondsUntilAwake(int currentTimeOfDay, double timeStepPerTick, double tps) {
-		return (int) Math.round(calculateTicksUntilAwake(currentTimeOfDay) / timeStepPerTick / tps);
+		return (int) Math.round(calculateTicksUntilAwake(currentTimeOfDay % DAY_LENGTH) / timeStepPerTick / tps);
 	}
 
 	public static double getRandomNumberInRange(double min, double max) {
 		return (Math.random() * (max - min)) + min;
+	}
+
+	public static boolean isNightTime(long currentTimeOfDay) {
+		return currentTimeOfDay % DAY_LENGTH >= SUNSET_WAKE_UP;
 	}
 }
