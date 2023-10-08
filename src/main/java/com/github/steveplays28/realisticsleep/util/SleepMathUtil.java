@@ -18,7 +18,7 @@ public class SleepMathUtil {
 	}
 
 	public static int calculateTicksUntilAwake(int currentTimeOfDay) {
-		return calculateTicksToTimeOfDay(currentTimeOfDay, isNightTime(currentTimeOfDay) ? DAY_LENGTH : SUNSET_WAKE_UP);
+		return calculateTicksToTimeOfDay(currentTimeOfDay, isNightTime(currentTimeOfDay) ? SUNRISE_WAKE_UP : SUNSET_WAKE_UP);
 	}
 
 	public static int calculateSecondsUntilAwake(int currentTimeOfDay, double timeStepPerTick, double tps) {
