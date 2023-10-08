@@ -1,6 +1,5 @@
 package com.github.steveplays28.realisticsleep.mixin;
 
-import com.github.steveplays28.realisticsleep.util.SleepMathUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.github.steveplays28.realisticsleep.RealisticSleep.config;
+import static com.github.steveplays28.realisticsleep.util.SleepMathUtil.*;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends Entity {
@@ -24,22 +24,35 @@ public abstract class ServerPlayerEntityMixin extends Entity {
 	@Shadow
 	public abstract void sendMessage(Text message, boolean overlay);
 
-	@Shadow public abstract ServerWorld getWorld();
+	@Shadow
+	public abstract ServerWorld getWorld();
 
 	@Inject(method = "wakeUp(ZZ)V", at = @At(value = "HEAD"))
 	public void wakeUpInject(boolean skipSleepTimer, boolean updateSleepingPlayers, CallbackInfo ci) {
-		if (!SleepMathUtil.isNightTime(getWorld().getTimeOfDay())) {
-			// Return if we shouldn't send the dawn message
-			if (!config.sendDawnMessage || config.dawnMessage.isEmpty()) return;
+		var timeOfDay = getWorld().getTimeOfDay() % DAY_LENGTH;
+		var ticksUntilDawn = Math.abs(timeOfDay - DAWN_WAKE_UP_TIME);
+		var ticksUntilDusk = Math.abs(timeOfDay - DUSK_WAKE_UP_TIME);
 
-			// Send dawn HUD message to player
-			sendMessage(Text.of(config.dawnMessage), true);
-		} else if (config.allowDaySleeping && SleepMathUtil.isNightTime(getWorld().getTimeOfDay())) { //Only shows this message if day sleeping is allowed
-			// Return if we shouldn't send the dawn or dusk message
-			if (!config.sendDuskMessage || config.duskMessage.isEmpty()) return;
+		if (ticksUntilDawn > WAKE_UP_GRACE_PERIOD_TICKS && ticksUntilDusk > WAKE_UP_GRACE_PERIOD_TICKS) {
+			return;
+		}
 
-			// Send dawn or dusk HUD message to player
+		if (ticksUntilDusk < ticksUntilDawn) {
+			// Return if the dusk message shouldn't be sent
+			if (!config.sendDuskMessage || config.duskMessage.isEmpty()) {
+				return;
+			}
+
+			// Send dusk message to player in the actionbar
 			sendMessage(Text.of(config.duskMessage), true);
+		} else {
+			// Return if the dawn message shouldn't be sent
+			if (!config.sendDawnMessage || config.dawnMessage.isEmpty()) {
+				return;
+			}
+
+			// Send dawn message to player in the actionbar
+			sendMessage(Text.of(config.dawnMessage), true);
 		}
 	}
 }

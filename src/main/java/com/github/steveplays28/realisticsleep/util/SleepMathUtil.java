@@ -4,12 +4,14 @@ import static com.github.steveplays28.realisticsleep.RealisticSleep.config;
 
 public class SleepMathUtil {
 	public static final int DAY_LENGTH = 24000;
-	public static final int SUNRISE_WAKE_UP = 23449;
-	public static final int SUNSET_WAKE_UP = 12449;
+	public static final int DAWN_WAKE_UP_TIME = 23449;
+	public static final int DUSK_WAKE_UP_TIME = 12449;
+	public static final double WAKE_UP_GRACE_PERIOD_TICKS = Math.max(config.sleepSpeedMultiplier, 20);
 
 	public static double calculateNightTimeStepPerTick(double sleepingRatio, double multiplier, double lastTimeStepPerTick) {
 		return switch (config.sleepSpeedCurve) {
 			case LINEAR -> sleepingRatio * multiplier;
+			case EXPONENTIAL -> Math.pow(lastTimeStepPerTick, 1 + sleepingRatio * multiplier);
 		};
 	}
 
@@ -18,7 +20,7 @@ public class SleepMathUtil {
 	}
 
 	public static int calculateTicksUntilAwake(int currentTimeOfDay) {
-		return calculateTicksToTimeOfDay(currentTimeOfDay, isNightTime(currentTimeOfDay) ? SUNRISE_WAKE_UP : SUNSET_WAKE_UP);
+		return calculateTicksToTimeOfDay(currentTimeOfDay, isNightTime(currentTimeOfDay) ? DAWN_WAKE_UP_TIME : DUSK_WAKE_UP_TIME);
 	}
 
 	public static int calculateSecondsUntilAwake(int currentTimeOfDay, double timeStepPerTick, double tps) {
@@ -30,6 +32,6 @@ public class SleepMathUtil {
 	}
 
 	public static boolean isNightTime(long currentTimeOfDay) {
-		return currentTimeOfDay % DAY_LENGTH >= SUNSET_WAKE_UP;
+		return currentTimeOfDay > DUSK_WAKE_UP_TIME && currentTimeOfDay < DAWN_WAKE_UP_TIME;
 	}
 }

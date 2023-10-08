@@ -43,6 +43,6 @@ public class RealisticSleepConfig implements ConfigData {
 	public long tickDelay = -1;
 
 	public enum SleepSpeedCurve {
-		@ConfigEntry.Gui.Tooltip LINEAR
+		LINEAR, EXPONENTIAL
 	}
 }
