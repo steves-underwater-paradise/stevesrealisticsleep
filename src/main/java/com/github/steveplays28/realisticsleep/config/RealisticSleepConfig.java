@@ -26,7 +26,7 @@ public class RealisticSleepConfig implements ConfigData {
 	public boolean sendNotEnoughPlayersSleepingMessage = true;
 
 	@ConfigEntry.Gui.Tooltip
-	public boolean allowDaySleeping = true;
+	public boolean allowDaySleeping = false;
 
 	@ConfigEntry.Gui.Tooltip
 	public SleepSpeedCurve sleepSpeedCurve = SleepSpeedCurve.LINEAR;
