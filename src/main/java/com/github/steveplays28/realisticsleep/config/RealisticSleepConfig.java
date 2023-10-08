@@ -8,13 +8,11 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public boolean sendDawnMessage = true;
-
-	@ConfigEntry.Gui.Tooltip
-	public boolean sendDuskMessage = true;
-
 	@ConfigEntry.Gui.Tooltip
 	public String dawnMessage = "The sun rises.";
 
+	@ConfigEntry.Gui.Tooltip
+	public boolean sendDuskMessage = true;
 	@ConfigEntry.Gui.Tooltip
 	public String duskMessage = "The night begins.";
 
@@ -22,7 +20,6 @@ public class RealisticSleepConfig implements ConfigData {
 	public boolean sendSleepingMessage = true;
 	@ConfigEntry.Gui.Tooltip
 	public boolean showTimeUntilDawn = true;
-
 	@ConfigEntry.Gui.Tooltip
 	public boolean showTimeUntilDusk = true;
 	@ConfigEntry.Gui.Tooltip
@@ -46,7 +43,6 @@ public class RealisticSleepConfig implements ConfigData {
 	public long tickDelay = -1;
 
 	public enum SleepSpeedCurve {
-		@ConfigEntry.Gui.Tooltip
-		LINEAR
+		@ConfigEntry.Gui.Tooltip LINEAR
 	}
 }
