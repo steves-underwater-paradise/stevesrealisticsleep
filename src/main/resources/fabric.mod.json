@@ -35,7 +35,7 @@
       "com.github.steveplays28.realisticsleep.RealisticSleep"
     ],
     "modmenu": [
-      "com.github.steveplays28.realisticsleep.config.ModMenuIntegration"
+      "com.github.steveplays28.realisticsleep.client.compat.ModMenuIntegration"
     ]
   },
   "mixins": [

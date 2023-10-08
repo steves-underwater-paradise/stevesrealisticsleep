@@ -1,6 +1,6 @@
 package com.github.steveplays28.realisticsleep.mixin;
 
-import com.github.steveplays28.realisticsleep.SleepMath;
+import com.github.steveplays28.realisticsleep.util.SleepMathUtil;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 
 import static com.github.steveplays28.realisticsleep.RealisticSleep.MOD_ID;
 import static com.github.steveplays28.realisticsleep.RealisticSleep.config;
-import static com.github.steveplays28.realisticsleep.SleepMath.DAY_LENGTH;
+import static com.github.steveplays28.realisticsleep.util.SleepMathUtil.DAY_LENGTH;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
@@ -83,10 +83,10 @@ public abstract class ServerWorldMixin extends World {
 		int sleepingPlayerCount = sleepManager.getSleeping();
 		// TODO: Don't assume the TPS is 20
 		int secondsUntilAwake = Math.abs(
-				SleepMath.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay() % DAY_LENGTH, nightTimeStepPerTick, 20));
+				SleepMathUtil.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay() % DAY_LENGTH, nightTimeStepPerTick, 20));
 
 		//Gets the remainder of the current time of day, as this number never actually resets each day(from my own testing)
-		int ticksUntilAwake = SleepMath.calculateTicksUntilAwake((int) worldProperties.getTimeOfDay() % DAY_LENGTH);
+		int ticksUntilAwake = SleepMathUtil.calculateTicksUntilAwake((int) worldProperties.getTimeOfDay() % DAY_LENGTH);
 
 		// Check if the night has (almost) ended and the weather should be skipped
 		if (secondsUntilAwake <= 2 && shouldSkipWeather) {
@@ -104,9 +104,9 @@ public abstract class ServerWorldMixin extends World {
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		double sleepingPercentage = sleepingRatio * 100;
 
-		nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier, nightTimeStepPerTick);
+		nightTimeStepPerTick = SleepMathUtil.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier, nightTimeStepPerTick);
 		nightTimeStepPerTickRounded = (int) Math.round(nightTimeStepPerTick);
-		var isNight = SleepMath.isNightTime(worldProperties.getTimeOfDay());
+		var isNight = SleepMathUtil.isNightTime(worldProperties.getTimeOfDay());
 		var nightDayOrThunderstormText = Text.translatable(
 				String.format("%s.text.%s", MOD_ID, worldProperties.isThundering() ? "thunderstorm" : isNight ? "night" : "day"));
 
@@ -247,7 +247,7 @@ public abstract class ServerWorldMixin extends World {
 
 		if (doWeatherCycle && (worldProperties.isRaining() || worldProperties.isThundering())) {
 			// Reset weather clock and clear weather
-			var nextRainTime = (int) (DAY_LENGTH * SleepMath.getRandomNumberInRange(0.5, 7.5));
+			var nextRainTime = (int) (DAY_LENGTH * SleepMathUtil.getRandomNumberInRange(0.5, 7.5));
 			worldProperties.setRainTime(nextRainTime);
 			worldProperties.setThunderTime(nextRainTime + (Math.random() > 0 ? 1 : -1));
 

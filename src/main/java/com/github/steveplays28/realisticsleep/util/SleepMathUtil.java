@@ -1,8 +1,8 @@
-package com.github.steveplays28.realisticsleep;
+package com.github.steveplays28.realisticsleep.util;
 
 import static com.github.steveplays28.realisticsleep.RealisticSleep.config;
 
-public class SleepMath {
+public class SleepMathUtil {
 	public static final int DAY_LENGTH = 24000;
 	public static final int SUNRISE_WAKE_UP = 23449;
 	public static final int SUNSET_WAKE_UP = 12449;

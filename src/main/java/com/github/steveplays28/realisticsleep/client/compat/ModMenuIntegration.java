@@ -1,5 +1,6 @@
-package com.github.steveplays28.realisticsleep.config;
+package com.github.steveplays28.realisticsleep.client.compat;
 
+import com.github.steveplays28.realisticsleep.config.RealisticSleepConfig;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import me.shedaniel.autoconfig.AutoConfig;
