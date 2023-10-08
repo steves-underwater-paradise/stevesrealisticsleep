@@ -72,6 +72,8 @@ public abstract class ServerWorldMixin extends World {
 	@Shadow
 	public abstract List<ServerPlayerEntity> getPlayers();
 
+	@Shadow protected abstract void wakeSleepingPlayers();
+
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
 		super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
 	}
@@ -82,6 +84,9 @@ public abstract class ServerWorldMixin extends World {
 		// TODO: Don't assume the TPS is 20
 		int secondsUntilAwake = Math.abs(
 				SleepMath.calculateSecondsUntilAwake((int) worldProperties.getTimeOfDay() % DAY_LENGTH, nightTimeStepPerTick, 20));
+
+		//Gets the remainder of the current time of day, as this number never actually resets each day(from my own testing)
+		int ticksUntilAwake = SleepMath.calculateTicksUntilAwake((int) worldProperties.getTimeOfDay() % DAY_LENGTH);
 
 		// Check if the night has (almost) ended and the weather should be skipped
 		if (secondsUntilAwake <= 2 && shouldSkipWeather) {
@@ -101,7 +106,7 @@ public abstract class ServerWorldMixin extends World {
 
 		nightTimeStepPerTick = SleepMath.calculateNightTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier, nightTimeStepPerTick);
 		nightTimeStepPerTickRounded = (int) Math.round(nightTimeStepPerTick);
-		var isNight = worldProperties.getTimeOfDay() > DAY_LENGTH / 2;
+		var isNight = SleepMath.isNightTime(worldProperties.getTimeOfDay());
 		var nightDayOrThunderstormText = Text.translatable(
 				String.format("%s.text.%s", MOD_ID, worldProperties.isThundering() ? "thunderstorm" : isNight ? "night" : "day"));
 
@@ -162,14 +167,27 @@ public abstract class ServerWorldMixin extends World {
 				sleepMessage = Text.translatable(String.format("%s.text.sleep_message", MOD_ID), sleepingPlayerCount, playerCount).append(
 						nightDayOrThunderstormText);
 
-				if (config.showTimeUntilDawn) {
-					sleepMessage.append(Text.translatable(String.format("%s.text.time_until_dawn", MOD_ID), secondsUntilAwake));
+				if(isNight) {
+					if (config.showTimeUntilDawn) {
+						sleepMessage.append(Text.translatable(String.format("%s.text.time_until_dawn", MOD_ID), secondsUntilAwake));
+					}
+				} else {
+					if(config.showTimeUntilDusk) {
+						sleepMessage.append(Text.translatable(String.format("%s.text.time_until_dusk", MOD_ID), secondsUntilAwake));
+					}
 				}
 
 				for (ServerPlayerEntity player : players) {
 					player.sendMessage(sleepMessage, true);
 				}
 			}
+		}
+
+		int tickGrace = 30; //The amount of extra ticks for waking up - maybe useful in cases where TPS is low?
+		//In my own testing, using just secondsUntilAwake <= 0 seemed to have a few seconds where
+		//trying to sleep back in the bed would kick the player right out
+		if (secondsUntilAwake <= 0 && ticksUntilAwake <= tickGrace) {
+			this.wakeSleepingPlayers();
 		}
 	}
 
