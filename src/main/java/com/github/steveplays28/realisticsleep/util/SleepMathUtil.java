@@ -8,7 +8,7 @@ public class SleepMathUtil {
 	public static final int DUSK_WAKE_UP_TIME = 12449;
 	public static final double WAKE_UP_GRACE_PERIOD_TICKS = Math.max(config.sleepSpeedMultiplier, 20);
 
-	public static double calculateNightTimeStepPerTick(double sleepingRatio, double multiplier, double lastTimeStepPerTick) {
+	public static double calculateTimeStepPerTick(double sleepingRatio, double multiplier, double lastTimeStepPerTick) {
 		return switch (config.sleepSpeedCurve) {
 			case LINEAR -> sleepingRatio * multiplier;
 			case EXPONENTIAL -> Math.pow(lastTimeStepPerTick, 1 + sleepingRatio * multiplier);

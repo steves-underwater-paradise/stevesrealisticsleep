@@ -38,9 +38,9 @@ import static com.github.steveplays28.realisticsleep.util.SleepMathUtil.WAKE_UP_
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
 	@Unique
-	public double nightTimeStepPerTick = 2;
+	public double timeStepPerTick = 2;
 	@Unique
-	public int nightTimeStepPerTickRounded = 1;
+	public int timeStepPerTickRounded = 1;
 	@Unique
 	public long tickDelay;
 	@Unique
@@ -86,11 +86,11 @@ public abstract class ServerWorldMixin extends World {
 		int sleepingPlayerCount = sleepManager.getSleeping();
 		int playerCount = getPlayers().size();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
-		nightTimeStepPerTick = SleepMathUtil.calculateNightTimeStepPerTick(
-				sleepingRatio, config.sleepSpeedMultiplier, nightTimeStepPerTick);
+		timeStepPerTick = SleepMathUtil.calculateTimeStepPerTick(
+				sleepingRatio, config.sleepSpeedMultiplier, timeStepPerTick);
 		int timeOfDay = (int) worldProperties.getTimeOfDay() % DAY_LENGTH;
 		// TODO: Don't assume the TPS is 20
-		int secondsUntilAwake = Math.abs(SleepMathUtil.calculateSecondsUntilAwake(timeOfDay, nightTimeStepPerTick, 20));
+		int secondsUntilAwake = Math.abs(SleepMathUtil.calculateSecondsUntilAwake(timeOfDay, timeStepPerTick, 20));
 
 		// Check if the night has (almost) ended and the weather should be skipped
 		if (secondsUntilAwake <= 2 && shouldSkipWeather) {
@@ -104,7 +104,7 @@ public abstract class ServerWorldMixin extends World {
 		}
 
 		// Fetch config values and do calculations
-		nightTimeStepPerTickRounded = (int) Math.round(nightTimeStepPerTick);
+		timeStepPerTickRounded = (int) Math.round(timeStepPerTick);
 		int ticksUntilAwake = Math.abs(SleepMathUtil.calculateTicksUntilAwake(timeOfDay));
 		double sleepingPercentage = sleepingRatio * 100;
 		var isNight = SleepMathUtil.isNightTime(timeOfDay);
@@ -138,7 +138,7 @@ public abstract class ServerWorldMixin extends World {
 
 		// Advance time
 		if (doDayLightCycle) {
-			worldProperties.setTimeOfDay(worldProperties.getTimeOfDay() + nightTimeStepPerTickRounded);
+			worldProperties.setTimeOfDay(worldProperties.getTimeOfDay() + timeStepPerTickRounded);
 		}
 
 		// Tick block entities
@@ -186,8 +186,8 @@ public abstract class ServerWorldMixin extends World {
 			// Wake up sleeping players
 			this.wakeSleepingPlayers();
 
-			// Reset night time step per tick, to reset the exponential sleep speed curve calculation
-			nightTimeStepPerTick = 2;
+			// Reset time step per tick, to reset the exponential sleep speed curve calculation
+			timeStepPerTick = 2;
 		}
 	}
 
