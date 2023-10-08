@@ -12,26 +12,26 @@ import org.slf4j.LoggerFactory;
 
 public class RealisticSleep implements ModInitializer {
 	public static final String MOD_ID = "realisticsleep";
+	public static final String MOD_NAME = "Realistic Sleep";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static RealisticSleepConfig config;
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("[RealisticSleep] Loading!");
+		LOGGER.info("Loading {}.", MOD_NAME);
 		AutoConfig.register(RealisticSleepConfig.class, GsonConfigSerializer::new);
 		config = AutoConfig.getConfigHolder(RealisticSleepConfig.class).getConfig();
 
 		// Listen for when the server is reloading (i.e. /reload), and reload the config
 		ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((s, m) -> {
-			LOGGER.info("[Realistic Sleep] Reloading config!");
+			LOGGER.info("Reloading {} config.", MOD_NAME);
 			AutoConfig.getConfigHolder(RealisticSleepConfig.class).load();
 			config = AutoConfig.getConfigHolder(RealisticSleepConfig.class).getConfig();
 		});
 
-		//Registers a sleeping event using Fabric API
+		// Register custom sleep time (allows daytime sleeping)
 		EntitySleepEvents.ALLOW_SLEEP_TIME.register(((player, sleepingPos, vanillaResult) -> {
-			//If day sleeping is disabled, then the vanilla Minecraft action will be returned instead
-			if(config.allowDaySleeping) {
+			if (config.allowDaySleeping) {
 				return ActionResult.SUCCESS;
 			}
 
