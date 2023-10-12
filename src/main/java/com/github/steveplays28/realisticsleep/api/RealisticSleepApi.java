@@ -22,6 +22,7 @@ public class RealisticSleepApi {
 	/**
 	 * @param world The world (aka dimension)
 	 * @return The time of day of the world in ticks, with the day count filtered out using a modulo operator. This means that when Minecraft returns the time of day of a world, the day count doesn't have any effect on the resulting time. Equal to <code>(int) world.getLevelProperties().getTimeOfDay() % DAY_LENGTH</code>.
+	 * @since v1.8.4
 	 */
 	public static int getTimeOfDay(@NotNull World world) {
 		return (int) world.getLevelProperties().getTimeOfDay() % DAY_LENGTH;
