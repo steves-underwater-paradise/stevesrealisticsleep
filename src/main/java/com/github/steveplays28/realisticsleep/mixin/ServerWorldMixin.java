@@ -1,5 +1,6 @@
 package com.github.steveplays28.realisticsleep.mixin;
 
+import com.github.steveplays28.realisticsleep.api.RealisticSleepApi;
 import com.github.steveplays28.realisticsleep.util.SleepMathUtil;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
@@ -86,9 +87,8 @@ public abstract class ServerWorldMixin extends World {
 		int sleepingPlayerCount = sleepManager.getSleeping();
 		int playerCount = getPlayers().size();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
-		timeStepPerTick = SleepMathUtil.calculateTimeStepPerTick(
-				sleepingRatio, config.sleepSpeedMultiplier, timeStepPerTick);
-		int timeOfDay = (int) worldProperties.getTimeOfDay() % DAY_LENGTH;
+		timeStepPerTick = SleepMathUtil.calculateTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier, timeStepPerTick);
+		int timeOfDay = RealisticSleepApi.getTimeOfDay(this);
 		// TODO: Don't assume the TPS is 20
 		int secondsUntilAwake = Math.abs(SleepMathUtil.calculateSecondsUntilAwake(timeOfDay, timeStepPerTick, 20));
 
@@ -105,7 +105,7 @@ public abstract class ServerWorldMixin extends World {
 
 		// Fetch config values and do calculations
 		timeStepPerTickRounded = (int) Math.round(timeStepPerTick);
-		int ticksUntilAwake = Math.abs(SleepMathUtil.calculateTicksUntilAwake(timeOfDay));
+		int ticksUntilAwake = SleepMathUtil.calculateTicksUntilAwake(timeOfDay);
 		double sleepingPercentage = sleepingRatio * 100;
 		var isNight = SleepMathUtil.isNightTime(timeOfDay);
 		var nightDayOrThunderstormText = Text.translatable(

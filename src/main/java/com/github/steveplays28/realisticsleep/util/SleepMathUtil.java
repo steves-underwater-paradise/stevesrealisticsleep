@@ -20,7 +20,7 @@ public class SleepMathUtil {
 	}
 
 	public static int calculateTicksUntilAwake(int currentTimeOfDay) {
-		return calculateTicksToTimeOfDay(currentTimeOfDay, isNightTime(currentTimeOfDay) ? DAWN_WAKE_UP_TIME : DUSK_WAKE_UP_TIME);
+		return Math.abs(calculateTicksToTimeOfDay(currentTimeOfDay, isNightTime(currentTimeOfDay) ? DAWN_WAKE_UP_TIME : DUSK_WAKE_UP_TIME));
 	}
 
 	public static int calculateSecondsUntilAwake(int currentTimeOfDay, double timeStepPerTick, double tps) {
