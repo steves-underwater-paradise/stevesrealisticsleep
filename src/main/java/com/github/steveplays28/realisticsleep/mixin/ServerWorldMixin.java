@@ -2,6 +2,13 @@ package com.github.steveplays28.realisticsleep.mixin;
 
 import com.github.steveplays28.realisticsleep.api.RealisticSleepApi;
 import com.github.steveplays28.realisticsleep.util.SleepMathUtil;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LightningEntity;
+import net.minecraft.entity.mob.SkeletonHorseEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -10,15 +17,20 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.world.SleepManager;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.village.raid.RaidManager;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.MutableWorldProperties;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.ServerWorldProperties;
+import net.minecraft.world.tick.WorldTickScheduler;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,8 +43,7 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-import static com.github.steveplays28.realisticsleep.RealisticSleep.MOD_ID;
-import static com.github.steveplays28.realisticsleep.RealisticSleep.config;
+import static com.github.steveplays28.realisticsleep.RealisticSleep.*;
 import static com.github.steveplays28.realisticsleep.util.SleepMathUtil.DAY_LENGTH;
 import static com.github.steveplays28.realisticsleep.util.SleepMathUtil.WAKE_UP_GRACE_PERIOD_TICKS;
 
@@ -77,6 +88,22 @@ public abstract class ServerWorldMixin extends World {
 	@Shadow
 	protected abstract void wakeSleepingPlayers();
 
+	@Shadow
+	public abstract void tickChunk(WorldChunk chunk, int randomTickSpeed);
+
+	@Shadow
+	protected abstract BlockPos getLightningPos(BlockPos pos);
+
+	@Shadow
+	public abstract ServerWorld toServerWorld();
+
+	@Shadow
+	protected abstract void tickFluid(BlockPos pos, Fluid fluid);
+
+	@Shadow
+	@Final
+	private WorldTickScheduler<Fluid> fluidTickScheduler;
+
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
 		super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
 	}
@@ -106,7 +133,6 @@ public abstract class ServerWorldMixin extends World {
 		// Fetch config values and do calculations
 		timeStepPerTickRounded = (int) Math.round(timeStepPerTick);
 		int ticksUntilAwake = SleepMathUtil.calculateTicksUntilAwake(timeOfDay);
-		double sleepingPercentage = sleepingRatio * 100;
 		var isNight = SleepMathUtil.isNightTime(timeOfDay);
 		var nightDayOrThunderstormText = Text.translatable(
 				String.format("%s.text.%s", MOD_ID, worldProperties.isThundering() ? "thunderstorm" : isNight ? "night" : "day"));
@@ -114,14 +140,14 @@ public abstract class ServerWorldMixin extends World {
 		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
 		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
 		int raidTickSpeedMultiplier = (int) Math.round(config.raidTickSpeedMultiplier);
+		int fluidTickSpeedMultiplier = (int) Math.round(config.fluidTickSpeedMultiplier);
 
 		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
-		int playersRequiredToSleepPercentage = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
-		double playersRequiredToSleepRatio = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE) / 100;
+		double playersRequiredToSleepRatio = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE) / 100d;
 		int playersRequiredToSleep = (int) Math.ceil(playersRequiredToSleepRatio * playerCount);
 
 		// Check if the required percentage of players are sleeping
-		if (sleepingPercentage < playersRequiredToSleepPercentage) {
+		if (RealisticSleepApi.isSleeping(this)) {
 			if (!config.sendNotEnoughPlayersSleepingMessage) {
 				return;
 			}
@@ -143,7 +169,7 @@ public abstract class ServerWorldMixin extends World {
 
 		// Tick block entities
 		for (int i = blockEntityTickSpeedMultiplier; i > 1; i--) {
-			this.tickBlockEntities();
+			tickBlockEntities();
 		}
 
 		// Tick chunks
@@ -154,6 +180,11 @@ public abstract class ServerWorldMixin extends World {
 		// Tick raid timers
 		for (int i = raidTickSpeedMultiplier; i > 1; i--) {
 			raidManager.tick();
+		}
+
+		// Tick fluids
+		for (int i = fluidTickSpeedMultiplier; i > 1; i--) {
+			fluidTickScheduler.tick(getTime(), 65536, this::tickFluid);
 		}
 
 		// Send new time to all players in the overworld
@@ -239,6 +270,89 @@ public abstract class ServerWorldMixin extends World {
 	@Inject(method = "sendSleepingStatus", at = @At(value = "HEAD"), cancellable = true)
 	private void sendSleepingStatusInject(CallbackInfo ci) {
 		ci.cancel();
+	}
+
+	@Inject(method = "tickChunk", at = @At(value = "HEAD"))
+	private void tickChunkInject(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci) {
+		for (int z = 0; z < 300; z++) {
+			var chunkPos = chunk.getPos();
+			var chunkStartPosX = chunkPos.getStartX();
+			var chunkStartPosZ = chunkPos.getStartZ();
+			var profiler = this.getProfiler();
+			BlockPos blockPos;
+
+			profiler.push(String.format("Thunder (%s)", MOD_NAME));
+			if (this.isRaining() && this.isThundering() && this.random.nextInt(100000) == 0) {
+				blockPos = this.getLightningPos(this.getRandomPosInChunk(chunkStartPosX, 0, chunkStartPosZ, 15));
+
+				if (this.hasRain(blockPos)) {
+					LightningEntity lightningEntity = EntityType.LIGHTNING_BOLT.create(this);
+
+					if (lightningEntity != null) {
+						lightningEntity.refreshPositionAfterTeleport(Vec3d.ofBottomCenter(blockPos));
+						lightningEntity.setCosmetic(true);
+						this.spawnEntity(lightningEntity);
+					}
+				}
+			}
+
+			profiler.swap(String.format("Form ice and snow (%s)", MOD_NAME));
+			if (this.random.nextInt(16) == 0) {
+				blockPos = this.getTopPosition(
+						Heightmap.Type.MOTION_BLOCKING, this.getRandomPosInChunk(chunkStartPosX, 0, chunkStartPosZ, 15));
+				BlockPos blockPosDown = blockPos.down();
+				Biome biome = this.getBiome(blockPos).value();
+
+				if (biome.canSetIce(this, blockPosDown)) {
+					this.setBlockState(blockPosDown, Blocks.ICE.getDefaultState());
+				}
+
+				if (this.isRaining()) {
+					if (biome.canSetSnow(this, blockPos)) {
+						this.setBlockState(blockPos, Blocks.SNOW.getDefaultState());
+					}
+
+					BlockState blockStateDown = this.getBlockState(blockPosDown);
+					Biome.Precipitation precipitation = biome.getPrecipitation();
+					if (precipitation == Biome.Precipitation.RAIN && biome.isCold(blockPosDown)) {
+						precipitation = Biome.Precipitation.SNOW;
+					}
+
+					blockStateDown.getBlock().precipitationTick(blockStateDown, this, blockPosDown, precipitation);
+				}
+			}
+
+			if (randomTickSpeed <= 0) {
+				return;
+			}
+
+			profiler.swap(String.format("Tick blocks (%s)", MOD_NAME));
+			for (var chunkSection : chunk.getSectionArray()) {
+				if (!chunkSection.hasRandomTicks()) {
+					continue;
+				}
+
+				for (int l = 0; l < randomTickSpeed; ++l) {
+					int chunkSectionYOffset = chunkSection.getYOffset();
+					var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
+					var randomBlockStateInChunk = chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX,
+							randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ
+					);
+					var fluidState = randomBlockStateInChunk.getFluidState();
+
+					if (randomBlockStateInChunk.hasRandomTicks()) {
+						randomBlockStateInChunk.randomTick(this.toServerWorld(), randomPosInChunk, this.random);
+					}
+
+					// TODO: Disable fluid state random ticks by default
+					if (fluidState.hasRandomTicks()) {
+						fluidState.onRandomTick(this, randomPosInChunk, this.random);
+					}
+				}
+			}
+
+			profiler.pop();
+		}
 	}
 
 	@Unique

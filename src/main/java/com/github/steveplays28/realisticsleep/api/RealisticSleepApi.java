@@ -1,5 +1,10 @@
 package com.github.steveplays28.realisticsleep.api;
 
+import com.github.steveplays28.realisticsleep.mixin.accessor.ServerWorldAccessor;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,5 +31,47 @@ public class RealisticSleepApi {
 	 */
 	public static int getTimeOfDay(@NotNull World world) {
 		return (int) world.getLevelProperties().getTimeOfDay() % DAY_LENGTH;
+	}
+
+	/**
+	 * @param world The world (aka dimension)
+	 * @return Whether players are sleeping in this world (time is passing at an accelerated rate). The world will be casted to either a <code>ServerWorld</code> or <code>ClientWorld</code> depending on the side this method is called from. Prefer the sides' respective API methods instead.
+	 */
+	public static boolean isSleeping(@NotNull World world) {
+		if (world.isClient()) {
+			return isSleeping((ClientWorld) world);
+		} else {
+			return isSleeping((ServerWorld) world);
+		}
+	}
+
+	/**
+	 * @param world The clientside world (aka dimension)
+	 * @return Whether players are sleeping in this world (time is passing at an accelerated rate).
+	 */
+	public static boolean isSleeping(@NotNull ClientWorld world) {
+		var players = world.getPlayers();
+		var sleepingPlayers = players.stream().filter(LivingEntity::isSleeping);
+		var playerCount = players.size();
+		var sleepingPlayerCount = sleepingPlayers.count();
+		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
+		double sleepingPercentage = sleepingRatio * 100;
+		int playersRequiredToSleepPercentage = world.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
+
+		return sleepingPercentage < playersRequiredToSleepPercentage;
+	}
+
+	/**
+	 * @param world The serverside world (aka dimension)
+	 * @return Whether players are sleeping in this world (time is passing at an accelerated rate).
+	 */
+	public static boolean isSleeping(@NotNull ServerWorld world) {
+		var playerCount = world.getPlayers().size();
+		var sleepingPlayerCount = ((ServerWorldAccessor) world).getSleepManager().getSleeping();
+		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
+		double sleepingPercentage = sleepingRatio * 100d;
+		int playersRequiredToSleepPercentage = world.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
+
+		return sleepingPercentage < playersRequiredToSleepPercentage;
 	}
 }

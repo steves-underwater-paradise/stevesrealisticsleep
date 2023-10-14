@@ -1,5 +1,6 @@
 package com.github.steveplays28.realisticsleep.mixin;
 
+import com.github.steveplays28.realisticsleep.api.RealisticSleepApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.WorldRenderer;
@@ -27,15 +28,7 @@ public class WorldRendererMixin {
 			return cloudSpeed;
 		}
 
-		var players = world.getPlayers();
-		var sleepingPlayers = players.stream().filter(LivingEntity::isSleeping);
-		var playerCount = players.size();
-		var sleepingPlayerCount = sleepingPlayers.count();
-		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
-		double sleepingPercentage = sleepingRatio * 100;
-		int playersRequiredToSleepPercentage = world.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
-
-		if (sleepingPercentage < playersRequiredToSleepPercentage) {
+		if (RealisticSleepApi.isSleeping(world)) {
 			return cloudSpeed;
 		}
 
