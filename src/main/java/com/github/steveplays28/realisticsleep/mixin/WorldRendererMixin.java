@@ -24,11 +24,7 @@ public class WorldRendererMixin {
 
 	@ModifyConstant(method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FDDD)V", constant = @Constant(floatValue = 0.03f))
 	private float modifyCloudSpeed(float cloudSpeed) {
-		if (world == null) {
-			return cloudSpeed;
-		}
-
-		if (RealisticSleepApi.isSleeping(world)) {
+		if (world == null || !RealisticSleepApi.isSleeping(world)) {
 			return cloudSpeed;
 		}
 
