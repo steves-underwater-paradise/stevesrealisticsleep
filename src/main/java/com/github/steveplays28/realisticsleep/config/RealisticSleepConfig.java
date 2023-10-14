@@ -35,13 +35,17 @@ public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public double blockEntityTickSpeedMultiplier = 25d;
 	@ConfigEntry.Gui.Tooltip
-	public double chunkTickSpeedMultiplier = 1d;
+	public double chunkFullTickSpeedMultiplier = 1d;
 	@ConfigEntry.Gui.Tooltip
 	public double raidTickSpeedMultiplier = 25d;
 	@ConfigEntry.Gui.Tooltip
-	public double fluidTickSpeedMultiplier = 25d;
+	public double thunderTickSpeedMultiplier = 25d;
 	@ConfigEntry.Gui.Tooltip
-	public double fluidStateTickSpeedMultiplier = 25d;
+	public double iceAndSnowTickSpeedMultiplier = 25d;
+	@ConfigEntry.Gui.Tooltip
+	public double fluidScheduledTickSpeedMultiplier = 25d;
+	@ConfigEntry.Gui.Tooltip
+	public double fluidRandomTickSpeedMultiplier = 1d;
 	@ConfigEntry.Gui.Tooltip
 	public float cloudSpeedMultiplier = 25f;
 

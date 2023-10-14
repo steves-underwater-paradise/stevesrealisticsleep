@@ -97,6 +97,10 @@ public abstract class ServerWorldMixin extends World {
 	@Final
 	private WorldTickScheduler<Fluid> fluidTickScheduler;
 
+	@Shadow
+	@Final
+	private static int MAX_TICKS;
+
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
 		super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
 	}
@@ -153,9 +157,9 @@ public abstract class ServerWorldMixin extends World {
 		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
 
 		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
-		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
+		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkFullTickSpeedMultiplier);
 		int raidTickSpeedMultiplier = (int) Math.round(config.raidTickSpeedMultiplier);
-		int fluidTickSpeedMultiplier = (int) Math.round(config.fluidTickSpeedMultiplier);
+		int fluidScheduledTickSpeedMultiplier = (int) Math.round(config.fluidScheduledTickSpeedMultiplier);
 
 		// Advance time
 		if (doDayLightCycle) {
@@ -178,8 +182,8 @@ public abstract class ServerWorldMixin extends World {
 		}
 
 		// Tick fluids
-		for (int i = fluidTickSpeedMultiplier; i > 1; i--) {
-			fluidTickScheduler.tick(getTime(), 65536, this::tickFluid);
+		for (int i = fluidScheduledTickSpeedMultiplier; i > 1; i--) {
+			fluidTickScheduler.tick(worldProperties.getTimeOfDay(), MAX_TICKS, this::tickFluid);
 		}
 
 		// Send new time to all players in the overworld
@@ -269,14 +273,16 @@ public abstract class ServerWorldMixin extends World {
 
 	@Inject(method = "tickChunk", at = @At(value = "HEAD"))
 	private void tickChunkInject(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci) {
-		for (int z = 0; z < 300; z++) {
-			var chunkPos = chunk.getPos();
-			var chunkStartPosX = chunkPos.getStartX();
-			var chunkStartPosZ = chunkPos.getStartZ();
-			var profiler = this.getProfiler();
-			BlockPos blockPos;
+		var thunderTickSpeedMultiplier = (int) Math.round(config.thunderTickSpeedMultiplier);
+		var iceAndSnowTickSpeedMultiplier = (int) Math.round(config.iceAndSnowTickSpeedMultiplier);
+		var profiler = this.getProfiler();
+		var chunkPos = chunk.getPos();
+		var chunkStartPosX = chunkPos.getStartX();
+		var chunkStartPosZ = chunkPos.getStartZ();
+		BlockPos blockPos;
 
-			profiler.push(String.format("Thunder (%s)", MOD_NAME));
+		profiler.push(String.format("Thunder (%s)", MOD_NAME));
+		for (int i = 0; i < thunderTickSpeedMultiplier; i++) {
 			if (this.isRaining() && this.isThundering() && this.random.nextInt(100000) == 0) {
 				blockPos = this.getLightningPos(this.getRandomPosInChunk(chunkStartPosX, 0, chunkStartPosZ, 15));
 
@@ -290,8 +296,10 @@ public abstract class ServerWorldMixin extends World {
 					}
 				}
 			}
+		}
 
-			profiler.swap(String.format("Form ice and snow (%s)", MOD_NAME));
+		profiler.swap(String.format("Form ice and snow (%s)", MOD_NAME));
+		for (int i = 0; i < iceAndSnowTickSpeedMultiplier; i++) {
 			if (this.random.nextInt(16) == 0) {
 				blockPos = this.getTopPosition(
 						Heightmap.Type.MOTION_BLOCKING, this.getRandomPosInChunk(chunkStartPosX, 0, chunkStartPosZ, 15));
@@ -316,30 +324,34 @@ public abstract class ServerWorldMixin extends World {
 					blockStateDown.getBlock().precipitationTick(blockStateDown, this, blockPosDown, precipitation);
 				}
 			}
+		}
 
-			if (randomTickSpeed <= 0) {
-				return;
+		if (randomTickSpeed <= 0) {
+			profiler.pop();
+			return;
+		}
+
+		profiler.swap(String.format("Tick blocks (%s)", MOD_NAME));
+		for (var chunkSection : chunk.getSectionArray()) {
+			if (!chunkSection.hasRandomTicks()) {
+				continue;
 			}
 
-			profiler.swap(String.format("Tick blocks (%s)", MOD_NAME));
-			for (var chunkSection : chunk.getSectionArray()) {
-				if (!chunkSection.hasRandomTicks()) {
-					continue;
+			var fluidRandomTickSpeedMultiplier = (int) Math.round(config.fluidRandomTickSpeedMultiplier);
+
+			for (int j = 0; j < randomTickSpeed; j++) {
+				int chunkSectionYOffset = chunkSection.getYOffset();
+				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
+				var randomBlockStateInChunk = chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX,
+						randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ
+				);
+				var fluidState = randomBlockStateInChunk.getFluidState();
+
+				if (randomBlockStateInChunk.hasRandomTicks()) {
+					randomBlockStateInChunk.randomTick(this.toServerWorld(), randomPosInChunk, this.random);
 				}
 
-				for (int l = 0; l < randomTickSpeed; ++l) {
-					int chunkSectionYOffset = chunkSection.getYOffset();
-					var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
-					var randomBlockStateInChunk = chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX,
-							randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ
-					);
-					var fluidState = randomBlockStateInChunk.getFluidState();
-
-					if (randomBlockStateInChunk.hasRandomTicks()) {
-						randomBlockStateInChunk.randomTick(this.toServerWorld(), randomPosInChunk, this.random);
-					}
-
-					// TODO: Disable fluid state random ticks by default
+				for (int k = 0; k < fluidRandomTickSpeedMultiplier; k++) {
 					if (fluidState.hasRandomTicks()) {
 						fluidState.onRandomTick(this, randomPosInChunk, this.random);
 					}
