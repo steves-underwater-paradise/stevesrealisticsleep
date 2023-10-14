@@ -16,7 +16,7 @@ public class RealisticSleepApi {
 	 * @since v1.8.4
 	 */
 	public static float getSleepProgress(@NotNull World world) {
-		return (DAY_LENGTH - calculateTicksUntilAwake(getTimeOfDay(world))) / DAY_LENGTH / 100f;
+		return ((float) (DAY_LENGTH - calculateTicksUntilAwake(getTimeOfDay(world))) / DAY_LENGTH) * 100f;
 	}
 
 	/**
