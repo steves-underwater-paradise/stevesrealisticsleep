@@ -130,27 +130,19 @@ public abstract class ServerWorldMixin extends World {
 			return;
 		}
 
-		// Fetch config values and do calculations
-		timeStepPerTickRounded = (int) Math.round(timeStepPerTick);
-		int ticksUntilAwake = SleepMathUtil.calculateTicksUntilAwake(timeOfDay);
+		// Fetch values and construct night, day, or thunderstorm text
 		var isNight = SleepMathUtil.isNightTime(timeOfDay);
 		var nightDayOrThunderstormText = Text.translatable(
 				String.format("%s.text.%s", MOD_ID, worldProperties.isThundering() ? "thunderstorm" : isNight ? "night" : "day"));
 
-		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
-		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
-		int raidTickSpeedMultiplier = (int) Math.round(config.raidTickSpeedMultiplier);
-		int fluidTickSpeedMultiplier = (int) Math.round(config.fluidTickSpeedMultiplier);
-
-		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
-		double playersRequiredToSleepRatio = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE) / 100d;
-		int playersRequiredToSleep = (int) Math.ceil(playersRequiredToSleepRatio * playerCount);
-
 		// Check if the required percentage of players are sleeping
-		if (RealisticSleepApi.isSleeping(this)) {
+		if (!RealisticSleepApi.isSleeping(this)) {
 			if (!config.sendNotEnoughPlayersSleepingMessage) {
 				return;
 			}
+
+			double playersRequiredToSleepRatio = server.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE) / 100d;
+			int playersRequiredToSleep = (int) Math.ceil(playersRequiredToSleepRatio * playerCount);
 
 			for (ServerPlayerEntity player : players) {
 				player.sendMessage(
@@ -161,6 +153,16 @@ public abstract class ServerWorldMixin extends World {
 
 			return;
 		}
+
+		// Fetch config values and do calculations
+		timeStepPerTickRounded = (int) Math.round(timeStepPerTick);
+		int ticksUntilAwake = SleepMathUtil.calculateTicksUntilAwake(timeOfDay);
+		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
+
+		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
+		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
+		int raidTickSpeedMultiplier = (int) Math.round(config.raidTickSpeedMultiplier);
+		int fluidTickSpeedMultiplier = (int) Math.round(config.fluidTickSpeedMultiplier);
 
 		// Advance time
 		if (doDayLightCycle) {

@@ -58,7 +58,7 @@ public class RealisticSleepApi {
 		double sleepingPercentage = sleepingRatio * 100;
 		int playersRequiredToSleepPercentage = world.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
 
-		return sleepingPercentage < playersRequiredToSleepPercentage;
+		return sleepingPercentage >= playersRequiredToSleepPercentage;
 	}
 
 	/**
@@ -72,6 +72,6 @@ public class RealisticSleepApi {
 		double sleepingPercentage = sleepingRatio * 100d;
 		int playersRequiredToSleepPercentage = world.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
 
-		return sleepingPercentage < playersRequiredToSleepPercentage;
+		return sleepingPercentage >= playersRequiredToSleepPercentage;
 	}
 }

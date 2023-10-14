@@ -31,15 +31,17 @@ public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public SleepSpeedCurve sleepSpeedCurve = SleepSpeedCurve.LINEAR;
 	@ConfigEntry.Gui.Tooltip
-	public double sleepSpeedMultiplier = 25;
+	public double sleepSpeedMultiplier = 25d;
 	@ConfigEntry.Gui.Tooltip
-	public double blockEntityTickSpeedMultiplier = 25;
+	public double blockEntityTickSpeedMultiplier = 25d;
 	@ConfigEntry.Gui.Tooltip
-	public double chunkTickSpeedMultiplier = 1;
+	public double chunkTickSpeedMultiplier = 1d;
 	@ConfigEntry.Gui.Tooltip
-	public double raidTickSpeedMultiplier = 25;
+	public double raidTickSpeedMultiplier = 25d;
 	@ConfigEntry.Gui.Tooltip
 	public double fluidTickSpeedMultiplier = 25d;
+	@ConfigEntry.Gui.Tooltip
+	public double fluidStateTickSpeedMultiplier = 25d;
 	@ConfigEntry.Gui.Tooltip
 	public float cloudSpeedMultiplier = 25f;
 
