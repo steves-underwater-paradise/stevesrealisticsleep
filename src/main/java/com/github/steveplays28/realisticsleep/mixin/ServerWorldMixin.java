@@ -6,9 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
-import net.minecraft.entity.mob.SkeletonHorseEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,7 +16,6 @@ import net.minecraft.server.world.SleepManager;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryEntry;
@@ -26,7 +23,6 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.village.raid.RaidManager;
 import net.minecraft.world.*;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.ServerWorldProperties;
@@ -87,9 +83,6 @@ public abstract class ServerWorldMixin extends World {
 
 	@Shadow
 	protected abstract void wakeSleepingPlayers();
-
-	@Shadow
-	public abstract void tickChunk(WorldChunk chunk, int randomTickSpeed);
 
 	@Shadow
 	protected abstract BlockPos getLightningPos(BlockPos pos);
