@@ -46,7 +46,7 @@
   "text.autoconfig.realisticsleep.option.cloudSpeedMultiplier.@Tooltip": "How many times faster clouds should move.",
   "text.autoconfig.realisticsleep.option.tickDelay": "Tick delay",
   "text.autoconfig.realisticsleep.option.tickDelay.@Tooltip": "Adds an amount of ticks delay to every tick, so time goes slower.",
-  "realisticsleep.text.sleep_message": "%d/%d players are sleeping through this %s",
+  "realisticsleep.text.sleep_message": "%d/%d players are sleeping through this ",
   "realisticsleep.text.not_enough_players_sleeping_message": "%d/%d players are currently sleeping. %d/%d players are required to sleep through the %s",
   "realisticsleep.text.night": "night",
   "realisticsleep.text.day": "day",
