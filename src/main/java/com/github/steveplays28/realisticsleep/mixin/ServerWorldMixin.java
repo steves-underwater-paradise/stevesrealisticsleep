@@ -1,9 +1,12 @@
 package com.github.steveplays28.realisticsleep.mixin;
 
 import com.github.steveplays28.realisticsleep.api.RealisticSleepApi;
+import com.github.steveplays28.realisticsleep.extension.ServerWorldExtension;
 import com.github.steveplays28.realisticsleep.util.SleepMathUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.CropBlock;
+import net.minecraft.block.StemBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.fluid.Fluid;
@@ -40,11 +43,10 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import static com.github.steveplays28.realisticsleep.RealisticSleep.*;
-import static com.github.steveplays28.realisticsleep.util.SleepMathUtil.DAY_LENGTH;
-import static com.github.steveplays28.realisticsleep.util.SleepMathUtil.WAKE_UP_GRACE_PERIOD_TICKS;
+import static com.github.steveplays28.realisticsleep.util.SleepMathUtil.*;
 
 @Mixin(ServerWorld.class)
-public abstract class ServerWorldMixin extends World {
+public abstract class ServerWorldMixin extends World implements ServerWorldExtension {
 	@Unique
 	public double timeStepPerTick = 2;
 	@Unique
@@ -55,6 +57,8 @@ public abstract class ServerWorldMixin extends World {
 	public MutableText sleepMessage;
 	@Unique
 	public Boolean shouldSkipWeather = false;
+	@Unique
+	public int consecutiveSleepTicks = 0;
 
 	@Shadow
 	@Final
@@ -124,6 +128,9 @@ public abstract class ServerWorldMixin extends World {
 
 		// Check if anyone is sleeping
 		if (sleepingPlayerCount <= 0) {
+			// Reset consecutive sleep ticks
+			consecutiveSleepTicks = 0;
+
 			return;
 		}
 
@@ -157,7 +164,7 @@ public abstract class ServerWorldMixin extends World {
 		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
 
 		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
-		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkFullTickSpeedMultiplier);
+		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
 		int raidTickSpeedMultiplier = (int) Math.round(config.raidTickSpeedMultiplier);
 		int fluidScheduledTickSpeedMultiplier = (int) Math.round(config.fluidScheduledTickSpeedMultiplier);
 
@@ -192,7 +199,9 @@ public abstract class ServerWorldMixin extends World {
 
 		// Check if players are still supposed to be sleeping, and send a HUD message if so
 		if (ticksUntilAwake > WAKE_UP_GRACE_PERIOD_TICKS) {
-			shouldSkipWeather = true;
+			if (consecutiveSleepTicks >= MINIMUM_SLEEP_TICKS_TO_CLEAR_WEATHER) {
+				shouldSkipWeather = true;
+			}
 
 			if (config.sendSleepingMessage) {
 				sleepMessage = Text.translatable(String.format("%s.text.sleep_message", MOD_ID), sleepingPlayerCount, playerCount).append(
@@ -210,6 +219,8 @@ public abstract class ServerWorldMixin extends World {
 			for (ServerPlayerEntity player : players) {
 				player.sendMessage(sleepMessage, true);
 			}
+
+			consecutiveSleepTicks += timeStepPerTickRounded;
 		}
 
 		if (ticksUntilAwake <= WAKE_UP_GRACE_PERIOD_TICKS) {
@@ -273,6 +284,10 @@ public abstract class ServerWorldMixin extends World {
 
 	@Inject(method = "tickChunk", at = @At(value = "HEAD"))
 	private void tickChunkInject(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci) {
+		if (!RealisticSleepApi.isSleeping(this)) {
+			return;
+		}
+
 		var thunderTickSpeedMultiplier = (int) Math.round(config.thunderTickSpeedMultiplier);
 		var iceAndSnowTickSpeedMultiplier = (int) Math.round(config.iceAndSnowTickSpeedMultiplier);
 		var profiler = this.getProfiler();
@@ -337,7 +352,24 @@ public abstract class ServerWorldMixin extends World {
 				continue;
 			}
 
+			var cropGrowthTickSpeedMultiplier = (int) Math.round(config.cropGrowthTickSpeedMultiplier);
+			var blockRandomTickSpeedMultiplier = (int) Math.round(config.blockRandomTickSpeedMultiplier);
 			var fluidRandomTickSpeedMultiplier = (int) Math.round(config.fluidRandomTickSpeedMultiplier);
+
+			for (int i = 0; i < cropGrowthTickSpeedMultiplier; i++) {
+				int chunkSectionYOffset = chunkSection.getYOffset();
+				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
+				var randomBlockStateInChunk = chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX,
+						randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ
+				);
+				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
+
+				if (randomBlockInChunk instanceof CropBlock cropBlock) {
+					cropBlock.grow(this.toServerWorld(), random, randomPosInChunk, randomBlockStateInChunk);
+				} else if (randomBlockInChunk instanceof StemBlock stemBlock) {
+					stemBlock.grow(this.toServerWorld(), random, randomPosInChunk, randomBlockStateInChunk);
+				}
+			}
 
 			for (int j = 0; j < randomTickSpeed; j++) {
 				int chunkSectionYOffset = chunkSection.getYOffset();
@@ -347,8 +379,10 @@ public abstract class ServerWorldMixin extends World {
 				);
 				var fluidState = randomBlockStateInChunk.getFluidState();
 
-				if (randomBlockStateInChunk.hasRandomTicks()) {
-					randomBlockStateInChunk.randomTick(this.toServerWorld(), randomPosInChunk, this.random);
+				for (int k = 0; k < blockRandomTickSpeedMultiplier; k++) {
+					if (randomBlockStateInChunk.hasRandomTicks()) {
+						randomBlockStateInChunk.randomTick(this.toServerWorld(), randomPosInChunk, this.random);
+					}
 				}
 
 				for (int k = 0; k < fluidRandomTickSpeedMultiplier; k++) {

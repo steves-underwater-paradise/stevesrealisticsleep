@@ -1,5 +1,6 @@
 package com.github.steveplays28.realisticsleep.api;
 
+import com.github.steveplays28.realisticsleep.extension.ServerWorldExtension;
 import com.github.steveplays28.realisticsleep.mixin.accessor.ServerWorldAccessor;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
@@ -20,6 +21,7 @@ public class RealisticSleepApi {
 	 * @return The sleep progress of the world as a percentage.
 	 * @since v1.8.4
 	 */
+	@SuppressWarnings("unused")
 	public static float getSleepProgress(@NotNull World world) {
 		return ((float) (DAY_LENGTH - calculateTicksUntilAwake(getTimeOfDay(world))) / DAY_LENGTH) * 100f;
 	}
@@ -37,6 +39,7 @@ public class RealisticSleepApi {
 	 * @param world The world (aka dimension)
 	 * @return Whether players are sleeping in this world (time is passing at an accelerated rate). The world will be casted to either a <code>ServerWorld</code> or <code>ClientWorld</code> depending on the side this method is called from. Prefer the sides' respective API methods instead.
 	 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean isSleeping(@NotNull World world) {
 		if (world.isClient()) {
 			return isSleeping((ClientWorld) world);
@@ -73,5 +76,14 @@ public class RealisticSleepApi {
 		int playersRequiredToSleepPercentage = world.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
 
 		return sleepingPercentage >= playersRequiredToSleepPercentage;
+	}
+
+	/**
+	 * @param world The serverside world (aka dimension)
+	 * @return The consecutive amount of sleep ticks. Returns <code>0</code> when no players are sleeping.
+	 */
+	@SuppressWarnings("unused")
+	public static int getConsecutiveSleepTicks(ServerWorld world) {
+		return ((ServerWorldExtension) world).consecutiveSleepTicks;
 	}
 }

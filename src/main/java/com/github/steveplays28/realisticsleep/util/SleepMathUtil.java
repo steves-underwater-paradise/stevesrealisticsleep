@@ -7,6 +7,7 @@ public class SleepMathUtil {
 	public static final int DAWN_WAKE_UP_TIME = 23449;
 	public static final int DUSK_WAKE_UP_TIME = 12449;
 	public static final double WAKE_UP_GRACE_PERIOD_TICKS = Math.max(config.sleepSpeedMultiplier, 20);
+	public static final int MINIMUM_SLEEP_TICKS_TO_CLEAR_WEATHER = DAY_LENGTH / 10;
 
 	public static double calculateTimeStepPerTick(double sleepingRatio, double multiplier, double lastTimeStepPerTick) {
 		return switch (config.sleepSpeedCurve) {
