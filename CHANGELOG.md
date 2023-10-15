@@ -20,11 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - More configurability (by [RickyTheRacc](https://github.com/RickyTheRacc) in [#31](https://github.com/Steveplays28/realisticsleep/pull/31))
-  - `sendDawnMessage`: makes it more obvious that the dawn message can be disabled
-  - `showTimeUntilDawn`: allows disabling the time until dawn in the sleep message, to allow for greater vanilla parity
+    - `sendDawnMessage`: makes it more obvious that the dawn message can be disabled
+    - `showTimeUntilDawn`: allows disabling the time until dawn in the sleep message, to allow for greater vanilla parity
 - Russian translation (by [1-nkl](https://github.com/1-nkl) in [#36](https://github.com/Steveplays28/realisticsleep/pull/36))
 - Compatibility with Comforts' Hammocks
-  - Daytime and nighttime is differentiated between in the HUD messages
+    - Daytime and nighttime is differentiated between in the HUD messages
 
 ### Fixed
 
@@ -50,3 +50,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Day count resetting after sleeping
 - Issues with certain datapacks (such as Vanilla Tweaks and Stellarity)
+
+## `v1.9.0` - 15/10/2023
+
+### Added
+
+- Daytime sleeping (by [Superkat32](https://github.com/Superkat32) in [#48](https://github.com/Steveplays28/realisticsleep/pull/48))
+- Exponential sleep speed curve
+- Cloud speed multiplier
+- Optimised crop growth speed multiplier implementation
+- Thunder speed multiplier
+- Ice and snow formation speed multiplier
+- Precipitation (cauldron filling) speed multiplier
+- API for use by other mods
+- Separate config options for random block/fluid tick speed multipliers (disabled by default due to high TPS usage)
+
+### Changed
+
+- Reduced the length of the config screen tooltips (by [Superkat32](https://github.com/Superkat32)
+  in [#48](https://github.com/Steveplays28/realisticsleep/pull/48))
+- Config menu title to `Realistic Sleep Config` (by [Superkat32](https://github.com/Superkat32)
+  in [#48](https://github.com/Steveplays28/realisticsleep/pull/48))
+- HUD messages use translation entries instead of hardcoded text (split up in parts)
