@@ -29,7 +29,9 @@ You can set a minimum amount of players that have to sleep using the vanilla Min
 
 Any mods which simply add buffs/debuffs after waking up should work. [Create an issue](https://github.com/Steveplays28/realisticsleep/issues/new) on the issue tracker if you've found an incompatibility!
 
-- BetterSleeping Revived - Buffs, debuffs, and chat messages don't trigger (working on a fix, see the [issue tracker](https://github.com/Steveplays28/realisticsleep/issues/18) for more details)
+- BetterSleeping Revived - Buffs, debuffs, and chat messages don't trigger (see [issue #18](https://github.com/Steveplays28/realisticsleep/issues/18) for more details)
+- Time and Wind - Adjusted time snaps back to vanilla time
+- Time Control - Adjusted time snaps back to vanilla time
 
 ## Download
 
