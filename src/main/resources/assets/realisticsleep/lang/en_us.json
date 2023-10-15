@@ -36,6 +36,8 @@
   "text.autoconfig.realisticsleep.option.iceAndSnowTickSpeedMultiplier.@Tooltip": "How many times faster ice and snow should form.",
   "text.autoconfig.realisticsleep.option.cropGrowthTickSpeedMultiplier": "Crop growth speed multiplier",
   "text.autoconfig.realisticsleep.option.cropGrowthTickSpeedMultiplier.@Tooltip": "How many times faster crops should grow.",
+  "text.autoconfig.realisticsleep.option.precipitationTickSpeedMultiplier": "Precipitation tick speed multiplier",
+  "text.autoconfig.realisticsleep.option.precipitationTickSpeedMultiplier.@Tooltip": "How many times faster cauldrons should fill.",
   "text.autoconfig.realisticsleep.option.blockRandomTickSpeedMultiplier": "Block random tick speed multiplier",
   "text.autoconfig.realisticsleep.option.blockRandomTickSpeedMultiplier.@Tooltip": "How many times faster blocks should random tick. Enable at your own risk, may cause huge TPS loss!",
   "text.autoconfig.realisticsleep.option.fluidRandomTickSpeedMultiplier": "Fluid random tick speed multiplier",
