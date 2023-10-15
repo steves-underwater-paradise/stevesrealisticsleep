@@ -17,3 +17,4 @@
 - Config menu title to `Realistic Sleep Config` (by [Superkat32](https://github.com/Superkat32)
   in [#48](https://github.com/Steveplays28/realisticsleep/pull/48))
 - HUD messages use translation entries instead of hardcoded text (split up in parts)
+- Dropped Minecraft `1.18.x` support
