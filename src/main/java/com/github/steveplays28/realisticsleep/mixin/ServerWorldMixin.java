@@ -355,10 +355,12 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 				);
 				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
 
-				if (randomBlockInChunk instanceof CropBlock cropBlock) {
-					cropBlock.grow(this.toServerWorld(), random, randomPosInChunk, randomBlockStateInChunk);
-				} else if (randomBlockInChunk instanceof StemBlock stemBlock) {
-					stemBlock.grow(this.toServerWorld(), random, randomPosInChunk, randomBlockStateInChunk);
+				if (getLightLevel(randomPosInChunk, 0) >= 9) {
+					if (randomBlockInChunk instanceof CropBlock cropBlock) {
+						cropBlock.grow(this.toServerWorld(), random, randomPosInChunk, randomBlockStateInChunk);
+					} else if (randomBlockInChunk instanceof StemBlock stemBlock) {
+						stemBlock.grow(this.toServerWorld(), random, randomPosInChunk, randomBlockStateInChunk);
+					}
 				}
 			}
 
