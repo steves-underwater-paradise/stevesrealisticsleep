@@ -47,6 +47,8 @@ public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public double cropGrowthTickSpeedMultiplier = 25d;
 	@ConfigEntry.Gui.Tooltip
+	public double precipitationTickSpeedMultiplier = 25d;
+	@ConfigEntry.Gui.Tooltip
 	public double blockRandomTickSpeedMultiplier = 1d;
 	@ConfigEntry.Gui.Tooltip
 	public double fluidRandomTickSpeedMultiplier = 1d;

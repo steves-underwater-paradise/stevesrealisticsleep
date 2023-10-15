@@ -3,10 +3,7 @@ package com.github.steveplays28.realisticsleep.mixin;
 import com.github.steveplays28.realisticsleep.api.RealisticSleepApi;
 import com.github.steveplays28.realisticsleep.extension.ServerWorldExtension;
 import com.github.steveplays28.realisticsleep.util.SleepMathUtil;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CropBlock;
-import net.minecraft.block.StemBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.fluid.Fluid;
@@ -296,6 +293,7 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 		var chunkStartPosZ = chunkPos.getStartZ();
 		BlockPos blockPos;
 
+		// Thunder tick speed multiplier
 		profiler.push(String.format("Thunder (%s)", MOD_NAME));
 		for (int i = 0; i < thunderTickSpeedMultiplier; i++) {
 			if (this.isRaining() && this.isThundering() && this.random.nextInt(100000) == 0) {
@@ -313,6 +311,12 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 			}
 		}
 
+		if (randomTickSpeed <= 0) {
+			profiler.pop();
+			return;
+		}
+
+		// Ice and snow formation tick speed multiplier
 		profiler.swap(String.format("Form ice and snow (%s)", MOD_NAME));
 		for (int i = 0; i < iceAndSnowTickSpeedMultiplier; i++) {
 			if (this.random.nextInt(16) == 0) {
@@ -325,25 +329,10 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 					this.setBlockState(blockPosDown, Blocks.ICE.getDefaultState());
 				}
 
-				if (this.isRaining()) {
-					if (biome.canSetSnow(this, blockPos)) {
-						this.setBlockState(blockPos, Blocks.SNOW.getDefaultState());
-					}
-
-					BlockState blockStateDown = this.getBlockState(blockPosDown);
-					Biome.Precipitation precipitation = biome.getPrecipitation();
-					if (precipitation == Biome.Precipitation.RAIN && biome.isCold(blockPosDown)) {
-						precipitation = Biome.Precipitation.SNOW;
-					}
-
-					blockStateDown.getBlock().precipitationTick(blockStateDown, this, blockPosDown, precipitation);
+				if (this.isRaining() && biome.canSetSnow(this, blockPos)) {
+					this.setBlockState(blockPos, Blocks.SNOW.getDefaultState());
 				}
 			}
-		}
-
-		if (randomTickSpeed <= 0) {
-			profiler.pop();
-			return;
 		}
 
 		profiler.swap(String.format("Tick blocks (%s)", MOD_NAME));
@@ -353,9 +342,11 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 			}
 
 			var cropGrowthTickSpeedMultiplier = (int) Math.round(config.cropGrowthTickSpeedMultiplier);
+			var precipitationTickSpeedMultiplier = (int) Math.round(config.precipitationTickSpeedMultiplier);
 			var blockRandomTickSpeedMultiplier = (int) Math.round(config.blockRandomTickSpeedMultiplier);
 			var fluidRandomTickSpeedMultiplier = (int) Math.round(config.fluidRandomTickSpeedMultiplier);
 
+			// Crop growth speed multiplier
 			for (int i = 0; i < cropGrowthTickSpeedMultiplier; i++) {
 				int chunkSectionYOffset = chunkSection.getYOffset();
 				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
@@ -371,6 +362,29 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 				}
 			}
 
+			// Precipitation tick speed multiplier
+			for (int i = 0; i < precipitationTickSpeedMultiplier; i++) {
+				int chunkSectionYOffset = chunkSection.getYOffset();
+				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
+				var randomBlockStateInChunk = chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX,
+						randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ
+				);
+				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
+				var biome = this.getBiome(randomPosInChunk).value();
+				var precipitation = biome.getPrecipitation();
+
+				if (precipitation == Biome.Precipitation.RAIN && biome.isCold(randomPosInChunk)) {
+					precipitation = Biome.Precipitation.SNOW;
+				}
+
+				if (randomBlockInChunk instanceof CauldronBlock cauldronBlock) {
+					cauldronBlock.precipitationTick(randomBlockStateInChunk, this, randomPosInChunk, precipitation);
+				} else if (randomBlockInChunk instanceof LeveledCauldronBlock leveledCauldronBlock) {
+					leveledCauldronBlock.precipitationTick(randomBlockStateInChunk, this, randomPosInChunk, precipitation);
+				}
+			}
+
+			// Random tick speed multiplier
 			for (int j = 0; j < randomTickSpeed; j++) {
 				int chunkSectionYOffset = chunkSection.getYOffset();
 				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
