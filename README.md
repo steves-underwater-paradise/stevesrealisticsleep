@@ -29,9 +29,9 @@ You can set a minimum amount of players that have to sleep using the vanilla Min
 
 Any mods which simply add buffs/debuffs after waking up should work. [Create an issue](https://github.com/Steveplays28/realisticsleep/issues/new) on the issue tracker if you've found an incompatibility!
 
-- BetterSleeping Revived - Buffs, debuffs, and chat messages don't trigger (see [issue #18](https://github.com/Steveplays28/realisticsleep/issues/18) for more details)
-- Time and Wind - Adjusted time snaps back to vanilla time
-- Time Control - Adjusted time snaps back to vanilla time
+- [BetterSleeping Revived](https://modrinth.com/mod/bettersleeping-revived) - Buffs, debuffs, and chat messages don't trigger (see [issue #18](https://github.com/Steveplays28/realisticsleep/issues/18) for more details)
+- [Time and Wind](https://www.curseforge.com/minecraft/mc-mods/time-wind) - Adjusted time snaps back to vanilla time
+- [Time Control](https://modrinth.com/mod/time-control) - Adjusted time snaps back to vanilla time
 
 ## Download
 
@@ -44,7 +44,7 @@ Any mods which simply add buffs/debuffs after waking up should work. [Create an 
 
 See the version info in the filename for the supported Minecraft versions.  
 Made for the Fabric and Quilt modloaders.  
-Server side only.
+Server side (with optional client side support for the cloud speed multiplier).
 
 ## FAQ
 
@@ -60,7 +60,7 @@ A: Also no.
 A: Yes! The speed of the night scales linearly for each player that's sleeping at the same time.
 
 - Q: Does only the server need this mod or does the client need it too?  
-A: Only the server needs this mod (but it works on the client too if you're going to host LAN or play singleplayer)
+A: Only the server needs this mod (but it works on the client too if you're going to host LAN or play singleplayer). There's optional clientside support for the cloud speed multiplier.
 
 - Q: Can you still avoid rain/thunder by sleeping?  
 A: Yes. After sleeping until dawn the weather will become clear. I might make this configurable in the future, let me know if you want this.
