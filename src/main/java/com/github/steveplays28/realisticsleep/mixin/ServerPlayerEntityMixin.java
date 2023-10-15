@@ -3,7 +3,6 @@ package com.github.steveplays28.realisticsleep.mixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,9 +22,6 @@ public abstract class ServerPlayerEntityMixin extends Entity {
 
 	@Shadow
 	public abstract void sendMessage(Text message, boolean overlay);
-
-	@Shadow
-	public abstract ServerWorld getWorld();
 
 	@Inject(method = "wakeUp(ZZ)V", at = @At(value = "HEAD"))
 	public void wakeUpInject(boolean skipSleepTimer, boolean updateSleepingPlayers, CallbackInfo ci) {
