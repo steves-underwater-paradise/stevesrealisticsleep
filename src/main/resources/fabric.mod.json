@@ -53,6 +53,7 @@
     "modmenu": ">=3.0.0"
   },
   "conflicts": {
-    "tawct": "*"
+    "tawct": "*",
+    "timecontrol": "*"
   }
 }
