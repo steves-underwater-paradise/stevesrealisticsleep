@@ -17,8 +17,9 @@ public class RealisticSleepMixinPlugin implements IMixinConfigPlugin {
 	private static final Supplier<Boolean> TRUE = () -> true;
 
 	private static final Map<String, Supplier<Boolean>> CONDITIONS = ImmutableMap.of(
-			"com.github.steveplays28.realisticsleep.mixin.WorldRendererMixin",
-			() -> !FabricLoader.getInstance().isModLoaded(SODIUM_MOD_ID)
+			"com.github.steveplays28.realisticsleep.mixin.WorldRendererMixin", () -> !FabricLoader.getInstance().isModLoaded(SODIUM_MOD_ID),
+			"com.github.steveplays28.realisticsleep.mixin.sodium.SodiumCloudRendererMixin",
+			() -> FabricLoader.getInstance().isModLoaded(SODIUM_MOD_ID)
 	);
 
 	@Override

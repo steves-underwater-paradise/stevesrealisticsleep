@@ -5,9 +5,15 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "com.github.steveplays28.realisticsleep.mixin.RealisticSleepMixinPlugin",
   "mixins": [
-    "PlayerEntityMixin",
+    "CauldronBlockMixin",
+    "ServerPlayerEntityMixin",
     "ServerWorldMixin",
-    "SleepOverrideMixin"
+    "SleepManagerMixin",
+    "accessor.ServerWorldAccessor"
+  ],
+  "client": [
+    "WorldRendererMixin",
+    "sodium.SodiumCloudRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
