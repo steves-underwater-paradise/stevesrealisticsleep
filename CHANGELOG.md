@@ -72,3 +72,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Config menu title to `Realistic Sleep Config` (by [Superkat32](https://github.com/Superkat32)
   in [#48](https://github.com/Steveplays28/realisticsleep/pull/48))
 - HUD messages use translation entries instead of hardcoded text (split up in parts)
+
+## `v1.9.1` - 16/10/2023
+
+## Added
+
+- Sodium `v0.5.x` compatibility for the cloud speed multiplier
+
+## Fixed
+
+- Crash on startup due to the `WorldRendererMixin`
