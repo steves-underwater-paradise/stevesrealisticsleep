@@ -46,11 +46,11 @@
     "minecraft": [
       "1.19.x"
     ],
-    "cloth-config": ">=5.3.63",
+    "cloth-config": ">=9.1.104",
     "fabric": ">=0.48.0"
   },
   "suggests": {
-    "modmenu": ">=3.0.0"
+    "modmenu": ">=5.1.0"
   },
   "conflicts": {
     "tawct": "*",
