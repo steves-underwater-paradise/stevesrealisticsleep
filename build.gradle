@@ -6,7 +6,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = "${project.mod_version}+mc${project.supported_minecraft_version}"
+version = "${project.mod_version}+mc${project.supported_minecraft_version_name}"
 group = project.maven_group
 
 repositories {
