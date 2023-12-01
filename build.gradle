@@ -25,6 +25,11 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+
+    maven {
+        name = "Nucleoid"
+        url = "https://maven.nucleoid.xyz"
+    }
 }
 
 dependencies {
@@ -45,6 +50,8 @@ dependencies {
     modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+
+    modImplementation include("fr.catcore:server-translations-api:${project.server_translation_api_version}")
 }
 
 processResources {
