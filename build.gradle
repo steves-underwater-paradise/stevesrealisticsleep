@@ -64,7 +64,11 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
+    // Server Translation API
     modImplementation include("xyz.nucleoid:server-translations-api:${project.server_translation_api_version}")
+
+    // Mixin Extras
+    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.2.1")))
 }
 
 processResources {
