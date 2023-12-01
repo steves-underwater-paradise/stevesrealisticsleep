@@ -17,6 +17,14 @@
       "links": {
         "modmenu.discord": "https://discord.gg/KbWxgGg"
       }
+    },
+    "mc-publish": {
+      "loaders": [
+        "fabric",
+        "quilt"
+      ],
+      "curseforge": 616330,
+      "modrinth": "ZPywkPEo"
     }
   },
   "license": "LGPLv2.1",
@@ -27,21 +35,25 @@
       "com.github.steveplays28.realisticsleep.RealisticSleep"
     ],
     "modmenu": [
-      "com.github.steveplays28.realisticsleep.config.ModMenuIntegration"
+      "com.github.steveplays28.realisticsleep.client.compat.ModMenuIntegration"
     ]
   },
   "mixins": [
     "realisticsleep.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.8",
+    "fabricloader": ">=0.15.0",
     "minecraft": [
-      "1.20.x"
+      "1.20.2"
     ],
-    "cloth-config": ">=5.3.63",
-    "fabric": ">=0.48.0"
+    "cloth-config": ">=12.0.111",
+    "fabric": ">=0.91.1"
   },
   "suggests": {
-    "modmenu": ">=3.0.0"
+    "modmenu": ">=8.0.0"
+  },
+  "conflicts": {
+    "tawct": "*",
+    "timecontrol": "*"
   }
 }
