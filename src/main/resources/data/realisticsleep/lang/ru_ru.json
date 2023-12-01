@@ -1,0 +1,23 @@
+{
+  "text.autoconfig.realisticsleep.title": "Конфиг мода Realistic Sleep",
+  "text.autoconfig.realisticsleep.option.dawnMessage": "Сообщение о рассвете",
+  "text.autoconfig.realisticsleep.option.dawnMessage.@Tooltip": "Сообщение, которое будет отображаться у всех игроков на панели действий после того, как они проспят.",
+  "text.autoconfig.realisticsleep.option.sendSleepingMessage": "Отправить сообщение о сне?",
+  "text.autoconfig.realisticsleep.option.sendSleepingMessage.@Tooltip": "Переключает \"x/y игроков спят этой ночью (до рассвета осталось: z)\" сообщение на панели действий.",
+  "text.autoconfig.realisticsleep.option.sendNotEnoughPlayersSleepingMessage": "Отправить сообщение о недостаточном количестве спящих игроков?",
+  "text.autoconfig.realisticsleep.option.sendNotEnoughPlayersSleepingMessage.@Tooltip": "Переключает \"x/y игроков сейчас спят. Требуется z/w игроков чтобы проспать ночь.\" сообщение на панели действий.",
+  "text.autoconfig.realisticsleep.option.sleepSpeedCurve": "Кривая скорости сна",
+  "text.autoconfig.realisticsleep.option.sleepSpeedCurve.@Tooltip": "Кривая, которая используется для определения множителя скорости ночи с течением времени.",
+  "text.autoconfig.realisticsleep.option.sleepSpeedMultiplier": "Множитель скорости сна",
+  "text.autoconfig.realisticsleep.option.sleepSpeedMultiplier.@Tooltip": "Во сколько раз быстрее должна пройти ночь.",
+  "text.autoconfig.realisticsleep.option.blockEntityTickSpeedMultiplier": "Множитель скорости тика блока-сущности",
+  "text.autoconfig.realisticsleep.option.blockEntityTickSpeedMultiplier.@Tooltip": "Во сколько раз быстрее должны тикать такие блоки-сущности, как печи.",
+  "text.autoconfig.realisticsleep.option.chunkTickSpeedMultiplier": "Множитель скорости тика чанка",
+  "text.autoconfig.realisticsleep.option.chunkTickSpeedMultiplier.@Tooltip": "Во сколько раз быстрее должны тикать чанки. Не зря по умолчанию эта функция отключена, включайте на свой страх и риск. Безумная потеря TPS гарантирована.",
+  "text.autoconfig.realisticsleep.option.raidTickSpeedMultiplier": "Множитель скорости тика рейда",
+  "text.autoconfig.realisticsleep.option.raidTickSpeedMultiplier.@Tooltip": "Во сколько раз быстрее должны тикать таймеры рейда .",
+  "text.autoconfig.realisticsleep.option.entityTickSpeedMultiplier": "Множитель скорости тика сущности",
+  "text.autoconfig.realisticsleep.option.entityTickSpeedMultiplier.@Tooltip": "Во сколько раз быстрее должны тикать сущности.",
+  "text.autoconfig.realisticsleep.option.tickDelay": "Задержка тика",
+  "text.autoconfig.realisticsleep.option.tickDelay.@Tooltip": "Добавляет количество тиков задержки к каждому тику, так что время идет медленнее."
+}

@@ -33,6 +33,11 @@ repositories {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/"
     }
+
+    maven {
+        name = "Nucleoid"
+        url = "https://maven.nucleoid.xyz"
+    }
 }
 
 dependencies {
@@ -58,6 +63,8 @@ dependencies {
     modCompileOnly("maven.modrinth:sodium:${project.sodium_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+
+    modImplementation include("xyz.nucleoid:server-translations-api:${project.server_translation_api_version}")
 }
 
 processResources {
