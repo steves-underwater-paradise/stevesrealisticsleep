@@ -51,7 +51,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation include("fr.catcore:server-translations-api:${project.server_translation_api_version}")
+    modImplementation include("xyz.nucleoid:server-translations-api:${project.server_translation_api_version}")
 }
 
 processResources {

@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.MinecraftServer;
@@ -102,8 +103,11 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 	@Final
 	private static int MAX_TICKS;
 
-	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> dimension, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
-		super(properties, registryRef, dimension, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
+	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DynamicRegistryManager registryManager, RegistryEntry<DimensionType> dimensionEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long biomeAccess, int maxChainedNeighborUpdates) {
+		super(
+				properties, registryRef, registryManager, dimensionEntry, profiler, isClient, debugWorld, biomeAccess,
+				maxChainedNeighborUpdates
+		);
 	}
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getInt(Lnet/minecraft/world/GameRules$Key;)I"))
@@ -373,7 +377,7 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 				);
 				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
 				var biome = this.getBiome(randomPosInChunk).value();
-				var precipitation = biome.getPrecipitation();
+				var precipitation = biome.getPrecipitation(randomPosInChunk);
 
 				if (precipitation == Biome.Precipitation.RAIN && biome.isCold(randomPosInChunk)) {
 					precipitation = Biome.Precipitation.SNOW;
