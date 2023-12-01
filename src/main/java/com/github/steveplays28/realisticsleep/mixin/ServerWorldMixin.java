@@ -368,21 +368,21 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 			for (int i = 0; i < precipitationTickSpeedMultiplier; i++) {
 				int chunkSectionYOffset = chunkSection.getYOffset();
 				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
+				var biome = this.getBiome(randomPosInChunk).value();
+				var precipitation = biome.getPrecipitation();
+
+				if (precipitation == Biome.Precipitation.NONE) {
+					continue;
+				}
+
 				var randomBlockStateInChunk = chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX,
 						randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ
 				);
 				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
-				var biome = this.getBiome(randomPosInChunk).value();
-				var precipitation = biome.getPrecipitation();
 
-				if (precipitation == Biome.Precipitation.RAIN && biome.isCold(randomPosInChunk)) {
-					precipitation = Biome.Precipitation.SNOW;
-				}
-
-				if (randomBlockInChunk instanceof CauldronBlock cauldronBlock) {
+				if (randomBlockInChunk instanceof AbstractCauldronBlock cauldronBlock) {
 					cauldronBlock.precipitationTick(randomBlockStateInChunk, this, randomPosInChunk, precipitation);
-				} else if (randomBlockInChunk instanceof LeveledCauldronBlock leveledCauldronBlock) {
-					leveledCauldronBlock.precipitationTick(randomBlockStateInChunk, this, randomPosInChunk, precipitation);
+					cauldronBlock.scheduledTick(randomBlockStateInChunk, this.toServerWorld(), randomPosInChunk, random);
 				}
 			}
 
