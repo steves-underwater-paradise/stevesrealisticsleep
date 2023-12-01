@@ -1,7 +1,11 @@
-## Added
+### Added
 
-- Sodium `v0.5.x` compatibility for the cloud speed multiplier
+- Cauldron dripstone tick speedup
+    - Uses the precipitation tick speed multiplier in the config
+- Serverside translation support
+    - Uses the [Server Translation API](https://github.com/NucleoidMC/Server-Translations)
 
-## Fixed
+### Fixed
 
-- Crash on startup due to the `WorldRendererMixin`
+- Cauldron precipitation not taking dripstone into account
+    - Cauldron precipitation now checks if dripstone can drip into the cauldron
