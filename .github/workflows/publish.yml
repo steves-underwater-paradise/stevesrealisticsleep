@@ -24,7 +24,7 @@ jobs:
         id: supported_minecraft_version
         with:
           file: gradle.properties
-          property: supported_minecraft_version
+          property: supported_minecraft_version_name
           default: 0.0.1
 
       - run: echo version string ${{ steps.mod_version.outputs.value }}+mc${{ steps.supported_minecraft_version.outputs.value }}
