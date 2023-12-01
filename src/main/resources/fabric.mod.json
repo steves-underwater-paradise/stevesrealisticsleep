@@ -42,15 +42,15 @@
     "realisticsleep.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.0",
+    "fabricloader": ">=${loader_version}",
     "minecraft": [
-      "1.20.2"
+      "${supported_minecraft_version}"
     ],
-    "cloth-config": ">=12.0.111",
-    "fabric": ">=0.91.1"
+    "cloth-config": ">=${cloth_config_version}",
+    "fabric": ">=${fabric_version}"
   },
   "suggests": {
-    "modmenu": ">=8.0.0"
+    "modmenu": ">=${modmenu_version}"
   },
   "conflicts": {
     "tawct": "*",

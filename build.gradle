@@ -72,7 +72,7 @@ processResources {
     filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand "version": project.version, "supported_minecraft_version": project.supported_minecraft_version, "loader_version": project.loader_version, "fabric_version": project.fabric_version, "cloth_config_version": project.cloth_config_version, "modmenu_version": project.modmenu_version
     }
 }
 
