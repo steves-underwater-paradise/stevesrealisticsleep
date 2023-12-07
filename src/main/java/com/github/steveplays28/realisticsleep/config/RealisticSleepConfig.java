@@ -53,7 +53,7 @@ public class RealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public double fluidRandomTickSpeedMultiplier = 1d;
 	@ConfigEntry.Gui.Tooltip
-	public float worldRenderingSpeedMultiplier = 25f;
+	public float worldRendererTickSpeedMultiplier = 25f;
 
 	@ConfigEntry.Gui.Tooltip
 	public long tickDelay = -1;
