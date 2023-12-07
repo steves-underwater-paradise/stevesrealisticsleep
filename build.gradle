@@ -59,11 +59,6 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    // Sodium
-    modCompileOnly("maven.modrinth:sodium:${project.sodium_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
     // Server Translation API
     modImplementation include("xyz.nucleoid:server-translations-api:${project.server_translation_api_version}")
 
