@@ -1,7 +1,7 @@
 ### Added
 
 - Better Clouds compatibility
-  - The `cloudSpeedMultiplier` config option was renamed to `worldRendererTickSpeedMultiplier`
+  - Renamed the `cloudSpeedMultiplier` config option to `worldRendererTickSpeedMultiplier`
 
 ### Fixed
 
