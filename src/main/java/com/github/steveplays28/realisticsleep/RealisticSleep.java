@@ -49,7 +49,7 @@ public class RealisticSleep implements ModInitializer {
 
 	private void tickWorldRendererFasterWhileSleeping(ClientWorld world) {
 		if (RealisticSleepApi.isSleeping(world)) {
-			for (int i = 0; i < config.worldRenderingSpeedMultiplier; i++) {
+			for (int i = 0; i < config.worldRendererTickSpeedMultiplier; i++) {
 				MinecraftClient.getInstance().worldRenderer.tick();
 			}
 		}
