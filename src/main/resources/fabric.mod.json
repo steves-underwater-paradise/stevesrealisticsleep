@@ -50,7 +50,9 @@
     "fabric": ">=${fabric_version}"
   },
   "suggests": {
-    "modmenu": ">=${modmenu_version}"
+    "modmenu": ">=${modmenu_version}",
+    "sodium": "*",
+    "better-clouds": "*"
   },
   "conflicts": {
     "tawct": "*",

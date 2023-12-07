@@ -3,17 +3,12 @@
   "minVersion": "0.8",
   "package": "com.github.steveplays28.realisticsleep.mixin",
   "compatibilityLevel": "JAVA_17",
-  "plugin": "com.github.steveplays28.realisticsleep.mixin.RealisticSleepMixinPlugin",
   "mixins": [
     "CauldronBlockMixin",
     "ServerPlayerEntityMixin",
     "ServerWorldMixin",
     "SleepManagerMixin",
     "accessor.ServerWorldAccessor"
-  ],
-  "client": [
-    "WorldRendererMixin",
-    "sodium.SodiumCloudRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
