@@ -1,8 +1,4 @@
-### Added
-
-- Better Clouds compatibility
-  - Renamed the `cloudSpeedMultiplier` config option to `worldRendererTickSpeedMultiplier`
-
 ### Fixed
 
-- Outdated translations in some versions of Realistic Sleep
+- Crash on startup on dedicated servers due to client tick event registration code being loaded on dedicated servers 
+- Incorrect translation for the `worldRendererTickSpeedMultiplier`
