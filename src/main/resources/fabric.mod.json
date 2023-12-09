@@ -34,6 +34,9 @@
     "main": [
       "com.github.steveplays28.realisticsleep.RealisticSleep"
     ],
+    "client": [
+      "com.github.steveplays28.realisticsleep.client.compat.RealisticSleepClient"
+    ],
     "modmenu": [
       "com.github.steveplays28.realisticsleep.client.compat.ModMenuIntegration"
     ]

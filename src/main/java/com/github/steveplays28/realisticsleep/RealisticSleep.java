@@ -1,15 +1,11 @@
 package com.github.steveplays28.realisticsleep;
 
-import com.github.steveplays28.realisticsleep.api.RealisticSleepApi;
 import com.github.steveplays28.realisticsleep.config.RealisticSleepConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.ActionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,16 +38,5 @@ public class RealisticSleep implements ModInitializer {
 
 			return ActionResult.PASS;
 		}));
-
-		// Tick the world renderer faster while sleeping
-		ClientTickEvents.START_WORLD_TICK.register(this::tickWorldRendererFasterWhileSleeping);
-	}
-
-	private void tickWorldRendererFasterWhileSleeping(ClientWorld world) {
-		if (RealisticSleepApi.isSleeping(world)) {
-			for (int i = 0; i < config.worldRendererTickSpeedMultiplier; i++) {
-				MinecraftClient.getInstance().worldRenderer.tick();
-			}
-		}
 	}
 }
