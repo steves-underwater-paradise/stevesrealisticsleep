@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Russian translation (by [MushroomMif](https://github.com/MushroomMif) in [PR #57](https://github.com/Steveplays28/realisticsleep/pull/57))
+- Updated Russian translation (by [MushroomMif](https://github.com/MushroomMif) in [PR #57](https://github.com/Steveplays28/realisticsleep/pull/57))
 
 ## `v1.10.1` - 09/12/2023
 
