@@ -1,4 +1,3 @@
-### Fixed
+### Changed
 
-- Crash on startup on dedicated servers due to client tick event registration code being loaded on dedicated servers 
-- Incorrect translation for the `worldRendererTickSpeedMultiplier`
+- Russian translation (by [MushroomMif](https://github.com/MushroomMif) in [PR #57](https://github.com/Steveplays28/realisticsleep/pull/57))
