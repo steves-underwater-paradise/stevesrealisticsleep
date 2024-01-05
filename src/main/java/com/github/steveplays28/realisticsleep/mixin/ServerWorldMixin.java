@@ -3,11 +3,17 @@ package com.github.steveplays28.realisticsleep.mixin;
 import com.github.steveplays28.realisticsleep.api.RealisticSleepApi;
 import com.github.steveplays28.realisticsleep.extension.ServerWorldExtension;
 import com.github.steveplays28.realisticsleep.util.SleepMathUtil;
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractCauldronBlock;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.CropBlock;
+import net.minecraft.block.StemBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerChunkManager;
@@ -16,12 +22,14 @@ import net.minecraft.server.world.SleepManager;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.village.raid.RaidManager;
-import net.minecraft.world.*;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.MutableWorldProperties;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.dimension.DimensionType;
@@ -102,8 +110,8 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 	@Final
 	private static int MAX_TICKS;
 
-	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
-		super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
+	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DynamicRegistryManager registryManager, RegistryEntry<DimensionType> dimensionEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long biomeAccess, int maxChainedNeighborUpdates) {
+		super(properties, registryRef, registryManager, dimensionEntry, profiler, isClient, debugWorld, biomeAccess, maxChainedNeighborUpdates);
 	}
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getInt(Lnet/minecraft/world/GameRules$Key;)I"))
@@ -336,7 +344,11 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 		}
 
 		profiler.swap(String.format("Tick blocks (%s)", MOD_NAME));
-		for (var chunkSection : chunk.getSectionArray()) {
+		var chunkSections = chunk.getSectionArray();
+		for (int l = 0; l < chunkSections.length; l++) {
+			var chunkSection = chunkSections[l];
+			int sectionCoord = chunk.sectionIndexToCoord(l);
+			int blockCoord = ChunkSectionPos.getBlockCoord(sectionCoord);
 			if (!chunkSection.hasRandomTicks()) {
 				continue;
 			}
@@ -348,10 +360,9 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 
 			// Crop growth speed multiplier
 			for (int i = 0; i < cropGrowthTickSpeedMultiplier; i++) {
-				int chunkSectionYOffset = chunkSection.getYOffset();
-				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
+				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, blockCoord, chunkStartPosZ, 15);
 				var randomBlockStateInChunk = chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX,
-						randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ
+						randomPosInChunk.getY() - blockCoord, randomPosInChunk.getZ() - chunkStartPosZ
 				);
 				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
 
@@ -366,17 +377,16 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 
 			// Precipitation tick speed multiplier
 			for (int i = 0; i < precipitationTickSpeedMultiplier; i++) {
-				int chunkSectionYOffset = chunkSection.getYOffset();
-				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
+				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, 0, chunkStartPosZ, 15);
 				var biome = this.getBiome(randomPosInChunk).value();
-				var precipitation = biome.getPrecipitation();
+				var precipitation = biome.getPrecipitation(randomPosInChunk);
 
 				if (precipitation == Biome.Precipitation.NONE) {
 					continue;
 				}
 
 				var randomBlockStateInChunk = chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX,
-						randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ
+						randomPosInChunk.getY(), randomPosInChunk.getZ() - chunkStartPosZ
 				);
 				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
 
@@ -388,10 +398,9 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 
 			// Random tick speed multiplier
 			for (int j = 0; j < randomTickSpeed; j++) {
-				int chunkSectionYOffset = chunkSection.getYOffset();
-				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
+				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, blockCoord, chunkStartPosZ, 15);
 				var randomBlockStateInChunk = chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX,
-						randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ
+						randomPosInChunk.getY() - blockCoord, randomPosInChunk.getZ() - chunkStartPosZ
 				);
 				var fluidState = randomBlockStateInChunk.getFluidState();
 

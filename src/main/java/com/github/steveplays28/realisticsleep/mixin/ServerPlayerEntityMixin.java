@@ -25,11 +25,11 @@ public abstract class ServerPlayerEntityMixin extends Entity {
 	public abstract void sendMessage(Text message, boolean overlay);
 
 	@Shadow
-	public abstract ServerWorld getWorld();
+	public abstract ServerWorld getServerWorld();
 
 	@Inject(method = "wakeUp(ZZ)V", at = @At(value = "HEAD"))
 	public void wakeUpInject(boolean skipSleepTimer, boolean updateSleepingPlayers, CallbackInfo ci) {
-		var timeOfDay = getWorld().getTimeOfDay() % DAY_LENGTH;
+		var timeOfDay = getServerWorld().getTimeOfDay() % DAY_LENGTH;
 		var ticksUntilDawn = Math.abs(timeOfDay - DAWN_WAKE_UP_TIME);
 		var ticksUntilDusk = Math.abs(timeOfDay - DUSK_WAKE_UP_TIME);
 
