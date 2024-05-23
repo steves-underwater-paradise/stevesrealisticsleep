@@ -60,5 +60,7 @@
   "conflicts": {
     "tawct": "*",
     "timecontrol": "*"
-  }
+  },
+
+  "accessWidener": "realisticsleep.accesswidener"
 }

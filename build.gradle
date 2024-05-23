@@ -9,6 +9,10 @@ plugins {
 version = "${project.mod_version}+mc${project.supported_minecraft_version_name}"
 group = project.maven_group
 
+loom {
+    accessWidenerPath = file("src/main/resources/realisticsleep.accesswidener")
+}
+
 repositories {
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
