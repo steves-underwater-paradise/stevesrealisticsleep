@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "Steveplays28"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/${mod_id}",
+    "sources": "https://github.com/Steveplays28/${mod_id}",
+    "issues": "https://github.com/Steveplays28/${mod_id}/issues"
+  },
+  "license": "${mod_license}",
+  "icon": "assets/${mod_namespace}/icon.png",
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/KbWxgGg"
+      }
+    },
+    "mc-publish": {
+      "loaders": [
+        "fabric",
+        "quilt"
+      ],
+      "curseforge": "${curseforge_project_id}",
+      "modrinth": "${modrinth_project_id}"
+    }
+  },
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.steveplays28.stevesrealisticsleep.fabric.StevesRealisticSleepFabric"
+    ],
+    "client": [
+      "io.github.steveplays28.stevesrealisticsleep.client.StevesRealisticSleepClient"
+    ],
+    "modmenu": [
+      "io.github.steveplays28.stevesrealisticsleep.client.compat.modmenu.StevesRealisticSleepClientModMenuCompat"
+    ]
+  },
+  "mixins": [
+    "${mod_namespace}-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "${supported_minecraft_version}",
+    "fabric": ">=${fabric_api_version}",
+    "cloth-config": ">=${cloth_config_version}"
+  },
+  "suggests": {
+    "modmenu": ">=${mod_menu_version}",
+    "sodium": "*",
+    "better-clouds": "*"
+  },
+  "conflicts": {
+    "tawct": "*",
+    "timecontrol": "*"
+  }
+}
