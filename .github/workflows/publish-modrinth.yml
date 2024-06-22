@@ -1,4 +1,4 @@
-name: Publish
+name: Publish (Modrinth)
 
 on:
   workflow_dispatch:
@@ -42,7 +42,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: ${{ env.release_tag_name }}
+          tag: v${{ steps.mod_version.outputs.value }}+mc${{ steps.supported_minecraft_version_name.outputs.value }}
           doNotFailIfNotFound: true
 
       - name: Check if an existing release with the same version exists
@@ -75,9 +75,6 @@ jobs:
           # Modrinth
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
-          # CurseForge
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
           name: ${{ steps.mod_version.outputs.value }} (${{ steps.supported_minecraft_version_name.outputs.value }})
           github-tag: ${{ env.release_tag_name }}
           files: |
@@ -94,9 +91,6 @@ jobs:
           # Modrinth
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
-          # CurseForge
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
           name: ${{ steps.mod_version.outputs.value }} (${{ steps.supported_minecraft_version_name.outputs.value }})
           github-tag: ${{ env.release_tag_name }}
           files: |
@@ -105,16 +99,3 @@ jobs:
           version-type: release
           modrinth-featured: false
           changelog-file: CHANGELOG_LATEST.md
-
-      - name: Publish mod to GitHub releases
-        uses: ncipollo/release-action@v1.14.0
-        with:
-          name: ${{ steps.mod_version.outputs.value }} (${{ steps.supported_minecraft_version_name.outputs.value }})
-          tag: ${{ env.release_tag_name }}
-          artifacts: "**/build/libs/!(*-@(dev-shadow|transformProduction*).jar)"
-          bodyFile: CHANGELOG_LATEST.md
-
-      - name: Publish mod to Maven repository
-        run: ./gradlew publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

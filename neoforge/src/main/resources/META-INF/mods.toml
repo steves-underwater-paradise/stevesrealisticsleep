@@ -1,0 +1,54 @@
+modLoader = "javafml"
+loaderVersion = ">=${neoforge_version}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Steveplays28/${mod_id}/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "${mod_name}"
+authors = "Steveplays28"
+description = '''
+${mod_description}
+'''
+logoFile = "assets/${mod_namespace}/icon.png"
+displayURL = "https://github.com/Steveplays28/${mod_id}"
+
+[mc-publish]
+curseforge = "${curseforge_project_id}"
+modrinth = "${modrinth_project_id}"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${supported_minecraft_version}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = ">=${neoforge_version}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "cloth_config"
+type = "required"
+versionRange = ">=${cloth_config_version}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "sodium"
+type = "optional"
+versionRange = "*"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "better-clouds"
+type = "optional"
+versionRange = "*"
+ordering = "NONE"
+side = "CLIENT"

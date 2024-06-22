@@ -1,0 +1,23 @@
+{
+  "text.autoconfig.steves_realistic_sleep.title": "Realistic Sleep Konfiguration",
+  "text.autoconfig.steves_realistic_sleep.option.dawnMessage": "Dämmerungsmeldung",
+  "text.autoconfig.steves_realistic_sleep.option.dawnMessage.@Tooltip": "Die Nachricht, die allen Spielern in der Aktionsleiste angezeigt wird, nachdem sie die Nacht durchgeschlafen haben.",
+  "text.autoconfig.steves_realistic_sleep.option.sendSleepingMessage": "Schlafnachricht senden?",
+  "text.autoconfig.steves_realistic_sleep.option.sendSleepingMessage.@Tooltip": "Schaltet die Meldung \"x/y Spieler schlafen diese Nacht durch (Zeit bis zum Morgengrauen: z)\" in der Aktionsleiste ein.",
+  "text.autoconfig.steves_realistic_sleep.option.sendNotEnoughPlayersSleepingMessage": "Nachricht über nicht genug schlafende Spieler senden?",
+  "text.autoconfig.steves_realistic_sleep.option.sendNotEnoughPlayersSleepingMessage.@Tooltip": "Schaltet die Meldung \"x/y Spieler schlafen derzeit. z/w Spieler müssen die Nacht durchschlafen.\" in der Aktionsleiste ein.",
+  "text.autoconfig.steves_realistic_sleep.option.sleepSpeedCurve": "Schlafgeschwindigkeitskurve",
+  "text.autoconfig.steves_realistic_sleep.option.sleepSpeedCurve.@Tooltip": "Die Kurve, die verwendet wird, um den Multiplikator der Geschwindigkeit der Nacht mit fortschreitender Zeit zu bestimmen",
+  "text.autoconfig.steves_realistic_sleep.option.sleepSpeedMultiplier": "Schlafgeschwindigkeitsmultiplikator",
+  "text.autoconfig.steves_realistic_sleep.option.sleepSpeedMultiplier.@Tooltip": "Wie viel schneller die Nacht verlaufen soll",
+  "text.autoconfig.steves_realistic_sleep.option.blockEntityTickSpeedMultiplier": "Block-Entity-Tick-Geschwindigkeit-Multiplikator",
+  "text.autoconfig.steves_realistic_sleep.option.blockEntityTickSpeedMultiplier.@Tooltip": "Wie viel schneller Block-Entitäten wie Öfen ticken sollen",
+  "text.autoconfig.steves_realistic_sleep.option.chunkTickSpeedMultiplier": "Chunk-Tick-Geschwindigkeitsmultiplikator",
+  "text.autoconfig.steves_realistic_sleep.option.chunkTickSpeedMultiplier.@Tooltip": "Wie viele Male schneller die Chunks ticken sollen. Es gibt einen Grund, warum diese Option standardmäßig deaktiviert ist, aktivieren Sie sie auf eigene Gefahr. Wahnsinniger TPS-Verlust ist garantiert.",
+  "text.autoconfig.steves_realistic_sleep.option.raidTickSpeedMultiplier": "Raid-Tick-Geschwindigkeitsmultiplikator",
+  "text.autoconfig.steves_realistic_sleep.option.raidTickSpeedMultiplier.@Tooltip": "Wie viel schneller die Raid-Timer ticken sollen.",
+  "text.autoconfig.steves_realistic_sleep.option.entityTickSpeedMultiplier": "Entitäts-Tick-Geschwindigkeitsmultiplikator",
+  "text.autoconfig.steves_realistic_sleep.option.entityTickSpeedMultiplier.@Tooltip": "Wie viele Male schneller Entitäten ticken sollen",
+  "text.autoconfig.steves_realistic_sleep.option.tickDelay": "Tick-Verzögerung",
+  "text.autoconfig.steves_realistic_sleep.option.tickDelay.@Tooltip": "Fügt jedem Tick eine Verzögerung von mehreren Ticks hinzu, so dass die Zeit langsamer vergeht."
+}
