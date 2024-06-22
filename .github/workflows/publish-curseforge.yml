@@ -1,4 +1,4 @@
-name: Publish
+name: Publish (CurseForge)
 
 on:
   workflow_dispatch:
@@ -72,9 +72,6 @@ jobs:
       - name: Publish mod (Fabric)
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          # Modrinth
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
           # CurseForge
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
@@ -91,9 +88,6 @@ jobs:
       - name: Publish mod (NeoForge)
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          # Modrinth
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
           # CurseForge
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
@@ -105,16 +99,3 @@ jobs:
           version-type: release
           modrinth-featured: false
           changelog-file: CHANGELOG_LATEST.md
-
-      - name: Publish mod to GitHub releases
-        uses: ncipollo/release-action@v1.14.0
-        with:
-          name: ${{ steps.mod_version.outputs.value }} (${{ steps.supported_minecraft_version_name.outputs.value }})
-          tag: ${{ env.release_tag_name }}
-          artifacts: "**/build/libs/!(*-@(dev-shadow|transformProduction*).jar)"
-          bodyFile: CHANGELOG_LATEST.md
-
-      - name: Publish mod to Maven repository
-        run: ./gradlew publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
