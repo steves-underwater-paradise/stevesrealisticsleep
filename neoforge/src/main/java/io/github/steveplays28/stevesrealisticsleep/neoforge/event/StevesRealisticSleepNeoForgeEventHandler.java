@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static io.github.steveplays28.stevesrealisticsleep.StevesRealisticSleep.config;
 
-@Mod(StevesRealisticSleep.MOD_ID)
+@Mod.EventBusSubscriber(modid = StevesRealisticSleep.MOD_ID)
 public class StevesRealisticSleepNeoForgeEventHandler {
 	@SubscribeEvent
 	public static void onSleepingTimeCheck(@NotNull SleepingTimeCheckEvent event) {
