@@ -8,6 +8,7 @@
     "ServerPlayerEntityMixin",
     "ServerWorldMixin",
     "SleepManagerMixin",
+    "accessor.AbstractCauldronBlockAccessor",
     "accessor.ServerWorldAccessor"
   ],
   "injectors": {

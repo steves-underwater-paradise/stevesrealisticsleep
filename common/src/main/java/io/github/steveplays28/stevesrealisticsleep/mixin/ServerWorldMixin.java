@@ -2,6 +2,7 @@ package io.github.steveplays28.stevesrealisticsleep.mixin;
 
 import io.github.steveplays28.stevesrealisticsleep.api.StevesRealisticSleepApi;
 import io.github.steveplays28.stevesrealisticsleep.extension.ServerWorldExtension;
+import io.github.steveplays28.stevesrealisticsleep.mixin.accessor.AbstractCauldronBlockAccessor;
 import io.github.steveplays28.stevesrealisticsleep.util.SleepMathUtil;
 import net.minecraft.block.*;
 import net.minecraft.entity.EntityType;
@@ -376,7 +377,6 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 				var randomPosInChunk = this.getRandomPosInChunk(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
 				var biome = this.getBiome(randomPosInChunk).value();
 				var precipitation = biome.getPrecipitation(randomPosInChunk);
-
 				if (precipitation == Biome.Precipitation.NONE) {
 					continue;
 				}
@@ -385,10 +385,9 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 						randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ
 				);
 				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
-
 				if (randomBlockInChunk instanceof AbstractCauldronBlock cauldronBlock) {
 					cauldronBlock.precipitationTick(randomBlockStateInChunk, this, randomPosInChunk, precipitation);
-					cauldronBlock.scheduledTick(randomBlockStateInChunk, this.toServerWorld(), randomPosInChunk, random);
+					((AbstractCauldronBlockAccessor) cauldronBlock).invokeScheduledTick(randomBlockStateInChunk, this.toServerWorld(), randomPosInChunk, random);
 				}
 			}
 
