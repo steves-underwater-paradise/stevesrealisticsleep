@@ -8,6 +8,7 @@ import net.minecraft.block.CauldronBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,20 +22,19 @@ public class CauldronBlockMixin {
 	@Shadow
 	@Final
 	private static float FILL_WITH_RAIN_CHANCE;
-
 	@Shadow
 	@Final
 	private static float FILL_WITH_SNOW_CHANCE;
 
 	@SuppressWarnings("unused")
 	@ModifyExpressionValue(method = "precipitationTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/CauldronBlock;canFillWithPrecipitation(Lnet/minecraft/world/World;Lnet/minecraft/world/biome/Biome$Precipitation;)Z"))
-	private boolean modifyFillWithPrecipitationRequirements(boolean original, @Local World world, @Local BlockPos pos, @Local Biome.Precipitation precipitation) {
-		return canBeFilledByPrecipitation(world, pos, precipitation);
+	private boolean stevesrealisticsleep$modifyFillWithPrecipitationRequirements(boolean original, @Local(argsOnly = true) @NotNull World world, @Local(argsOnly = true) @NotNull BlockPos blockPosition, @Local(argsOnly = true) @NotNull Biome.Precipitation precipitation) {
+		return stevesrealisticsleep$canBeFilledByPrecipitation(world, blockPosition, precipitation);
 	}
 
 	@Unique
-	private boolean canBeFilledByPrecipitation(World world, BlockPos pos, Biome.Precipitation precipitation) {
-		if (CauldronUtil.canBeFilledByDripstone(world, pos)) {
+	private boolean stevesrealisticsleep$canBeFilledByPrecipitation(@NotNull World world, @NotNull BlockPos blockPosition, @NotNull Biome.Precipitation precipitation) {
+		if (CauldronUtil.canBeFilledByDripstone(world, blockPosition)) {
 			return false;
 		}
 

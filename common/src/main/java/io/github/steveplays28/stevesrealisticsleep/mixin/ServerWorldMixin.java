@@ -30,6 +30,7 @@ import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.ServerWorldProperties;
 import net.minecraft.world.tick.WorldTickScheduler;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -47,25 +48,24 @@ import static io.github.steveplays28.stevesrealisticsleep.util.SleepMathUtil.*;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World implements ServerWorldExtension {
-	@Unique
-	public double timeStepPerTick = 2;
-	@Unique
-	public int timeStepPerTickRounded = 1;
-	@Unique
-	public long tickDelay;
-	@Unique
-	public MutableText sleepMessage;
-	@Unique
-	public Boolean shouldSkipWeather = false;
-	@Unique
-	public int consecutiveSleepTicks = 0;
+	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DynamicRegistryManager registryManager, RegistryEntry<DimensionType> dimensionEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long biomeAccess, int maxChainedNeighborUpdates) {
+		super(properties, registryRef, registryManager, dimensionEntry, profiler, isClient, debugWorld, biomeAccess,
+				maxChainedNeighborUpdates
+		);
+	}
 
 	@Shadow
 	@Final
 	protected RaidManager raidManager;
+
 	@Shadow
 	@Final
 	List<ServerPlayerEntity> players;
+
+	@Shadow
+	@Final
+	private static int MAX_TICKS;
+
 	@Shadow
 	@Final
 	private ServerWorldProperties worldProperties;
@@ -80,13 +80,13 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 	private ServerChunkManager chunkManager;
 	@Shadow
 	@Final
+	private WorldTickScheduler<Fluid> fluidTickScheduler;
+	@Shadow
+	@Final
 	private boolean shouldTickTime;
 
-	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DynamicRegistryManager registryManager, RegistryEntry<DimensionType> dimensionEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long biomeAccess, int maxChainedNeighborUpdates) {
-		super(properties, registryRef, registryManager, dimensionEntry, profiler, isClient, debugWorld, biomeAccess,
-				maxChainedNeighborUpdates
-		);
-	}
+	@Shadow
+	public abstract ServerWorld toServerWorld();
 
 	@Shadow
 	public abstract List<ServerPlayerEntity> getPlayers();
@@ -98,40 +98,42 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 	protected abstract BlockPos getLightningPos(BlockPos pos);
 
 	@Shadow
-	public abstract ServerWorld toServerWorld();
-
-	@Shadow
 	protected abstract void tickFluid(BlockPos pos, Fluid fluid);
 
-	@Shadow
-	@Final
-	private WorldTickScheduler<Fluid> fluidTickScheduler;
-
-	@Shadow
-	@Final
-	private static int MAX_TICKS;
+	@Unique
+	private double stevesrealisticsleep$timeStepPerTick = 2;
+	@Unique
+	private long stevesrealisticsleep$tickDelay;
+	@Unique
+	private MutableText stevesrealisticsleep$sleepMessage;
+	@Unique
+	private boolean stevesrealisticsleep$shouldSkipWeather = false;
+	@Unique
+	private int stevesrealisticsleep$consecutiveSleepTicks = 0;
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getInt(Lnet/minecraft/world/GameRules$Key;)I"))
-	public void tickInject(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+	public void stevesrealisticsleep$tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		// Calculate seconds until awake
 		int sleepingPlayerCount = sleepManager.getSleeping();
 		int playerCount = getPlayers().size();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
-		timeStepPerTick = SleepMathUtil.calculateTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier, timeStepPerTick);
+		stevesrealisticsleep$timeStepPerTick = SleepMathUtil.calculateTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier,
+				stevesrealisticsleep$timeStepPerTick
+		);
 		int timeOfDay = StevesRealisticSleepApi.getTimeOfDay(this);
 		// TODO: Don't assume the TPS is 20
-		int secondsUntilAwake = Math.abs(SleepMathUtil.calculateSecondsUntilAwake(timeOfDay, timeStepPerTick, 20));
+		int secondsUntilAwake = Math.abs(SleepMathUtil.calculateSecondsUntilAwake(timeOfDay, stevesrealisticsleep$timeStepPerTick, 20));
 
 		// Check if the night has (almost) ended and the weather should be skipped
-		if (secondsUntilAwake <= 2 && shouldSkipWeather) {
-			clearWeather();
-			shouldSkipWeather = false;
+		if (secondsUntilAwake <= 2 && stevesrealisticsleep$shouldSkipWeather) {
+			stevesrealisticsleep$clearWeather();
+			stevesrealisticsleep$shouldSkipWeather = false;
 		}
 
 		// Check if anyone is sleeping
 		if (sleepingPlayerCount <= 0) {
 			// Reset consecutive sleep ticks
-			consecutiveSleepTicks = 0;
+			stevesrealisticsleep$consecutiveSleepTicks = 0;
 
 			return;
 		}
@@ -161,7 +163,7 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 		}
 
 		// Fetch config values and do calculations
-		timeStepPerTickRounded = (int) Math.round(timeStepPerTick);
+		int timeStepPerTickRounded = (int) Math.round(stevesrealisticsleep$timeStepPerTick);
 		int ticksUntilAwake = SleepMathUtil.calculateTicksUntilAwake(timeOfDay);
 		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
 
@@ -201,28 +203,31 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 
 		// Check if players are still supposed to be sleeping, and send a HUD message if so
 		if (ticksUntilAwake > WAKE_UP_GRACE_PERIOD_TICKS) {
-			if (consecutiveSleepTicks >= MINIMUM_SLEEP_TICKS_TO_CLEAR_WEATHER) {
-				shouldSkipWeather = true;
+			if (stevesrealisticsleep$consecutiveSleepTicks >= MINIMUM_SLEEP_TICKS_TO_CLEAR_WEATHER) {
+				stevesrealisticsleep$shouldSkipWeather = true;
 			}
 
 			if (config.sendSleepingMessage) {
-				sleepMessage = Text.translatable(String.format("%s.text.sleep_message", MOD_NAMESPACE), sleepingPlayerCount, playerCount).append(
+				stevesrealisticsleep$sleepMessage = Text.translatable(
+						String.format("%s.text.sleep_message", MOD_NAMESPACE), sleepingPlayerCount, playerCount).append(
 						nightDayOrThunderstormText);
 
 				if (isNight) {
 					if (config.showTimeUntilDawn) {
-						sleepMessage.append(Text.translatable(String.format("%s.text.time_until_dawn", MOD_NAMESPACE), secondsUntilAwake));
+						stevesrealisticsleep$sleepMessage.append(
+								Text.translatable(String.format("%s.text.time_until_dawn", MOD_NAMESPACE), secondsUntilAwake));
 					}
 				} else if (config.showTimeUntilDusk) {
-					sleepMessage.append(Text.translatable(String.format("%s.text.time_until_dusk", MOD_NAMESPACE), secondsUntilAwake));
+					stevesrealisticsleep$sleepMessage.append(
+							Text.translatable(String.format("%s.text.time_until_dusk", MOD_NAMESPACE), secondsUntilAwake));
 				}
 			}
 
 			for (ServerPlayerEntity player : players) {
-				player.sendMessage(sleepMessage, true);
+				player.sendMessage(stevesrealisticsleep$sleepMessage, true);
 			}
 
-			consecutiveSleepTicks += timeStepPerTickRounded;
+			stevesrealisticsleep$consecutiveSleepTicks += timeStepPerTickRounded;
 		}
 
 		if (ticksUntilAwake <= WAKE_UP_GRACE_PERIOD_TICKS) {
@@ -230,12 +235,12 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 			this.wakeSleepingPlayers();
 
 			// Reset time step per tick, to reset the exponential sleep speed curve calculation
-			timeStepPerTick = 2;
+			stevesrealisticsleep$timeStepPerTick = 2;
 		}
 	}
 
 	@Inject(method = "tickTime", at = @At(value = "HEAD"), cancellable = true)
-	public void tickTimeInject(CallbackInfo ci) {
+	public void stevesrealisticsleep$tickTimeWithTimeTickSpeedMultiplier(@NotNull CallbackInfo ci) {
 		this.worldProperties.getScheduledEvents().processEvents(this.server, this.properties.getTime());
 
 		if (!this.shouldTickTime) {
@@ -248,8 +253,8 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 			this.worldProperties.setTime(l);
 		}
 
-		if (tickDelay > 0L) {
-			tickDelay -= 1L;
+		if (stevesrealisticsleep$tickDelay > 0L) {
+			stevesrealisticsleep$tickDelay -= 1L;
 			server.getPlayerManager().sendToDimension(
 					new WorldTimeUpdateS2CPacket(worldProperties.getTime(), worldProperties.getTimeOfDay(),
 							this.properties.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)
@@ -267,7 +272,7 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 			this.worldProperties.setTimeOfDay(this.properties.getTimeOfDay() + 1L);
 		}
 
-		tickDelay = config.tickDelay;
+		stevesrealisticsleep$tickDelay = config.tickDelay;
 
 		ci.cancel();
 	}
@@ -280,12 +285,12 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 	 */
 	@SuppressWarnings("JavadocReference")
 	@Inject(method = "sendSleepingStatus", at = @At(value = "HEAD"), cancellable = true)
-	private void sendSleepingStatusInject(CallbackInfo ci) {
+	private void stevesrealisticsleep$preventSendingSleepingStatus(@NotNull CallbackInfo ci) {
 		ci.cancel();
 	}
 
 	@Inject(method = "tickChunk", at = @At(value = "HEAD"))
-	private void tickChunkInject(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci) {
+	private void stevesrealisticsleep$tickChunksWithChunkTickSpeedMultiplier(@NotNull WorldChunk chunk, int randomTickSpeed, CallbackInfo ci) {
 		if (!StevesRealisticSleepApi.isSleeping(this)) {
 			return;
 		}
@@ -387,7 +392,8 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
 				if (randomBlockInChunk instanceof AbstractCauldronBlock cauldronBlock) {
 					cauldronBlock.precipitationTick(randomBlockStateInChunk, this, randomPosInChunk, precipitation);
-					((AbstractCauldronBlockAccessor) cauldronBlock).invokeScheduledTick(randomBlockStateInChunk, this.toServerWorld(), randomPosInChunk, random);
+					((AbstractCauldronBlockAccessor) cauldronBlock).invokeScheduledTick(
+							randomBlockStateInChunk, this.toServerWorld(), randomPosInChunk, random);
 				}
 			}
 
@@ -418,7 +424,7 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 	}
 
 	@Unique
-	private void clearWeather() {
+	private void stevesrealisticsleep$clearWeather() {
 		boolean doWeatherCycle = server.getGameRules().getBoolean(GameRules.DO_WEATHER_CYCLE);
 
 		if (doWeatherCycle && (worldProperties.isRaining() || worldProperties.isThundering())) {
