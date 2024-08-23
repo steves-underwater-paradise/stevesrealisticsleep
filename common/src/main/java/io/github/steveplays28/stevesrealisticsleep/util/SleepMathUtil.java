@@ -11,6 +11,7 @@ public class SleepMathUtil {
 
 	public static double calculateTimeStepPerTick(double sleepingRatio, double multiplier, double lastTimeStepPerTick) {
 		return switch (config.sleepSpeedCurve) {
+			case STATIC -> multiplier;
 			case LINEAR -> sleepingRatio * multiplier;
 			case EXPONENTIAL -> Math.pow(lastTimeStepPerTick, 1 + sleepingRatio * multiplier);
 		};
