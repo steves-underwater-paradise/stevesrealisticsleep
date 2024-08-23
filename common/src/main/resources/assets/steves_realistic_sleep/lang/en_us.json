@@ -1,5 +1,7 @@
 {
   "text.autoconfig.steves_realistic_sleep.title": "Realistic Sleep Config",
+  "text.autoconfig.steves_realistic_sleep.option.showSleepVignette": "Show sleep vignette?",
+  "text.autoconfig.steves_realistic_sleep.option.showSleepVignette.@Tooltip": "Show the sleep vignette (dark overlay) while sleeping.",
   "text.autoconfig.steves_realistic_sleep.option.sendDawnMessage": "Send dawn message?",
   "text.autoconfig.steves_realistic_sleep.option.sendDawnMessage.@Tooltip": "Send a message to all players on the actionbar at dawn.",
   "text.autoconfig.steves_realistic_sleep.option.sendDuskMessage": "Send dusk message?",

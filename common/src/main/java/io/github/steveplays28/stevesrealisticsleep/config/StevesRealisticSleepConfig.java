@@ -8,6 +8,9 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 @Config(name = StevesRealisticSleep.MOD_NAMESPACE)
 public class StevesRealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
+	public boolean showSleepVignette = true;
+
+	@ConfigEntry.Gui.Tooltip
 	public boolean sendDawnMessage = true;
 	@ConfigEntry.Gui.Tooltip
 	public String dawnMessage = "The sun rises.";
