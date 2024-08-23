@@ -24,11 +24,10 @@ public abstract class ServerPlayerEntityMixin extends Entity {
 	public abstract void sendMessage(Text message, boolean overlay);
 
 	@Inject(method = "wakeUp(ZZ)V", at = @At(value = "HEAD"))
-	public void wakeUpInject(boolean skipSleepTimer, boolean updateSleepingPlayers, CallbackInfo ci) {
+	public void stevesrealisticsleep$sendWakeUpMessage(boolean skipSleepTimer, boolean updateSleepingPlayers, CallbackInfo ci) {
 		var timeOfDay = getWorld().getTimeOfDay() % DAY_LENGTH;
 		var ticksUntilDawn = Math.abs(timeOfDay - DAWN_WAKE_UP_TIME);
 		var ticksUntilDusk = Math.abs(timeOfDay - DUSK_WAKE_UP_TIME);
-
 		if (ticksUntilDawn > WAKE_UP_GRACE_PERIOD_TICKS && ticksUntilDusk > WAKE_UP_GRACE_PERIOD_TICKS) {
 			return;
 		}
