@@ -14,6 +14,9 @@ ${mod_description}
 logoFile = "assets/${mod_namespace}/icon.png"
 displayURL = "https://github.com/Steveplays28/${mod_id}"
 
+[[mixins]]
+config="${mod_namespace}-common.mixins.json"
+
 [mc-publish]
 curseforge = "${curseforge_project_id}"
 modrinth = "${modrinth_project_id}"
