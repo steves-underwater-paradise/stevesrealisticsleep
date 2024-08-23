@@ -60,6 +60,6 @@ public class StevesRealisticSleepConfig implements ConfigData {
 	public long tickDelay = -1;
 
 	public enum SleepSpeedCurve {
-		LINEAR, EXPONENTIAL
+		STATIC, LINEAR, EXPONENTIAL
 	}
 }
