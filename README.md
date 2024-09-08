@@ -1,10 +1,10 @@
-![Realistic Sleep icon](docs/media/icon_128x128.png)
+![Steve's Realistic Sleep icon](docs/media/icon_128x128.png)
 
-# Realistic Sleep
+# Steve's Realistic Sleep
 
 Makes sleeping speed up time instead of skipping to day.
 
-![Realistic Sleep gif](docs/media/realistic_sleep.gif)
+![Steve's Realistic Sleep gif](docs/media/realistic_sleep.gif)
 
 ## Showcase
 
@@ -75,7 +75,7 @@ features, [create an issue](https://github.com/steves-underwater-paradise/steves
 ### Development
 
 - `git clone https://github.com/steves-underwater-paradise/stevesrealisticsleep.git`
-- `cd blinkload`
+- `cd stevesrealisticsleep`
 - `./gradlew build`
 
 ## License
