@@ -88,7 +88,7 @@ jobs:
           changelog-file: CHANGELOG_LATEST.md
 
       # https://github.com/marketplace/actions/mc-publish
-      - name: Publish mod (NeoForge)
+      - name: Publish mod (NeoForge/Forge)
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           # Modrinth
@@ -100,8 +100,8 @@ jobs:
           name: ${{ steps.mod_version.outputs.value }} (${{ steps.supported_minecraft_version_name.outputs.value }})
           github-tag: ${{ env.release_tag_name }}
           files: |
-            neoforge/build/libs/!(*-@(sources|dev-shadow|javadoc|transformProduction*).jar)
-            neoforge/build/libs/*-@(sources|javadoc).jar
+            forge/build/libs/!(*-@(sources|dev-shadow|javadoc|transformProduction*).jar)
+            forge/build/libs/*-@(sources|javadoc).jar
           version-type: release
           modrinth-featured: false
           changelog-file: CHANGELOG_LATEST.md
