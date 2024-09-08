@@ -37,21 +37,21 @@ public class StevesRealisticSleepConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	public double sleepSpeedMultiplier = 25d;
 	@ConfigEntry.Gui.Tooltip
-	public double blockEntityTickSpeedMultiplier = 25d;
+	public double blockEntityTickSpeedMultiplier = 5d;
 	@ConfigEntry.Gui.Tooltip
 	public double chunkTickSpeedMultiplier = 1d;
 	@ConfigEntry.Gui.Tooltip
-	public double raidTickSpeedMultiplier = 25d;
+	public double raidTickSpeedMultiplier = 5d;
 	@ConfigEntry.Gui.Tooltip
-	public double fluidScheduledTickSpeedMultiplier = 25d;
+	public double fluidScheduledTickSpeedMultiplier = 5d;
 	@ConfigEntry.Gui.Tooltip
-	public double thunderTickSpeedMultiplier = 25d;
+	public double thunderTickSpeedMultiplier = 5d;
 	@ConfigEntry.Gui.Tooltip
-	public double iceAndSnowTickSpeedMultiplier = 25d;
+	public double iceAndSnowTickSpeedMultiplier = 5d;
 	@ConfigEntry.Gui.Tooltip
-	public double cropGrowthTickSpeedMultiplier = 25d;
+	public double cropGrowthTickSpeedMultiplier = 5d;
 	@ConfigEntry.Gui.Tooltip
-	public double precipitationTickSpeedMultiplier = 25d;
+	public double precipitationTickSpeedMultiplier = 5d;
 	@ConfigEntry.Gui.Tooltip
 	public double blockRandomTickSpeedMultiplier = 1d;
 	@ConfigEntry.Gui.Tooltip
