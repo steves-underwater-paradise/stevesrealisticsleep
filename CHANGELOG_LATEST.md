@@ -1,3 +1,11 @@
+### Added
+
+- Support for Minecraft 1.21-1.21.1
+- Support for Forge/NeoForge
+- A config option to disable the vignette whilst sleeping
+    - Client-side
+
 ### Changed
 
-- Updated Russian translation (by [MushroomMif](https://github.com/MushroomMif) in [PR #57](https://github.com/Steveplays28/realisticsleep/pull/57))
+- Dropped support for Minecraft 1.20.2-1.20.6
+- Lowered the default tick speed multipliers for interactions
