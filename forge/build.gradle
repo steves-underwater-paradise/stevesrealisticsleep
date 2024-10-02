@@ -63,8 +63,9 @@ processResources {
                 "mod_license": rootProject.mod_license,
                 "curseforge_project_id": rootProject.curseforge_project_id,
                 "modrinth_project_id": rootProject.modrinth_project_id,
-                "forge_version": rootProject.neoforge_version,
                 "supported_minecraft_version": rootProject.supported_minecraft_version,
+                "forge_version": rootProject.neoforge_version,
+                "architectury_api_version": rootProject.architectury_api_version,
                 "cloth_config_version": rootProject.cloth_config_version,
                 "mod_menu_version": rootProject.mod_menu_version
     }

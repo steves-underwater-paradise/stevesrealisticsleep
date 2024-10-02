@@ -17,6 +17,7 @@ This mod is featured in ["Minecraft Mod Combinations That Work Perfectly Togethe
 
 - [Cloth Config API](https://modrinth.com/mod/cloth-config)
 - [Fabric API](https://modrinth.com/mod/fabric-api) or [Quilt Standard Libraries](https://modrinth.com/mod/qsl)
+- [Architectury API](https://modrinth.com/mod/architectury-api)
 
 ### Optional
 

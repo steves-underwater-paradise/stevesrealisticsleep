@@ -34,6 +34,13 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
+modId = "architectury"
+mandatory = true
+versionRange = ">=${architectury_api_version}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
 modId = "cloth_config"
 mandatory = true
 versionRange = ">=${cloth_config_version}"
