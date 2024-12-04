@@ -9,7 +9,8 @@
     "ServerWorldMixin",
     "SleepManagerMixin",
     "accessor.AbstractCauldronBlockAccessor",
-    "accessor.ServerWorldAccessor"
+    "accessor.ServerWorldAccessor",
+    "entity.CatEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
