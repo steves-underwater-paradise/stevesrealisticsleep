@@ -8,7 +8,8 @@
     "ServerPlayerEntityMixin",
     "ServerWorldMixin",
     "SleepManagerMixin",
-    "accessor.ServerWorldAccessor"
+    "accessor.ServerWorldAccessor",
+    "entity.CatEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
