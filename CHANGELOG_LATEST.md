@@ -1,4 +1,3 @@
 ### Fixed
 
-- A crash on startup due to the vignette toggle mixin
-  - On Minecraft 1.21-1.21.1
+- Tamed cats not dropping gifts when they should after waking up
