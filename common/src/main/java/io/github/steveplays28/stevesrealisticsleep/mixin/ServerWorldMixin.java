@@ -123,7 +123,6 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 			stevesrealisticsleep$estimatedTps = (double) stevesrealisticsleep$ticksSinceLastTpsCheck / (currentTime - stevesrealisticsleep$previousTime) * 1000;
 			stevesrealisticsleep$ticksSinceLastTpsCheck = 0;
 			stevesrealisticsleep$previousTime = currentTime;
-			System.out.println(stevesrealisticsleep$estimatedTps);
 		}
 		stevesrealisticsleep$ticksSinceLastTpsCheck += 1;
 
