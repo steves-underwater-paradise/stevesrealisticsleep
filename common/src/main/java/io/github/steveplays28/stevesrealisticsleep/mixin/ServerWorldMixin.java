@@ -110,7 +110,7 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 	@Unique
 	private int stevesrealisticsleep$consecutiveSleepTicks = 0;
 	@Unique
-	private int stevesrealisticsleep$ticksSinceLastChecked = 0;
+	private int stevesrealisticsleep$ticksSinceLastTpsCheck = 0;
 	@Unique
 	private long stevesrealisticsleep$previousTime = System.currentTimeMillis();
 	@Unique
@@ -118,14 +118,14 @@ public abstract class ServerWorldMixin extends World implements ServerWorldExten
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getInt(Lnet/minecraft/world/GameRules$Key;)I"))
 	public void stevesrealisticsleep$tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
-		if (stevesrealisticsleep$ticksSinceLastChecked >= 10) {
+		if (stevesrealisticsleep$ticksSinceLastTpsCheck >= 10) {
 			long currentTime = System.currentTimeMillis();
-			stevesrealisticsleep$estimatedTps = (double) stevesrealisticsleep$ticksSinceLastChecked / (currentTime - stevesrealisticsleep$previousTime) * 1000;
-			stevesrealisticsleep$ticksSinceLastChecked = 0;
+			stevesrealisticsleep$estimatedTps = (double) stevesrealisticsleep$ticksSinceLastTpsCheck / (currentTime - stevesrealisticsleep$previousTime) * 1000;
+			stevesrealisticsleep$ticksSinceLastTpsCheck = 0;
 			stevesrealisticsleep$previousTime = currentTime;
 			System.out.println(stevesrealisticsleep$estimatedTps);
 		}
-		stevesrealisticsleep$ticksSinceLastChecked += 1;
+		stevesrealisticsleep$ticksSinceLastTpsCheck += 1;
 
 
 		// Calculate seconds until awake
