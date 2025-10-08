@@ -57,6 +57,8 @@ public class StevesRealisticSleepApi {
 		var sleepingPlayers = players.stream().filter(LivingEntity::isSleeping);
 		var playerCount = players.size();
 		var sleepingPlayerCount = sleepingPlayers.count();
+        if(sleepingPlayerCount == 0) return false;
+
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		double sleepingPercentage = sleepingRatio * 100;
 		int playersRequiredToSleepPercentage = world.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
@@ -71,6 +73,8 @@ public class StevesRealisticSleepApi {
 	public static boolean isSleeping(@NotNull ServerWorld world) {
 		var playerCount = world.getPlayers().size();
 		var sleepingPlayerCount = ((ServerWorldAccessor) world).getSleepManager().getSleeping();
+        if(sleepingPlayerCount == 0) return false;
+
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		double sleepingPercentage = sleepingRatio * 100d;
 		int playersRequiredToSleepPercentage = world.getGameRules().getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
