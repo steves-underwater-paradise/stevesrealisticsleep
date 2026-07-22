@@ -5,12 +5,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(targets = "net/minecraft/entity/passive/CatEntity$SleepWithOwnerGoal")
+@Mixin(targets = "net/minecraft/world/entity/animal/Cat$SleepWithOwnerGoal")
 public class CatEntityMixin {
 	@Unique
 	private static final float stevesrealisticsleep$ALLOWED_SKY_ANGLE_FOR_GIFT_DROPS = 0.78f;
 
-	@ModifyExpressionValue(method = "stop", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getSkyAngle(F)F"))
+	@ModifyExpressionValue(method = "stop", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getSkyAngle(F)F"))
 	private float stevesrealisticsleep$preventUseOfSkyAngleForGiftDrops(float original) {
 		return stevesrealisticsleep$ALLOWED_SKY_ANGLE_FOR_GIFT_DROPS;
 	}
