@@ -98,17 +98,28 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 	@Unique private MutableComponent stevesrealisticsleep$sleepMessage;
 	@Unique private boolean stevesrealisticsleep$shouldSkipWeather = false;
 	@Unique private int stevesrealisticsleep$consecutiveSleepTicks = 0;
+	@Unique private int stevesrealisticsleep$ticksSinceLastTicksPerSecondCheck = 0;
+	@Unique private long stevesrealisticsleep$previousTime = System.currentTimeMillis();
+	@Unique private double stevesrealisticsleep$estimatedTicksPerSecond = 20.0;
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/GameRules;getInt(Lnet/minecraft/world/level/GameRules$Key;)I"))
 	public void stevesrealisticsleep$tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+		// Estimate ticks per second every 10 ticks
+		if (stevesrealisticsleep$ticksSinceLastTicksPerSecondCheck >= 10) {
+			long currentTime = System.currentTimeMillis();
+			stevesrealisticsleep$estimatedTicksPerSecond = (double) stevesrealisticsleep$ticksSinceLastTicksPerSecondCheck / (currentTime - stevesrealisticsleep$previousTime) * 1000;
+			stevesrealisticsleep$ticksSinceLastTicksPerSecondCheck = 0;
+			stevesrealisticsleep$previousTime = currentTime;
+		}
+		stevesrealisticsleep$ticksSinceLastTicksPerSecondCheck += 1;
+
 		// Calculate seconds until awake
 		int sleepingPlayerCount = sleepStatus.amountSleeping();
 		int playerCount = players().size();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		stevesrealisticsleep$timeStepPerTick = SleepMathUtil.calculateTimeStepPerTick(sleepingRatio, config.sleepSpeedMultiplier, stevesrealisticsleep$timeStepPerTick);
 		int timeOfDay = StevesRealisticSleepApi.getTimeOfDay(this);
-		// TODO: Don't assume the TPS is 20
-		int secondsUntilAwake = Math.abs(SleepMathUtil.calculateSecondsUntilAwake(timeOfDay, stevesrealisticsleep$timeStepPerTick, 20));
+		int secondsUntilAwake = Math.abs(SleepMathUtil.calculateSecondsUntilAwake(timeOfDay, stevesrealisticsleep$timeStepPerTick, stevesrealisticsleep$estimatedTicksPerSecond));
 
 		// Check if the night has (almost) ended and the weather should be skipped
 		if (secondsUntilAwake <= 2 && stevesrealisticsleep$shouldSkipWeather) {
