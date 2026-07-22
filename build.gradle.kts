@@ -60,6 +60,7 @@ cloche {
     val mixin_extras_version = providers.gradleProperty("mixin_extras_version")
     val cloth_config_version = providers.gradleProperty("cloth_config_version")
     val mod_menu_version = providers.gradleProperty("mod_menu_version")
+    val server_i18n_api_version = providers.gradleProperty("server_i18n_api_version")
     common {
         dependencies {
             compileOnly("org.jetbrains:annotations:${providers.gradleProperty("jetbrains_annotations_version").get()}")
@@ -112,6 +113,7 @@ cloche {
                 exclude(group = "net.fabricmc.fabric-api")
             }
             modApi("com.terraformersmc:modmenu:${mod_menu_version.get()}")
+            modApi("maven.modrinth:server-i18n-api:${server_i18n_api_version.get()}-1.21.8-fabric")
         }
     }
 
@@ -135,6 +137,7 @@ cloche {
 
 
             modApi("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version.get()}")
+            modApi("maven.modrinth:server-i18n-api:${server_i18n_api_version.get()}-1.21.3-neoforge")
         }
 
         mixins.from(file("src/common/main/steves_realistic_sleep_common.mixins.json"))
