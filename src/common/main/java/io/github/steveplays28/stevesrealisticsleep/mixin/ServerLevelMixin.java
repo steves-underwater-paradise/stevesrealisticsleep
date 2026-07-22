@@ -202,7 +202,6 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 
 			if (config.sendSleepingMessage) {
 				stevesrealisticsleep$sleepMessage = Component.translatable(String.format("%s.text.sleep_message", MOD_NAMESPACE), sleepingPlayerCount, playerCount).append(nightDayOrThunderstormText);
-
 				if (isNight) {
 					if (config.showTimeUntilDawn) {
 						stevesrealisticsleep$sleepMessage.append(Component.translatable(String.format("%s.text.time_until_dawn", MOD_NAMESPACE), secondsUntilAwake));
@@ -210,10 +209,10 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 				} else if (config.showTimeUntilDusk) {
 					stevesrealisticsleep$sleepMessage.append(Component.translatable(String.format("%s.text.time_until_dusk", MOD_NAMESPACE), secondsUntilAwake));
 				}
-			}
 
-			for (ServerPlayer player : players) {
-				player.sendSystemMessage(stevesrealisticsleep$sleepMessage, true);
+				for (ServerPlayer player : players) {
+					player.sendSystemMessage(stevesrealisticsleep$sleepMessage, true);
+				}
 			}
 
 			stevesrealisticsleep$consecutiveSleepTicks += timeStepPerTickRounded;
