@@ -354,9 +354,9 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 
 				if (this.getMaxLocalRawBrightness(randomPosInChunk) >= 9) {
 					if (randomBlockInChunk instanceof CropBlock cropBlock) {
-						((BlockAccessor) cropBlock).invokeRandomTick(randomBlockStateInChunk, this.getLevel(), randomPosInChunk, random);
+						((BlockAccessor) cropBlock).invokeAnimateTick(randomBlockStateInChunk, this, randomPosInChunk, random);
 					} else if (randomBlockInChunk instanceof StemBlock stemBlock) {
-						((BlockAccessor) stemBlock).invokeRandomTick(randomBlockStateInChunk, this.getLevel(), randomPosInChunk, random);
+						((BlockAccessor) stemBlock).invokeAnimateTick(randomBlockStateInChunk, this, randomPosInChunk, random);
 					}
 				}
 			}

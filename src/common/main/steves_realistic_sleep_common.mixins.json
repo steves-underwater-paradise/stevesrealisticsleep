@@ -9,13 +9,12 @@
     "ServerLevelMixin",
     "SleepStatusMixin",
     "accessor.AbstractCauldronBlockAccessor",
+    "accessor.BlockAccessor",
     "accessor.ServerWorldAccessor",
     "entity.CatEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
-  "client": [
-    "client.gui.InGameHudMixin"
-  ]
+  "client": ["client.gui.InGameHudMixin"]
 }
