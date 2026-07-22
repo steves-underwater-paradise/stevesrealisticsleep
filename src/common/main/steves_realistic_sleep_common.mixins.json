@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.steveplays28.stevesrealisticsleep.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "CauldronBlockMixin",
+    "ServerPlayerMixin",
+    "ServerLevelMixin",
+    "SleepStatusMixin",
+    "accessor.AbstractCauldronBlockAccessor",
+    "accessor.ServerWorldAccessor",
+    "entity.CatEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "client.gui.InGameHudMixin"
+  ]
+}

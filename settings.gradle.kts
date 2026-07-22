@@ -1,5 +1,4 @@
-val mod_id = providers.gradleProperty("mod_id")
-rootProject.name = mod_id.get()
+rootProject.name = providers.gradleProperty("id").get()
 
 pluginManagement {
 	repositories {
