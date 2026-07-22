@@ -55,8 +55,12 @@ public class StevesRealisticSleepApi {
 	public static boolean isSleeping(@NotNull ClientLevel level) {
 		var players = level.players();
 		var sleepingPlayers = players.stream().filter(LivingEntity::isSleeping);
-		var playerCount = players.size();
 		var sleepingPlayerCount = sleepingPlayers.count();
+		if (sleepingPlayerCount <= 0) {
+			return false;
+		}
+
+		var playerCount = players.size();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		double sleepingPercentage = sleepingRatio * 100;
 		int playersRequiredToSleepPercentage = level.getGameRules().getInt(GameRules.RULE_PLAYERS_SLEEPING_PERCENTAGE);
@@ -69,8 +73,12 @@ public class StevesRealisticSleepApi {
 	 * @return Whether players are sleeping in this level (time is passing at an accelerated rate).
 	 */
 	public static boolean isSleeping(@NotNull ServerLevel level) {
-		var playerCount = level.players().size();
 		var sleepingPlayerCount = ((ServerWorldAccessor) level).getSleepStatus().amountSleeping();
+		if (sleepingPlayerCount <= 0) {
+			return false;
+		}
+
+		var playerCount = level.players().size();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		double sleepingPercentage = sleepingRatio * 100d;
 		int playersRequiredToSleepPercentage = level.getGameRules().getInt(GameRules.RULE_PLAYERS_SLEEPING_PERCENTAGE);
