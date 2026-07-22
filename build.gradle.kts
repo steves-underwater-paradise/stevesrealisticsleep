@@ -32,20 +32,17 @@ repositories {
 cloche {
     metadata {
         val mod_id = providers.gradleProperty("id")
-        modId = mod_id
-        name = providers.gradleProperty("name")
-        description = providers.gradleProperty("description")
+        modId = mod_id.get()
+        name = providers.gradleProperty("name").get()
+        description = providers.gradleProperty("description").get()
         providers.gradleProperty("authors").get().split(',').forEach(::author)
-        license = providers.gradleProperty("license_spdx")
-        version = providers.gradleProperty("version")
+        license = providers.gradleProperty("license_spdx").get()
+        version = providers.gradleProperty("version").get()
         icon = "assets/${mod_id.get()}/icon.png"
         url = "https://www.curseforge.com/minecraft/mc-mods/${mod_id.get()}"
         sources = "https://github.com/steves-underwater-paradise/${mod_id.get()}"
         issues = "https://github.com/steves-underwater-paradise/${mod_id.get()}/issues"
 
-        require("cloth-config", "${providers.gradleProperty("cloth_config_version").get()}")
-
-        suggest("modmenu", "${providers.gradleProperty("mod_menu_version").get()}", environment = Environment.Client)
         suggest("sodium", "*")
         suggest("better-clouds", "*")
 
@@ -53,14 +50,11 @@ cloche {
         markConflict("timecontrol", "*")
     }
 
-    val minecraft_version = providers.gradleProperty("minecraft_version")
-    minecraftVersion.set(minecraft_version.get())
+    minecraftVersion.set(providers.gradleProperty("minecraft_version").get())
 
     mappings {
         official()
-
-        val parchment_mappings_version = providers.gradleProperty("parchment_mappings_version")
-        parchment(parchment_mappings_version.get())
+        parchment(providers.gradleProperty("parchment_mappings_version").get())
     }
 
     val mixin_extras_version = providers.gradleProperty("mixin_extras_version")
@@ -68,17 +62,11 @@ cloche {
     val mod_menu_version = providers.gradleProperty("mod_menu_version")
     common {
         dependencies {
-            val jetbrains_annotations_version = providers.gradleProperty("jetbrains_annotations_version")
-            compileOnly("org.jetbrains:annotations:${jetbrains_annotations_version.get()}")
+            compileOnly("org.jetbrains:annotations:${providers.gradleProperty("jetbrains_annotations_version").get()}")
 
             val mixin_extras = "io.github.llamalad7:mixinextras-common:${mixin_extras_version.get()}"
             compileOnly(mixin_extras)
             annotationProcessor(mixin_extras)
-
-            modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version.get()}") {
-                exclude(group = "net.fabricmc.fabric-api")
-            }
-            modApi("com.terraformersmc:modmenu:${mod_menu_version.get()}")
         }
     }
 
@@ -86,7 +74,7 @@ cloche {
         metadata {
             entrypoint("main", "io.github.steveplays28.stevesrealisticsleep.fabric.StevesRealisticSleepFabric")
             entrypoint("client", "io.github.steveplays28.stevesrealisticsleep.fabric.client.StevesRealisticSleepFabricClient")
-            entrypoint("modmenu", "io.github.steveplays28.stevesrealisticsleep.client.compat.modmenu.StevesRealisticSleepClientModMenuCompat")
+            entrypoint("modmenu", "io.github.steveplays28.stevesrealisticsleep.fabric.client.compat.modmenu.StevesRealisticSleepFabricClientModMenuCompat")
 
             custom(
                 "modmenu" to mapOf(
@@ -95,6 +83,10 @@ cloche {
                     )
                 )
             )
+
+            require("cloth-config", "${providers.gradleProperty("cloth_config_version").get()}")
+
+            suggest("modmenu", "${providers.gradleProperty("mod_menu_version").get()}", environment = Environment.Client)
         }
 
         val fabric_loader_version = providers.gradleProperty("fabric_loader_version")
@@ -116,17 +108,24 @@ cloche {
             val fabric_api_version = providers.gradleProperty("fabric_api_version")
             fabricApi(fabric_api_version.get())
 
-            modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version.get()}") {
+            modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version.get()}") {
                 exclude(group = "net.fabricmc.fabric-api")
             }
-
-            modRuntimeOnly("com.terraformersmc:modmenu:${mod_menu_version.get()}")
+            modApi("com.terraformersmc:modmenu:${mod_menu_version.get()}")
         }
     }
 
     neoforge {
+        metadata {
+            require("cloth_config", "${providers.gradleProperty("cloth_config_version").get()}")
+        }
+
         val neoforge_loader_version = providers.gradleProperty("neoforge_loader_version")
         loaderVersion = neoforge_loader_version.get()
+
+        runs {
+            client()
+        }
 
         dependencies {
             val mixin_extras = "io.github.llamalad7:mixinextras-neoforge:${mixin_extras_version.get()}"
@@ -134,7 +133,8 @@ cloche {
             annotationProcessor(mixin_extras)
             include(mixin_extras)
 
-            modRuntimeOnly("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version.get()}")
+
+            modApi("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version.get()}")
         }
 
         mixins.from(file("src/common/main/steves_realistic_sleep_common.mixins.json"))

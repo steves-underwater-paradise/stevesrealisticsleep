@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class SleepStatusMixin {
 	/**
 	 * Cancels {@link SleepStatus#areEnoughSleeping canSkipNight} and sets the return value to {@code false}.
+	 * Method conflicts with Realistic Sleep's functionality.
 	 *
 	 * @author Steveplays28
-	 * @reason Method conflicts with Realistic Sleep's functionality.
 	 */
 	@Inject(method = "areEnoughSleeping", at = @At(value = "HEAD"), cancellable = true)
 	public void stevesrealisticsleep$preventNightSkip(int percentage, @NotNull CallbackInfoReturnable<Boolean> cir) {

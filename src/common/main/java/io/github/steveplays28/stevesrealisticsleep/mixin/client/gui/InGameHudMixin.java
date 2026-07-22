@@ -1,8 +1,6 @@
 package io.github.steveplays28.stevesrealisticsleep.mixin.client.gui;
 
 import io.github.steveplays28.stevesrealisticsleep.StevesRealisticSleep;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.Gui;
@@ -12,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Environment(EnvType.CLIENT)
 @Mixin(Gui.class)
 public class InGameHudMixin {
 	@Inject(method = "renderSleepOverlay", at = @At(value = "HEAD"), cancellable = true)
