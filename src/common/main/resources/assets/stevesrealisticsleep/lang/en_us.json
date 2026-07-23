@@ -18,6 +18,8 @@
   "text.autoconfig.steves_realistic_sleep.option.showTimeUntilDusk.@Tooltip": "Displays the seconds until dusk on the actionbar.",
   "text.autoconfig.steves_realistic_sleep.option.sendNotEnoughPlayersSleepingMessage": "Send not enough players sleeping message?",
   "text.autoconfig.steves_realistic_sleep.option.sendNotEnoughPlayersSleepingMessage.@Tooltip": "Toggles the amount of players who need to sleep to skip to dawn message on the actionbar.",
+  "text.autoconfig.steves_realistic_sleep.option.clearWeatherAfterSleeping": "Clear weather after sleeping?",
+  "text.autoconfig.steves_realistic_sleep.option.clearWeatherAfterSleeping.@Tooltip": "Toggles clear weather after sleeping.",
   "text.autoconfig.steves_realistic_sleep.option.allowDaySleeping": "Allow sleeping through the day?",
   "text.autoconfig.steves_realistic_sleep.option.allowDaySleeping.@Tooltip": "Toggles daytime sleeping.",
   "text.autoconfig.steves_realistic_sleep.option.sleepSpeedCurve": "Sleep speed curve",
