@@ -9,7 +9,6 @@
     "ServerLevelMixin",
     "SleepStatusMixin",
     "accessor.AbstractCauldronBlockAccessor",
-    "accessor.BlockAccessor",
     "accessor.ServerWorldAccessor",
     "entity.CatEntityMixin"
   ],

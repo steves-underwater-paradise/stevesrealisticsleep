@@ -3,7 +3,6 @@ package io.github.steveplays28.stevesrealisticsleep.mixin;
 import io.github.steveplays28.stevesrealisticsleep.api.StevesRealisticSleepApi;
 import io.github.steveplays28.stevesrealisticsleep.extension.ServerWorldExtension;
 import io.github.steveplays28.stevesrealisticsleep.mixin.accessor.AbstractCauldronBlockAccessor;
-import io.github.steveplays28.stevesrealisticsleep.mixin.accessor.BlockAccessor;
 import io.github.steveplays28.stevesrealisticsleep.util.SleepMathUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -31,8 +30,6 @@ import net.minecraft.world.ticks.LevelTicks;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.StemBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.WritableLevelData;
@@ -83,6 +80,9 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 
 	@Shadow
 	public abstract List<ServerPlayer> players();
+
+	@Shadow
+	public abstract void tickPrecipitation(BlockPos blockPos);
 
 	@Shadow
 	protected abstract void wakeUpAllPlayers();
@@ -147,46 +147,43 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 
 			double playersRequiredToSleepRatio = server.getGameRules().getInt(GameRules.RULE_PLAYERS_SLEEPING_PERCENTAGE) / 100d;
 			int playersRequiredToSleep = (int) Math.ceil(playersRequiredToSleepRatio * playerCount);
-
 			for (ServerPlayer player : players) {
 				player.sendSystemMessage(Component.translatable(String.format("%s.text.not_enough_players_sleeping_message", MOD_NAMESPACE), sleepingPlayerCount, playerCount, playersRequiredToSleep,
 						playerCount, nightDayOrThunderstormText), true);
 			}
-
 			return;
 		}
 
-		// Fetch config values and do calculations
+		// Do calculations
 		int timeStepPerTickRounded = (int) Math.round(stevesrealisticsleep$timeStepPerTick);
 		int ticksUntilAwake = SleepMathUtil.calculateTicksUntilAwake(timeOfDay);
-		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT);
-
-		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
-		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
-		int raidTickSpeedMultiplier = (int) Math.round(config.raidTickSpeedMultiplier);
-		int fluidScheduledTickSpeedMultiplier = (int) Math.round(config.fluidScheduledTickSpeedMultiplier);
 
 		// Advance time
+		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT);
 		if (doDayLightCycle) {
 			serverLevelData.setDayTime(serverLevelData.getDayTime() + timeStepPerTickRounded);
 		}
 
 		// Tick block entities
+		int blockEntityTickSpeedMultiplier = (int) Math.round(config.blockEntityTickSpeedMultiplier);
 		for (int i = blockEntityTickSpeedMultiplier; i > 1; i--) {
 			tickBlockEntities();
 		}
 
 		// Tick chunks
+		int chunkTickSpeedMultiplier = (int) Math.round(config.chunkTickSpeedMultiplier);
 		for (int i = chunkTickSpeedMultiplier; i > 1; i--) {
 			chunkSource.tick(shouldKeepTicking, true);
 		}
 
 		// Tick raid timers
+		int raidTickSpeedMultiplier = (int) Math.round(config.raidTickSpeedMultiplier);
 		for (int i = raidTickSpeedMultiplier; i > 1; i--) {
 			raids.tick();
 		}
 
 		// Tick fluids
+		int fluidScheduledTickSpeedMultiplier = (int) Math.round(config.fluidScheduledTickSpeedMultiplier);
 		for (int i = fluidScheduledTickSpeedMultiplier; i > 1; i--) {
 			fluidTicks.tick(serverLevelData.getGameTime(), MAX_SCHEDULED_TICKS_PER_TICK, this::tickFluid);
 		}
@@ -281,23 +278,20 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 			return;
 		}
 
-		var thunderTickSpeedMultiplier = (int) Math.round(config.thunderTickSpeedMultiplier);
-		var iceAndSnowTickSpeedMultiplier = (int) Math.round(config.iceAndSnowTickSpeedMultiplier);
 		var profiler = this.getProfiler();
 		var chunkPos = chunk.getPos();
-		var chunkStartPosX = chunkPos.getMinBlockX();
-		var chunkStartPosZ = chunkPos.getMinBlockZ();
-		BlockPos blockPos;
+		var chunkMinBlockX = chunkPos.getMinBlockX();
+		var chunkMinBlockZ = chunkPos.getMinBlockZ();
 
 		// Thunder tick speed multiplier
 		profiler.push(String.format("Thunder (%s)", MOD_NAME));
+
+		var thunderTickSpeedMultiplier = (int) Math.round(config.thunderTickSpeedMultiplier);
 		for (int i = 0; i < thunderTickSpeedMultiplier; i++) {
 			if (this.isRaining() && this.isThundering() && this.random.nextInt(100000) == 0) {
-				blockPos = this.findLightningTargetAround(this.getBlockRandomPos(chunkStartPosX, 0, chunkStartPosZ, 15));
-
+				var blockPos = this.findLightningTargetAround(this.getBlockRandomPos(chunkMinBlockX, 0, chunkMinBlockZ, 15));
 				if (this.isRainingAt(blockPos)) {
 					LightningBolt lightningEntity = EntityType.LIGHTNING_BOLT.create(this);
-
 					if (lightningEntity != null) {
 						lightningEntity.moveTo(Vec3.atBottomCenterOf(blockPos));
 						lightningEntity.setVisualOnly(true);
@@ -314,16 +308,16 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 
 		// Ice and snow formation tick speed multiplier
 		profiler.popPush(String.format("Form ice and snow (%s)", MOD_NAME));
+
+		var iceAndSnowTickSpeedMultiplier = (int) Math.round(config.iceAndSnowTickSpeedMultiplier);
 		for (int i = 0; i < iceAndSnowTickSpeedMultiplier; i++) {
 			if (this.random.nextInt(16) == 0) {
-				blockPos = this.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, this.getBlockRandomPos(chunkStartPosX, 0, chunkStartPosZ, 15));
+				var blockPos = this.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, this.getBlockRandomPos(chunkMinBlockX, 0, chunkMinBlockZ, 15));
 				BlockPos blockPosDown = blockPos.below();
 				Biome biome = this.getBiome(blockPos).value();
-
 				if (biome.shouldFreeze(this, blockPosDown, false)) {
 					this.setBlock(blockPosDown, Blocks.ICE.defaultBlockState(), 3);
 				}
-
 				if (this.isRaining() && biome.shouldSnow(this, blockPos)) {
 					this.setBlock(blockPos, Blocks.SNOW.defaultBlockState(), 3);
 				}
@@ -333,81 +327,71 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 		profiler.popPush(String.format("Tick blocks (%s)", MOD_NAME));
 		for (int l = 0; l < chunk.getSections().length; l++) {
 			var chunkSection = chunk.getSections()[l];
-
 			if (!chunkSection.isRandomlyTicking()) {
 				continue;
 			}
 
+			// Crop growth tick speed multiplier
 			var cropGrowthTickSpeedMultiplier = (int) Math.round(config.cropGrowthTickSpeedMultiplier);
-			var precipitationTickSpeedMultiplier = (int) Math.round(config.precipitationTickSpeedMultiplier);
-			var blockRandomTickSpeedMultiplier = (int) Math.round(config.blockRandomTickSpeedMultiplier);
-			var fluidRandomTickSpeedMultiplier = (int) Math.round(config.fluidRandomTickSpeedMultiplier);
-
-			// Crop growth speed multiplier
 			for (int i = 0; i < cropGrowthTickSpeedMultiplier; i++) {
-				int chunkSectionYOffset = SectionPos.sectionToBlockCoord(chunk.getSectionIndexFromSectionY(l));
-				var randomPosInChunk = this.getBlockRandomPos(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
+				int chunkSectionYOffset = SectionPos.sectionToBlockCoord(chunk.getSectionYFromSectionIndex(l));
+				var randomPosInChunk = this.getBlockRandomPos(chunkMinBlockX, chunkSectionYOffset, chunkMinBlockZ, 15);
 				var randomBlockStateInChunk =
-						chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX, randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ);
+						chunkSection.getBlockState(randomPosInChunk.getX() - chunkMinBlockX, randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkMinBlockZ);
 				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
-				if (randomBlockInChunk instanceof CropBlock cropBlock) {
-					((BlockAccessor) cropBlock).invokeAnimateTick(randomBlockStateInChunk, this, randomPosInChunk, random);
-				} else if (randomBlockInChunk instanceof StemBlock stemBlock) {
-					((BlockAccessor) stemBlock).invokeAnimateTick(randomBlockStateInChunk, this, randomPosInChunk, random);
+				if (randomBlockInChunk instanceof CropBlock || randomBlockInChunk instanceof StemBlock || randomBlockInChunk instanceof CactusBlock || randomBlockInChunk instanceof SugarCaneBlock) {
+					randomBlockStateInChunk.randomTick((ServerLevel) (Object) this, randomPosInChunk, random);
 				}
 			}
 
 			// Precipitation tick speed multiplier
+			var precipitationTickSpeedMultiplier = (int) Math.round(config.precipitationTickSpeedMultiplier);
 			for (int i = 0; i < precipitationTickSpeedMultiplier; i++) {
-				int chunkSectionYOffset = SectionPos.sectionToBlockCoord(chunk.getSectionIndexFromSectionY(l));
-				var randomPosInChunk = this.getBlockRandomPos(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
+				int chunkSectionYOffset = SectionPos.sectionToBlockCoord(chunk.getSectionYFromSectionIndex(l));
+				var randomPosInChunk = this.getBlockRandomPos(chunkMinBlockX, chunkSectionYOffset, chunkMinBlockZ, 15);
 				var biome = this.getBiome(randomPosInChunk).value();
 				var precipitation = biome.getPrecipitationAt(randomPosInChunk);
-
 				if (precipitation == Biome.Precipitation.NONE) {
 					continue;
 				}
 
 				var randomBlockStateInChunk =
-						chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX, randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ);
+						chunkSection.getBlockState(randomPosInChunk.getX() - chunkMinBlockX, randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkMinBlockZ);
 				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
-
 				if (randomBlockInChunk instanceof AbstractCauldronBlock cauldronBlock) {
 					cauldronBlock.handlePrecipitation(randomBlockStateInChunk, this, randomPosInChunk, precipitation);
-
 					((AbstractCauldronBlockAccessor) cauldronBlock).invokeTick(randomBlockStateInChunk, this.getLevel(), randomPosInChunk, random);
 				}
 			}
 
 			// Random tick speed multiplier
+			var blockRandomTickSpeedMultiplier = (int) Math.round(config.blockRandomTickSpeedMultiplier);
+			var fluidRandomTickSpeedMultiplier = (int) Math.round(config.fluidRandomTickSpeedMultiplier);
 			for (int j = 0; j < randomTickSpeed; j++) {
-				int chunkSectionYOffset = SectionPos.sectionToBlockCoord(chunk.getSectionIndexFromSectionY(l));
-				var randomPosInChunk = this.getBlockRandomPos(chunkStartPosX, chunkSectionYOffset, chunkStartPosZ, 15);
+				int chunkSectionYOffset = SectionPos.sectionToBlockCoord(chunk.getSectionYFromSectionIndex(l));
+				var randomPosInChunk = this.getBlockRandomPos(chunkMinBlockX, chunkSectionYOffset, chunkMinBlockZ, 15);
 				var randomBlockStateInChunk =
-						chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX, randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ);
+						chunkSection.getBlockState(randomPosInChunk.getX() - chunkMinBlockX, randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkMinBlockZ);
 				var fluidState = randomBlockStateInChunk.getFluidState();
-
 				for (int k = 0; k < blockRandomTickSpeedMultiplier; k++) {
 					if (randomBlockStateInChunk.isRandomlyTicking()) {
 						randomBlockStateInChunk.randomTick(this.getLevel(), randomPosInChunk, this.random);
 					}
 				}
-
 				for (int k = 0; k < fluidRandomTickSpeedMultiplier; k++) {
 					if (fluidState.isRandomlyTicking()) {
 						fluidState.randomTick(this, randomPosInChunk, this.random);
 					}
 				}
 			}
-
-			profiler.pop();
 		}
+
+		profiler.pop();
 	}
 
 	@Unique
 	private void stevesrealisticsleep$clearWeather() {
 		boolean doWeatherCycle = server.getGameRules().getBoolean(GameRules.RULE_WEATHER_CYCLE);
-
 		if (doWeatherCycle && (serverLevelData.isRaining() || serverLevelData.isThundering())) {
 			// Reset weather clock and clear weather
 			var nextRainTime = (int) (DAY_LENGTH * SleepMathUtil.getRandomNumberInRange(0.5, 7.5));
