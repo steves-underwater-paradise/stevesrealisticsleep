@@ -30,6 +30,8 @@ public class StevesRealisticSleepConfig implements ConfigData {
 	public boolean sendNotEnoughPlayersSleepingMessage = true;
 
 	@ConfigEntry.Gui.Tooltip
+	public boolean clearWeatherAfterSleeping = true;
+	@ConfigEntry.Gui.Tooltip
 	public boolean allowDaySleeping = false;
 
 	@ConfigEntry.Gui.Tooltip

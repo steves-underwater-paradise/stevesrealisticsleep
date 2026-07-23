@@ -123,7 +123,9 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 
 		// Check if the night has (almost) ended and the weather should be skipped
 		if (secondsUntilAwake <= 2 && stevesrealisticsleep$shouldSkipWeather) {
-			stevesrealisticsleep$clearWeather();
+			if (config.clearWeatherAfterSleeping) {
+				stevesrealisticsleep$clearWeather();
+			}
 			stevesrealisticsleep$shouldSkipWeather = false;
 		}
 
