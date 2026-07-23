@@ -49,6 +49,14 @@ cloche {
 
         markConflict("tawct", "*")
         markConflict("timecontrol", "*")
+
+        markIncompatible("sleepwarp", "*")
+        markIncompatible("sleeping-overhaul-2", "*")
+        markIncompatible("fast-sleep", "*")
+        markIncompatible("seamless-sleep", "*")
+        markIncompatible("better-sleep", "*")
+        markIncompatible("vanilla-outsider-true-sleep", "*")
+        markIncompatible("sleep-timelapse", "*")
     }
 
     minecraftVersion.set(providers.gradleProperty("minecraft_version").get())
