@@ -191,7 +191,7 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 			fluidTicks.tick(serverLevelData.getGameTime(), MAX_SCHEDULED_TICKS_PER_TICK, this::tickFluid);
 		}
 
-		// Send new time to all players in the overworld
+		// Send new time to all players in the level
 		server.getPlayerList().broadcastAll(new ClientboundSetTimePacket(serverLevelData.getGameTime(), serverLevelData.getDayTime(), doDayLightCycle), dimension());
 
 		// Check if players are still supposed to be sleeping, and send a HUD message if so
@@ -350,13 +350,10 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 				var randomBlockStateInChunk =
 						chunkSection.getBlockState(randomPosInChunk.getX() - chunkStartPosX, randomPosInChunk.getY() - chunkSectionYOffset, randomPosInChunk.getZ() - chunkStartPosZ);
 				var randomBlockInChunk = randomBlockStateInChunk.getBlock();
-
-				if (this.getMaxLocalRawBrightness(randomPosInChunk) >= 9) {
-					if (randomBlockInChunk instanceof CropBlock cropBlock) {
-						((BlockAccessor) cropBlock).invokeAnimateTick(randomBlockStateInChunk, this, randomPosInChunk, random);
-					} else if (randomBlockInChunk instanceof StemBlock stemBlock) {
-						((BlockAccessor) stemBlock).invokeAnimateTick(randomBlockStateInChunk, this, randomPosInChunk, random);
-					}
+				if (randomBlockInChunk instanceof CropBlock cropBlock) {
+					((BlockAccessor) cropBlock).invokeAnimateTick(randomBlockStateInChunk, this, randomPosInChunk, random);
+				} else if (randomBlockInChunk instanceof StemBlock stemBlock) {
+					((BlockAccessor) stemBlock).invokeAnimateTick(randomBlockStateInChunk, this, randomPosInChunk, random);
 				}
 			}
 
