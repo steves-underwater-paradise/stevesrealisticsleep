@@ -46,6 +46,7 @@ cloche {
 
         suggest("sodium", "*")
         suggest("better-clouds", "*")
+        suggest("ticks", "*")
 
         markConflict("tawct", "*")
         markConflict("timecontrol", "*")
