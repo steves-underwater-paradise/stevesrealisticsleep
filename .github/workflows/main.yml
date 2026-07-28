@@ -54,7 +54,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Execute Gradle build
-        run: ./gradlew build
+        run: ./gradlew build --no-configuration-cache
 
       - name: Upload Gradle artifacts
         uses: actions/upload-artifact@v7
