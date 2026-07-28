@@ -59,8 +59,6 @@ cloche {
         markIncompatible("sleep-timelapse", "*")
     }
 
-    minecraftVersion.set(providers.gradleProperty("minecraft_version").get())
-
     mappings {
         official()
         parchment(providers.gradleProperty("parchment_mappings_version").get())
@@ -79,7 +77,9 @@ cloche {
         }
     }
 
-    fabric {
+    fabric("fabric:1.21.1") {
+        minecraftVersion.set("1.21.1")
+
         metadata {
             entrypoint("main", "io.github.steveplays28.stevesrealisticsleep.fabric.StevesRealisticSleepFabric")
             entrypoint("client", "io.github.steveplays28.stevesrealisticsleep.fabric.client.StevesRealisticSleepFabricClient")
@@ -93,6 +93,7 @@ cloche {
                 )
             )
 
+            require("minecraft", "1.21.1 <=1.21.1")
             require("cloth-config", "${providers.gradleProperty("cloth_config_version").get()}")
 
             suggest("modmenu", "${providers.gradleProperty("mod_menu_version").get()}", environment = Environment.Client)
@@ -129,8 +130,11 @@ cloche {
         }
     }
 
-    neoforge {
+    neoforge("neoforge:1.21.1") {
+        minecraftVersion.set("1.21.1")
+
         metadata {
+            require("minecraft", "1.21.1 <=1.21.1")
             require("cloth_config", "${providers.gradleProperty("cloth_config_version").get()}")
         }
 

@@ -102,7 +102,7 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 	@Unique private long stevesrealisticsleep$previousTime = System.currentTimeMillis();
 	@Unique private double stevesrealisticsleep$estimatedTicksPerSecond = 20.0;
 
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/GameRules;getInt(Lnet/minecraft/world/level/GameRules$Key;)I"))
+	@Inject(method = "tick", at = @At(value = "HEAD"))
 	public void stevesrealisticsleep$tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		// Estimate ticks per second every 10 ticks
 		if (stevesrealisticsleep$ticksSinceLastTicksPerSecondCheck >= 10) {

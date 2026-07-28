@@ -5,6 +5,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
+// TODO: Seperate into another mixin for >=1.21.11 or something like that and also mix into net/minecraft/world/timeline/Timelines to make the EnvironmentAttributes.CAT_WAKING_UP_GIFT_CHANCE contant (addModifierTrack)
+// TODO: New target for >=1.21.11: "net/minecraft/world/entity/animal/feline/Cat$CatRelaxOnOwnerGoal"
 @Mixin(targets = "net/minecraft/world/entity/animal/Cat$CatRelaxOnOwnerGoal")
 public class CatEntityMixin {
 	@Unique
