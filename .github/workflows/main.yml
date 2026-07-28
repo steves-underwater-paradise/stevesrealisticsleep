@@ -53,6 +53,9 @@ jobs:
       - name: Change Gradle wrapper permissions
         run: chmod +x ./gradlew
 
+      - name: Generate Fabric mappings (workaround)
+        run: ./gradlew generateFabric1211MappingsArtifact
+
       - name: Execute Gradle build
         run: ./gradlew build --no-configuration-cache
 
