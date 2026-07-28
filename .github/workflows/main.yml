@@ -48,7 +48,7 @@ jobs:
         with:
           cache-provider: basic
           # Gradle wrappers are validated before the JDK is set up
-          validate-wrapper: false
+          validate-wrappers: false
 
       - name: Change Gradle wrapper permissions
         run: chmod +x ./gradlew
