@@ -33,7 +33,7 @@ jobs:
       - name: Checkout Git repository
         uses: actions/checkout@v7
 
-      - name: Validate Gradle wrapper
+      - name: Validate Gradle wrappers
         uses: gradle/actions/wrapper-validation@v3
 
       - name: Set up JDK (Temurin 21)
@@ -47,6 +47,8 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
         with:
           cache-provider: basic
+          # Gradle wrappers are validated before the JDK is set up
+          validate-wrapper: false
 
       - name: Change Gradle wrapper permissions
         run: chmod +x ./gradlew
