@@ -2,6 +2,7 @@ import earth.terrarium.cloche.api.metadata.CommonMetadata.Environment
 
 plugins {
 	id("earth.terrarium.cloche")
+	id("maven-publish")
 }
 
 java {
@@ -11,6 +12,28 @@ java {
 
     withSourcesJar()
     withJavadocJar()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+            credentials {
+                username = providers.gradleProperty("gpr.user").orElse(providers.environmentVariable("GITHUB_ACTOR")).orNull
+                password = providers.gradleProperty("gpr.key").orElse(providers.environmentVariable("GITHUB_TOKEN")).orNull
+            }
+        }
+    }
 }
 
 repositories {

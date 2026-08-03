@@ -17,6 +17,7 @@ pluginManagement {
 		kotlin("jvm").version(kotlin_jvm_plugin_version)
 		id("com.pablisco.gradle.auto.include").version(auto_include_plugin_version)
 		id("earth.terrarium.cloche").version(cloche_plugin_version).apply(false)
+		id("maven-publish").apply(false)
 	}
 }
 
