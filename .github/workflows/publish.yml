@@ -30,6 +30,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
         with:
           cache-provider: basic
+          # Gradle wrappers are validated before the JDK is set up
           validate-wrappers: false
 
       - name: Change Gradle wrapper permissions
