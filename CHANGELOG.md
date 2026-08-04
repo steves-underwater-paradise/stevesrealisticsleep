@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- The dependency on Minecraft being specified incorrectly
+- The dependency on Minecraft being specified incorrectly on NeoForge
 
 ## v1.12.0 - 23/07/2026
 
