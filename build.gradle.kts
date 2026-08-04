@@ -1,3 +1,4 @@
+import earth.terrarium.cloche.api.metadata.CommonMetadata.Dependency
 import earth.terrarium.cloche.api.metadata.CommonMetadata.Environment
 
 plugins {
@@ -158,7 +159,16 @@ cloche {
         minecraftVersion.set("1.21.1")
 
         metadata {
-            require("minecraft", "1.21.1 <=1.21.1")
+            dependency {
+                modId.set("minecraft")
+                type.set(Dependency.Type.Required)
+                version {
+                    start.set("1.21.1")
+                    end.set("1.21.2")
+                    startInclusive.set(true)
+                    endExclusive.set(true)
+                }
+            }
             require("cloth_config", "${providers.gradleProperty("cloth_config_version").get()}")
         }
 
