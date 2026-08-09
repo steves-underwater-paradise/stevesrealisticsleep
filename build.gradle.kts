@@ -86,11 +86,9 @@ cloche {
 
     mappings {
         official()
-        parchment(providers.gradleProperty("parchment_mappings_version").get())
     }
 
     val mixin_extras_version = providers.gradleProperty("mixin_extras_version")
-    val cloth_config_version = providers.gradleProperty("cloth_config_version")
     val mod_menu_version = providers.gradleProperty("mod_menu_version")
     common {
         dependencies {
@@ -100,9 +98,19 @@ cloche {
             compileOnly(mixin_extras)
             annotationProcessor(mixin_extras)
         }
+
+        mixins.from(file("src/common/main/steves_realistic_sleep_common.mixins.json"))
+    }
+
+    val common1211Module = common("common:1.21.1") {
+        mixins.from(file("src/common/1.21.1/main/steves_realistic_sleep_common_1211.mixins.json"))
+    }
+    val common12111Module = common("common:1.21.11") {
+        mixins.from(file("src/common/1.21.11/main/steves_realistic_sleep_common_12111.mixins.json"))
     }
 
     fabric("fabric:1.21.1") {
+        dependsOn(common1211Module)
         minecraftVersion.set("1.21.1")
 
         metadata {
@@ -119,7 +127,7 @@ cloche {
             )
 
             require("minecraft", "1.21.1 <=1.21.1")
-            require("cloth-config", "${providers.gradleProperty("cloth_config_version").get()}")
+            require("cloth-config", "15.0.140")
 
             suggest("modmenu", "${providers.gradleProperty("mod_menu_version").get()}", environment = Environment.Client)
         }
@@ -127,7 +135,6 @@ cloche {
         val fabric_loader_version = providers.gradleProperty("fabric_loader_version")
         loaderVersion = fabric_loader_version.get()
 
-        mixins.from(file("src/common/main/steves_realistic_sleep_common.mixins.json"))
         includedClient()
 
         runs {
@@ -144,7 +151,7 @@ cloche {
             val fabric_api_version = providers.gradleProperty("fabric_api_version")
             fabricApi(fabric_api_version.get())
 
-            modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version.get()}") {
+            modApi("me.shedaniel.cloth:cloth-config-fabric:15.0.140") {
                 exclude(group = "net.fabricmc.fabric-api")
             }
             modApi("com.terraformersmc:modmenu:${mod_menu_version.get()}")
@@ -155,7 +162,62 @@ cloche {
         }
     }
 
+    fabric("fabric:1.21.11") {
+        dependsOn(common12111Module)
+        minecraftVersion.set("1.21.11")
+
+        val mod_menu_version = "17.0.1-beta.1"
+        val cloth_config_version = "21.11.153"
+        val server_i18n_api_version = "21.11.153"
+        metadata {
+            entrypoint("main", "io.github.steveplays28.stevesrealisticsleep.fabric.StevesRealisticSleepFabric")
+            entrypoint("client", "io.github.steveplays28.stevesrealisticsleep.fabric.client.StevesRealisticSleepFabricClient")
+            entrypoint("modmenu", "io.github.steveplays28.stevesrealisticsleep.fabric.client.compat.modmenu.StevesRealisticSleepFabricClientModMenuCompat")
+
+            custom(
+                "modmenu" to mapOf(
+                    "links" to mapOf(
+                        "modmenu.discord" to "https://discord.gg/KbWxgGg"
+                    )
+                )
+            )
+
+            require("minecraft", "1.21.11 <=1.21.11")
+            require("cloth-config", cloth_config_version)
+
+            suggest("modmenu", mod_menu_version, environment = Environment.Client)
+        }
+
+        val fabric_loader_version = providers.gradleProperty("fabric_loader_version")
+        loaderVersion = fabric_loader_version.get()
+
+        includedClient()
+
+        runs {
+            client()
+            server()
+        }
+
+        dependencies {
+            val mixin_extras = "io.github.llamalad7:mixinextras-fabric:${mixin_extras_version.get()}"
+            implementation(mixin_extras)
+            annotationProcessor(mixin_extras)
+            include(mixin_extras)
+            fabricApi("0.141.6")
+
+            modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
+                exclude(group = "net.fabricmc.fabric-api")
+            }
+            modApi("com.terraformersmc:modmenu:${mod_menu_version}")
+
+            val server_i18n_api = "maven.modrinth:server-i18n-api:${providers.gradleProperty("server_i18n_api_version").get()}-1.21.11-fabric"
+            modApi(server_i18n_api)
+            include(server_i18n_api)
+        }
+    }
+
     neoforge("neoforge:1.21.1") {
+        dependsOn(common1211Module)
         minecraftVersion.set("1.21.1")
 
         metadata {
@@ -169,7 +231,7 @@ cloche {
                     endExclusive.set(true)
                 }
             }
-            require("cloth_config", "${providers.gradleProperty("cloth_config_version").get()}")
+            require("cloth_config", "15.0.140")
         }
 
         val neoforge_loader_version = providers.gradleProperty("neoforge_loader_version")
@@ -186,13 +248,11 @@ cloche {
             annotationProcessor(mixin_extras)
             include(mixin_extras)
 
-            modApi("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version.get()}")
+            modApi("me.shedaniel.cloth:cloth-config-neoforge:15.0.140")
 
             val server_i18n_api = "maven.modrinth:server-i18n-api:${providers.gradleProperty("server_i18n_api_version").get()}-1.21.3-neoforge"
             modApi(server_i18n_api)
             include(server_i18n_api)
         }
-
-        mixins.from(file("src/common/main/steves_realistic_sleep_common.mixins.json"))
     }
 }

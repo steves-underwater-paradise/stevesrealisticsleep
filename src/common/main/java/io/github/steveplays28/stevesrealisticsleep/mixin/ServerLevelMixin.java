@@ -1,6 +1,7 @@
 package io.github.steveplays28.stevesrealisticsleep.mixin;
 
 import io.github.steveplays28.stevesrealisticsleep.api.StevesRealisticSleepApi;
+import io.github.steveplays28.stevesrealisticsleep.extension.GameRulesExtension;
 import io.github.steveplays28.stevesrealisticsleep.extension.ServerWorldExtension;
 import io.github.steveplays28.stevesrealisticsleep.mixin.accessor.AbstractCauldronBlockAccessor;
 import io.github.steveplays28.stevesrealisticsleep.util.SleepMathUtil;
@@ -29,7 +30,6 @@ import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.ticks.LevelTicks;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.WritableLevelData;
@@ -147,7 +147,7 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 				return;
 			}
 
-			double playersRequiredToSleepRatio = server.getGameRules().getInt(GameRules.RULE_PLAYERS_SLEEPING_PERCENTAGE) / 100d;
+			double playersRequiredToSleepRatio = ((GameRulesExtension) server.getGameRules()).stevesrealisticsleep$getPlayersSleepingPercentageGameRule() / 100d;
 			int playersRequiredToSleep = (int) Math.ceil(playersRequiredToSleepRatio * playerCount);
 			for (ServerPlayer player : players) {
 				player.sendSystemMessage(Component.translatable(String.format("%s.text.not_enough_players_sleeping_message", MOD_NAMESPACE), sleepingPlayerCount, playerCount, playersRequiredToSleep,
@@ -161,7 +161,7 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 		int ticksUntilAwake = SleepMathUtil.calculateTicksUntilAwake(timeOfDay);
 
 		// Advance time
-		boolean doDayLightCycle = server.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT);
+		boolean doDayLightCycle = ((GameRulesExtension) server.getGameRules()).stevesrealisticsleep$getAdvanceTimeGameRule();
 		if (doDayLightCycle) {
 			serverLevelData.setDayTime(serverLevelData.getDayTime() + timeStepPerTickRounded);
 		}
@@ -242,8 +242,8 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 
 		if (stevesrealisticsleep$tickDelay > 0L) {
 			stevesrealisticsleep$tickDelay -= 1L;
-			server.getPlayerList().broadcastAll(new ClientboundSetTimePacket(serverLevelData.getGameTime(), serverLevelData.getDayTime(), this.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)),
-					dimension());
+			server.getPlayerList().broadcastAll(new ClientboundSetTimePacket(serverLevelData.getGameTime(), serverLevelData.getDayTime(),
+					((GameRulesExtension) server.getGameRules()).stevesrealisticsleep$getAdvanceTimeGameRule()), dimension());
 
 			ci.cancel();
 			return;
@@ -253,7 +253,7 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 			return;
 		}
 
-		if (this.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
+		if (((GameRulesExtension) server.getGameRules()).stevesrealisticsleep$getAdvanceTimeGameRule()) {
 			serverLevelData.setDayTime(this.getDayTime() + 1L);
 		}
 
@@ -393,7 +393,7 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 
 	@Unique
 	private void stevesrealisticsleep$clearWeather() {
-		boolean doWeatherCycle = server.getGameRules().getBoolean(GameRules.RULE_WEATHER_CYCLE);
+		boolean doWeatherCycle = ((GameRulesExtension) server.getGameRules()).stevesrealisticsleep$getAdvanceWeatherGameRule();
 		if (doWeatherCycle && (serverLevelData.isRaining() || serverLevelData.isThundering())) {
 			// Reset weather clock and clear weather
 			var nextRainTime = (int) (DAY_LENGTH * SleepMathUtil.getRandomNumberInRange(0.5, 7.5));
