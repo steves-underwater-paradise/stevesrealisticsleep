@@ -54,7 +54,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Generate Fabric mappings (workaround)
-        run: ./gradlew generateFabric1211MappingsArtifact
+        run: ./gradlew generateFabric1211MappingsArtifact generateFabric12111MappingsArtifact
 
       - name: Execute Gradle build
         run: ./gradlew build --no-configuration-cache
