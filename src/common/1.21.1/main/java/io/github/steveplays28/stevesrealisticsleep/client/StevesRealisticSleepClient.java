@@ -1,7 +1,6 @@
 package io.github.steveplays28.stevesrealisticsleep.client;
 
 import io.github.steveplays28.stevesrealisticsleep.api.StevesRealisticSleepApi;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 
 import static io.github.steveplays28.stevesrealisticsleep.StevesRealisticSleep.config;

@@ -100,6 +100,7 @@ cloche {
         }
 
         mixins.from(file("src/common/main/steves_realistic_sleep_common.mixins.json"))
+        accessWideners.from(file("src/common/main/resources/stevesrealisticsleep_common.classtweaker"))
     }
 
     val common1211Module = common("common:1.21.1") {
@@ -109,15 +110,8 @@ cloche {
         mixins.from(file("src/common/1.21.11/main/steves_realistic_sleep_common_12111.mixins.json"))
     }
 
-    fabric("fabric:1.21.1") {
-        dependsOn(common1211Module)
-        minecraftVersion.set("1.21.1")
-
+    val commonFabricModule = common("fabric") {
         metadata {
-            entrypoint("main", "io.github.steveplays28.stevesrealisticsleep.fabric.StevesRealisticSleepFabric")
-            entrypoint("client", "io.github.steveplays28.stevesrealisticsleep.fabric.client.StevesRealisticSleepFabricClient")
-            entrypoint("modmenu", "io.github.steveplays28.stevesrealisticsleep.fabric.client.compat.modmenu.StevesRealisticSleepFabricClientModMenuCompat")
-
             custom(
                 "modmenu" to mapOf(
                     "links" to mapOf(
@@ -125,6 +119,18 @@ cloche {
                     )
                 )
             )
+        }
+    }
+
+    fabric("fabric:1.21.1") {
+        dependsOn(commonFabricModule)
+        dependsOn(common1211Module)
+        minecraftVersion.set("1.21.1")
+
+        metadata {
+            entrypoint("main", "io.github.steveplays28.stevesrealisticsleep.fabric.StevesRealisticSleepFabric")
+            entrypoint("client", "io.github.steveplays28.stevesrealisticsleep.fabric.client.StevesRealisticSleepFabricClient")
+            entrypoint("modmenu", "io.github.steveplays28.stevesrealisticsleep.fabric.client.compat.modmenu.StevesRealisticSleepFabricClientModMenuCompat")
 
             require("minecraft", "1.21.1 <=1.21.1")
             require("cloth-config", "15.0.140")
@@ -163,6 +169,7 @@ cloche {
     }
 
     fabric("fabric:1.21.11") {
+        dependsOn(commonFabricModule)
         dependsOn(common12111Module)
         minecraftVersion.set("1.21.11")
 
@@ -173,14 +180,6 @@ cloche {
             entrypoint("main", "io.github.steveplays28.stevesrealisticsleep.fabric.StevesRealisticSleepFabric")
             entrypoint("client", "io.github.steveplays28.stevesrealisticsleep.fabric.client.StevesRealisticSleepFabricClient")
             entrypoint("modmenu", "io.github.steveplays28.stevesrealisticsleep.fabric.client.compat.modmenu.StevesRealisticSleepFabricClientModMenuCompat")
-
-            custom(
-                "modmenu" to mapOf(
-                    "links" to mapOf(
-                        "modmenu.discord" to "https://discord.gg/KbWxgGg"
-                    )
-                )
-            )
 
             require("minecraft", "1.21.11 <=1.21.11")
             require("cloth-config", cloth_config_version)

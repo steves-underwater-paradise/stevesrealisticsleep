@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import static io.github.steveplays28.stevesrealisticsleep.StevesRealisticSleep.config;
 import static io.github.steveplays28.stevesrealisticsleep.util.SleepMathUtil.*;
 

@@ -6,7 +6,6 @@
   "mixins": [
     "CauldronBlockMixin",
     "ServerPlayerMixin",
-    "ServerLevelMixin",
     "SleepStatusMixin",
     "accessor.AbstractCauldronBlockAccessor",
     "accessor.ServerWorldAccessor",

@@ -19,7 +19,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.SleepStatus;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.raid.Raids;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.biome.Biome;
@@ -83,6 +82,9 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 
 	@Shadow
 	public abstract void tickPrecipitation(BlockPos blockPos);
+
+	@Shadow
+	public abstract long getGameTime();
 
 	@Shadow
 	protected abstract void wakeUpAllPlayers();
@@ -293,11 +295,24 @@ public abstract class ServerLevelMixin extends Level implements ServerWorldExten
 			if (this.isRaining() && this.isThundering() && this.random.nextInt(100000) == 0) {
 				var blockPos = this.findLightningTargetAround(this.getBlockRandomPos(chunkMinBlockX, 0, chunkMinBlockZ, 15));
 				if (this.isRainingAt(blockPos)) {
-					LightningBolt lightningEntity = EntityType.LIGHTNING_BOLT.create(this);
-					if (lightningEntity != null) {
-						lightningEntity.moveTo(Vec3.atBottomCenterOf(blockPos));
-						lightningEntity.setVisualOnly(true);
-						this.addFreshEntity(lightningEntity);
+					var difficulty = this.getCurrentDifficultyAt(blockPos);
+					var isTrap = this.getGameRules().get(GameRules.SPAWN_MOBS) && this.random.nextDouble() < difficulty.getEffectiveDifficulty() * 0.01
+							&& !this.getBlockState(blockPos.below()).is(BlockTags.LIGHTNING_RODS);
+					if (isTrap) {
+						var skeletonHorse = EntityType.SKELETON_HORSE.create(this, EntitySpawnReason.EVENT);
+						if (skeletonHorse != null) {
+							skeletonHorse.setTrap(true);
+							skeletonHorse.setAge(0);
+							skeletonHorse.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+							this.addFreshEntity(skeletonHorse);
+						}
+					}
+
+					var lightningBolt = EntityType.LIGHTNING_BOLT.create(this, EntitySpawnReason.EVENT);
+					if (lightningBolt != null) {
+						lightningBolt.snapTo(Vec3.atBottomCenterOf(blockPos));
+						lightningBolt.setVisualOnly(isTrap);
+						this.addFreshEntity(lightningBolt);
 					}
 				}
 			}

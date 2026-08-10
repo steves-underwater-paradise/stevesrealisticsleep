@@ -9,23 +9,20 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(GameRules.class)
 public abstract class GameRulesMixin implements GameRulesExtension {
 	@Shadow
-	public abstract boolean getBoolean(GameRule<Boolean> key);
-
-	@Shadow
-	public abstract int getInt(GameRule<Integer> key);
+	public abstract <T> T get(final GameRule<T> gameRule);
 
 	@Override
 	public int stevesrealisticsleep$getPlayersSleepingPercentageGameRule() {
-		return this.getInt(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
+		return this.get(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
 	}
 
 	@Override
 	public boolean stevesrealisticsleep$getAdvanceTimeGameRule() {
-		return this.getBoolean(GameRules.ADVANCE_TIME);
+		return this.get(GameRules.ADVANCE_TIME);
 	}
 
 	@Override
 	public boolean stevesrealisticsleep$getAdvanceWeatherGameRule() {
-		return this.getBoolean(GameRules.ADVANCE_WEATHER);
+		return this.get(GameRules.ADVANCE_WEATHER);
 	}
 }

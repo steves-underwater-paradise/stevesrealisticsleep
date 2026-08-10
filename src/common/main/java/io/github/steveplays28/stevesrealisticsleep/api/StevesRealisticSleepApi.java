@@ -1,11 +1,11 @@
 package io.github.steveplays28.stevesrealisticsleep.api;
 
+import io.github.steveplays28.stevesrealisticsleep.extension.ClientLevelExtension;
 import io.github.steveplays28.stevesrealisticsleep.extension.ServerWorldExtension;
 import io.github.steveplays28.stevesrealisticsleep.mixin.accessor.ServerWorldAccessor;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,7 +63,7 @@ public class StevesRealisticSleepApi {
 		var playerCount = players.size();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		double sleepingPercentage = sleepingRatio * 100;
-		int playersRequiredToSleepPercentage = level.getGameRules().getInt(GameRules.RULE_PLAYERS_SLEEPING_PERCENTAGE);
+		int playersRequiredToSleepPercentage = ((ClientLevelExtension) level).stevesrealisticsleep$getPlayersSleepingPercentageGameRule();
 
 		return sleepingPercentage >= playersRequiredToSleepPercentage;
 	}
@@ -81,7 +81,7 @@ public class StevesRealisticSleepApi {
 		var playerCount = level.players().size();
 		double sleepingRatio = (double) sleepingPlayerCount / playerCount;
 		double sleepingPercentage = sleepingRatio * 100d;
-		int playersRequiredToSleepPercentage = level.getGameRules().getInt(GameRules.RULE_PLAYERS_SLEEPING_PERCENTAGE);
+		int playersRequiredToSleepPercentage = 0;
 
 		return sleepingPercentage >= playersRequiredToSleepPercentage;
 	}
